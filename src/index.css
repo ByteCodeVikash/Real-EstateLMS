@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-premium-dark text-premium-text font-sans antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-premium-heading font-bold;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/5 backdrop-blur-lg border border-white/10 shadow-xl;
+  }
+  
+  .glass-premium {
+    @apply bg-premium-card/80 backdrop-blur-xl border border-premium-border/50 shadow-2xl;
+  }
+  
+  .premium-button {
+    @apply relative inline-flex items-center justify-center px-6 py-3 font-semibold text-white transition-all duration-300 rounded-xl bg-gradient-premium hover:shadow-[0_0_20px_rgba(124,58,237,0.5)] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden;
+  }
+
+  .premium-button-outline {
+    @apply relative inline-flex items-center justify-center px-6 py-3 font-semibold text-white transition-all duration-300 rounded-xl border border-premium-border bg-transparent hover:bg-premium-border/50 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-premium-dark;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-premium-border rounded-full hover:bg-premium-text/30 transition-colors;
+}
+
+/* Selection */
+::selection {
+  @apply bg-premium-accent/30 text-white;
+}
+
+/* Animations */
+.animate-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
