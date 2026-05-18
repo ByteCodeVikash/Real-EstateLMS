@@ -13,7 +13,7 @@ import { Sidebar, Navbar } from './components/Layout';
 
 const DashboardLayout = ({ children }) => {
   return (
-    <div className="min-h-screen bg-premium-dark text-white">
+    <div className="min-h-screen bg-premium-bg text-premium-text">
       <Sidebar />
       <Navbar />
       <main className="lg:pl-64 pt-20">
