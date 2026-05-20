@@ -1,19 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Play, Pause, SkipForward, SkipBack, Settings, Maximize, Volume2, Shield, 
-  Lock, CheckCircle, FileText, Download, Monitor, Menu, X, Eye, 
-  AlertTriangle, Fingerprint, ShieldAlert, ArrowLeft, Send, Sparkles, Trophy, HelpCircle, Activity
+  Play, Pause, SkipForward, SkipBack, Settings, Maximize, Volume2, Volume1, VolumeX, Shield, 
+  Lock, CheckCircle, FileText, Download, Monitor, Menu, X, 
+  AlertTriangle, Fingerprint, ShieldAlert, ArrowLeft, Send, Sparkles, Trophy, Activity
 } from 'lucide-react';
 import { useParams, Link } from 'react-router-dom';
-import { Button, GlassCard, Badge } from '../components/UI';
+import { Button, Badge } from '../components/UI';
+import { loadFromStorage, saveToStorage, STORAGE_KEYS } from '../utils/storage';
+
+// Seed chat messages defined at module level so they are stable across renders
+const SEED_CHAT_MESSAGES = [
+  { id: 1, sender: "Robert Sterling", role: "Instructor", message: "Keep a close watch on Cap rate margins when structuring the GP split splits. Hurdle rates are crucial.", time: "10:15 AM", isInstructor: true },
+  { id: 2, sender: "Sarah Jenkins", role: "Elite Broker", message: "In my area, we have been anchoring owner financing at a solid 6.5%. The cash flow model behaves beautifully.", time: "10:22 AM", isInstructor: false },
+  { id: 3, sender: "Elena Rodriguez", role: "Luxury Mentor", message: "Remember to emphasize local lifestyle assets, not just square footage, when presenting to HNW circles.", time: "10:35 AM", isInstructor: true }
+];
 
 const CourseWatch = () => {
   const { id } = useParams();
   const courseId = parseInt(id) || 1;
 
-  // Course specifications map
-  const coursesData = {
+  // Course specifications map (memoized to avoid re-creating large objects each render)
+  const coursesData = useMemo(() => ({
     1: {
       title: "Real Estate Sales Masterclass",
       category: "Sales Coaching",
@@ -106,7 +114,7 @@ const CourseWatch = () => {
       ],
       overviewText: "Construct a automated marketing asset that sources listing leads on autopilot. This guide steps through high-impact Meta/Google Ads target parameters, custom lead magnets, automated CRMs, and call-back structures."
     }
-  };
+  }), []);
 
   const activeCourse = coursesData[courseId] || coursesData[1];
 
@@ -116,21 +124,48 @@ const CourseWatch = () => {
   const [watermarkPos, setWatermarkPos] = useState({ top: '30%', left: '20%' });
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(80);
+  const [prevVolume, setPrevVolume] = useState(80);
+  const [isMuted, setIsMuted] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState('1.0x');
   const [showSettings, setShowSettings] = useState(false);
-  const [videoProgress, setVideoProgress] = useState(38); // default progress percentage
+  const [showQualityMenu, setShowQualityMenu] = useState(false);
+  const [selectedQuality, setSelectedQuality] = useState('Auto');
+  const [videoProgress, setVideoProgress] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [isBuffering, setIsBuffering] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showControls, setShowControls] = useState(true);
+  const playerRef = useRef(null);
+  const videoRef = useRef(null);
+  const controlsTimerRef = useRef(null);
+  const bufferingDelayRef = useRef(null);
+  const lastLoadedSrcRef = useRef('');
+  const canPlayHandlerRef = useRef(null);
   
-  // Real-time Discussion Chat Panel state
-  const [chatMessages, setChatMessages] = useState([
-    { id: 1, sender: "Robert Sterling", role: "Instructor", message: "Keep a close watch on Cap rate margins when structuring the GP split splits. Hurdle rates are crucial.", time: "10:15 AM", isInstructor: true },
-    { id: 2, sender: "Sarah Jenkins", role: "Elite Broker", message: "In my area, we have been anchoring owner financing at a solid 6.5%. The cash flow model behaves beautifully.", time: "10:22 AM", isInstructor: false },
-    { id: 3, sender: "Elena Rodriguez", role: "Luxury Mentor", message: "Remember to emphasize local lifestyle assets, not just square footage, when presenting to HNW circles.", time: "10:35 AM", isInstructor: true }
-  ]);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Real-time Discussion Chat Panel state — loaded from localStorage per course
+  const [chatMessages, setChatMessages] = useState(
+    () => loadFromStorage(STORAGE_KEYS.courseChat(courseId), SEED_CHAT_MESSAGES)
+  );
   const [newMessage, setNewMessage] = useState('');
 
-  // Notebook states
+  // Notebook states — loaded from localStorage per course
   const [savedNotes, setSavedNotes] = useState('');
-  const [notesList, setNotesList] = useState([]);
+  const [notesList, setNotesList] = useState(
+    () => loadFromStorage(STORAGE_KEYS.courseNotes(courseId), [])
+  );
 
   // Shift Anti-Piracy Watermark coordinates dynamically to discourage screen recording
   useEffect(() => {
@@ -143,10 +178,260 @@ const CourseWatch = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Update active lecture if route parameter changes
+  // Reload notes & chat from storage when courseId changes (user navigates to a different course)
   useEffect(() => {
     setActiveLecture(activeCourse.lectures[3] || activeCourse.lectures[0]);
-  }, [courseId]);
+    setNotesList(loadFromStorage(STORAGE_KEYS.courseNotes(courseId), []));
+    setChatMessages(loadFromStorage(STORAGE_KEYS.courseChat(courseId), SEED_CHAT_MESSAGES));
+  }, [courseId, activeCourse]);
+
+  // Persist notes list whenever it changes
+  useEffect(() => {
+    saveToStorage(STORAGE_KEYS.courseNotes(courseId), notesList);
+  }, [notesList, courseId]);
+
+  // Persist chat messages whenever they change
+  useEffect(() => {
+    saveToStorage(STORAGE_KEYS.courseChat(courseId), chatMessages);
+  }, [chatMessages, courseId]);
+
+  // Cleanup controls auto-hide timer on unmount
+  useEffect(() => () => { if (controlsTimerRef.current) clearTimeout(controlsTimerRef.current); }, []);
+  useEffect(() => () => { if (bufferingDelayRef.current) clearTimeout(bufferingDelayRef.current); }, []);
+
+  // Custom Fullscreen API Toggle handler
+  const toggleFullscreen = () => {
+    const container = playerRef.current;
+    const v = videoRef.current;
+    if (!container && !v) return;
+    if (!document.fullscreenElement) {
+      const request = container?.requestFullscreen?.bind(container) || v?.requestFullscreen?.bind(v);
+      if (request) {
+        request().then(() => setIsFullscreen(true)).catch((err) => {
+          // iOS Safari fallback
+          if (v?.webkitEnterFullscreen) {
+            try { v.webkitEnterFullscreen(); } catch { /* ignore */ }
+            return;
+          }
+          console.error(`Error attempting to enable fullscreen: ${err.message}`);
+        });
+      } else if (v?.webkitEnterFullscreen) {
+        try { v.webkitEnterFullscreen(); } catch { /* ignore */ }
+      }
+    } else {
+      document.exitFullscreen().then(() => {
+        setIsFullscreen(false);
+      });
+    }
+  };
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+    };
+  }, []);
+
+  // ── Real Video Helpers ──────────────────────────────────────────────────────
+  const QUALITY_OPTIONS = ['Auto', '720p', '480p'];
+  const getVideoUrl = (lectureId, quality) => {
+    // Same sample video for every lecture (local assets for reliable demo playback)
+    // `lectureId` kept for future per-lecture mapping without touching playlist logic.
+    const q = quality || 'Auto';
+    if (q === '480p') return '/videos/lecture-sample-480p.mp4';
+    return '/videos/lecture-sample-720p.mp4'; // Auto + 720p
+  };
+
+  const formatTime = (sec) => {
+    if (!isFinite(sec) || isNaN(sec)) return '0:00';
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  };
+
+  const handleTimeUpdate = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    setCurrentTime(v.currentTime);
+    setVideoProgress((v.currentTime / (v.duration || 1)) * 100);
+  };
+
+  const handleLoadedMetadata = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    setDuration(v.duration);
+    v.volume = volume / 100;
+    v.muted = isMuted;
+    v.playbackRate = parseFloat(playbackSpeed) || 1.0;
+  };
+
+  const handleVideoEnded = () => { setIsPlaying(false); setVideoProgress(0); setCurrentTime(0); setShowControls(true); };
+
+  const togglePlay = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.paused ? v.play().catch(() => {}) : v.pause();
+  };
+
+  const handleSeek = (e) => {
+    const v = videoRef.current;
+    if (!v || !duration) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clientX = e?.touches?.[0]?.clientX ?? e?.clientX;
+    if (!isFinite(clientX)) return;
+    const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    v.currentTime = pct * duration;
+    setVideoProgress(pct * 100);
+  };
+
+  const seekBy = (deltaSec) => {
+    const v = videoRef.current;
+    if (!v || !isFinite(v.duration)) return;
+    v.currentTime = Math.max(0, Math.min(v.duration, v.currentTime + deltaSec));
+  };
+
+  const setVolumePct = (nextPct) => {
+    const v = videoRef.current;
+    const clamped = Math.max(0, Math.min(100, nextPct));
+    setVolume(clamped);
+    setIsMuted(clamped === 0);
+    if (v) { v.volume = clamped / 100; v.muted = clamped === 0; }
+  };
+
+  const handleVolumeChange = (e) => {
+    const v = videoRef.current;
+    const val = parseInt(e.target.value);
+    setVolume(val);
+    setIsMuted(val === 0);
+    if (v) { v.volume = val / 100; v.muted = val === 0; }
+  };
+
+  const toggleMute = () => {
+    const v = videoRef.current;
+    if (isMuted) {
+      const restore = prevVolume || 80;
+      setIsMuted(false); setVolume(restore);
+      if (v) { v.muted = false; v.volume = restore / 100; }
+    } else {
+      setPrevVolume(volume); setIsMuted(true); setVolume(0);
+      if (v) { v.muted = true; }
+    }
+  };
+
+  const handleSpeedChange = (speed) => {
+    setPlaybackSpeed(speed); setShowSettings(false);
+    if (videoRef.current) videoRef.current.playbackRate = parseFloat(speed) || 1.0;
+  };
+
+  const setBuffering = (next) => {
+    if (bufferingDelayRef.current) {
+      clearTimeout(bufferingDelayRef.current);
+      bufferingDelayRef.current = null;
+    }
+    if (!next) {
+      setIsBuffering(false);
+      return;
+    }
+    // Delay to avoid flicker on very fast seeks / local playback
+    bufferingDelayRef.current = setTimeout(() => setIsBuffering(true), 120);
+  };
+
+  const loadVideo = ({ preserveTime }) => {
+    const v = videoRef.current;
+    if (!v) return;
+
+    const nextSrc = getVideoUrl(activeLecture?.id || 1, selectedQuality);
+    if (lastLoadedSrcRef.current === nextSrc && preserveTime) return;
+
+    const wasPlaying = !v.paused && !v.ended;
+    const resumeAt = preserveTime ? v.currentTime || 0 : 0;
+
+    if (!preserveTime) {
+      setIsPlaying(false);
+      setCurrentTime(0);
+      setDuration(0);
+      setVideoProgress(0);
+    }
+    setIsLoading(true);
+    setBuffering(true);
+    setShowControls(true);
+    setShowSettings(false);
+    setShowQualityMenu(false);
+
+    if (canPlayHandlerRef.current) {
+      v.removeEventListener('canplay', canPlayHandlerRef.current);
+      canPlayHandlerRef.current = null;
+    }
+
+    lastLoadedSrcRef.current = nextSrc;
+    v.src = nextSrc;
+    v.load();
+
+    const handleCanPlay = () => {
+      try {
+        if (preserveTime && resumeAt > 0 && isFinite(resumeAt)) {
+          v.currentTime = Math.min(resumeAt, v.duration || resumeAt);
+        }
+      } catch { /* ignore */ }
+      setIsLoading(false);
+      setBuffering(false);
+      if (wasPlaying) v.play().catch(() => {});
+      v.removeEventListener('canplay', handleCanPlay);
+      canPlayHandlerRef.current = null;
+    };
+
+    canPlayHandlerRef.current = handleCanPlay;
+    v.addEventListener('canplay', handleCanPlay);
+  };
+
+  const handleMouseMove = () => {
+    setShowControls(true);
+    if (controlsTimerRef.current) clearTimeout(controlsTimerRef.current);
+    controlsTimerRef.current = setTimeout(() => setShowControls(false), 3000);
+  };
+
+  const handleKeyDown = (e) => {
+    const v = videoRef.current;
+    if (!v) return;
+    // Don't hijack shortcuts while typing in inputs/textareas/contenteditable
+    const tag = e?.target?.tagName?.toLowerCase?.();
+    if (tag === 'input' || tag === 'textarea' || e?.target?.isContentEditable) return;
+    const actions = {
+      ' ': () => togglePlay(), 'k': () => togglePlay(),
+      'ArrowRight': () => seekBy(10), 'l': () => seekBy(10),
+      'ArrowLeft': () => seekBy(-10), 'j': () => seekBy(-10),
+      'ArrowUp': () => setVolumePct(volume + 5),
+      'ArrowDown': () => setVolumePct(volume - 5),
+      'm': () => toggleMute(), 'M': () => toggleMute(),
+      'f': () => toggleFullscreen(), 'F': () => toggleFullscreen(),
+    };
+    if (actions[e.key]) { e.preventDefault(); actions[e.key](); }
+  };
+
+  // Keep player shortcuts active without breaking the rest of the page
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown, { passive: false });
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isMuted, volume, playbackSpeed, selectedQuality, duration, isFullscreen]);
+
+  // Load lecture video when active lecture changes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadVideo({ preserveTime: false });
+  }, [activeLecture?.id]);
+
+  // Preserve playback position when switching quality
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadVideo({ preserveTime: true });
+  }, [selectedQuality]);
 
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -168,14 +453,14 @@ const CourseWatch = () => {
   const handleSaveNote = () => {
     if (!savedNotes.trim()) return;
     const note = {
-      id: notesList.length + 1,
+      id: Date.now(),
       text: savedNotes,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       lectureTitle: activeLecture.title
     };
-    setNotesList([note, ...notesList]);
+    // Prepend new note — save useEffect will automatically persist to localStorage
+    setNotesList((prev) => [note, ...prev]);
     setSavedNotes('');
-    alert("Session note logged successfully in security dashboard!");
   };
 
   return (
@@ -200,7 +485,7 @@ const CourseWatch = () => {
                 <span className="w-1.5 h-1.5 rounded-full bg-premium-accent animate-pulse"></span>
                 Secure AES-256 Stream Session
               </p>
-              <h1 className="font-black text-sm md:text-base text-white mt-1 truncate max-w-[200px] md:max-w-md">
+              <h1 className="font-black text-sm md:text-base text-white mt-1 truncate max-w-[140px] xs:max-w-[200px] md:max-w-md">
                 {activeCourse.title}
               </h1>
             </div>
@@ -208,17 +493,30 @@ const CourseWatch = () => {
           <Badge className="hidden lg:inline-flex rounded-lg h-7 text-[9px] font-black tracking-wider bg-slate-900 text-premium-accent border border-premium-accent/20">
             DRM PRO-STREAM
           </Badge>
+          <Badge className="hidden sm:inline-flex rounded-lg h-7 text-[9px] font-black tracking-wider bg-slate-900 text-red-400 border border-red-500/20">
+            PROTECTED CONTENT
+          </Badge>
         </div>
         
         {/* Dynamic tracking metrics */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 md:gap-4">
           <div className="hidden md:flex items-center gap-2 bg-slate-900/60 border border-slate-800 px-3.5 py-1.5 rounded-xl text-[10px] font-mono text-slate-400 font-bold shadow-inner">
             <Activity className="w-3.5 h-3.5 text-premium-accent animate-pulse" />
             <span>NODE: BJ-CRE-MIA</span>
           </div>
+
+          {/* Playlist Toggler */}
+          <button 
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="h-10 w-10 flex items-center justify-center rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition-all shadow-md active:scale-95 cursor-pointer z-50"
+            title="Toggle Playlist Sidebar"
+          >
+            {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+
           <div className="h-6 w-px bg-slate-800"></div>
           <Link to="/courses">
-            <Button variant="danger" size="sm" className="h-10 px-5 text-xs uppercase font-black tracking-widest rounded-xl shadow-md cursor-pointer border border-red-500/20">
+            <Button variant="danger" size="sm" className="h-10 px-4 md:px-5 text-[10px] md:text-xs uppercase font-black tracking-widest rounded-xl shadow-md cursor-pointer border border-red-500/20">
               Disconnect Broadcast
             </Button>
           </Link>
@@ -245,27 +543,60 @@ const CourseWatch = () => {
           </div>
 
           {/* Secure Video Player */}
-          <div className="relative aspect-video max-h-[55vh] lg:max-h-[58vh] bg-slate-950 group overflow-hidden border-b border-slate-800 shadow-2xl flex-shrink-0">
+          <div 
+            ref={playerRef} 
+            className="relative aspect-video max-h-[55vh] lg:max-h-[58vh] bg-slate-950 group overflow-hidden border-b border-slate-800 shadow-2xl flex-shrink-0"
+            onMouseMove={handleMouseMove}
+            onTouchStart={handleMouseMove}
+            onClick={() => playerRef.current?.focus?.()}
+            tabIndex={0}
+          >
             
             {/* Ambient Background Glow */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[70%] bg-blue-500/5 blur-[120px] rounded-full pointer-events-none z-10"></div>
             
+            {/* Media Visual background (kept for premium ambiance) */}
+            <img 
+              src={activeCourse.image} 
+              className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ${
+                isPlaying ? 'opacity-15 blur-[1px]' : 'opacity-25 blur-none'
+              }`}
+              alt="Cinematic Streaming Interface"
+            />
+
+            {/* Real HTML5 video layer */}
+            <video
+              ref={videoRef}
+              className={`absolute inset-0 w-full h-full object-contain bg-black transition-opacity duration-500 ${
+                isLoading ? 'opacity-0' : 'opacity-100'
+              }`}
+              playsInline
+              disablePictureInPicture
+              controlsList="nodownload noremoteplayback"
+              preload="metadata"
+              poster={activeCourse.image}
+              onTimeUpdate={handleTimeUpdate}
+              onLoadedMetadata={handleLoadedMetadata}
+              onLoadStart={() => { setIsLoading(true); setBuffering(false); }}
+              onLoadedData={() => setIsLoading(false)}
+              onCanPlay={() => { setIsLoading(false); setBuffering(false); }}
+              onWaiting={() => setBuffering(true)}
+              onPlaying={() => { setIsPlaying(true); setBuffering(false); handleMouseMove(); }}
+              onPause={() => { setIsPlaying(false); setShowControls(true); }}
+              onSeeking={() => setBuffering(true)}
+              onSeeked={() => setBuffering(false)}
+              onEnded={handleVideoEnded}
+              onError={() => { setIsLoading(false); setBuffering(false); }}
+            />
+            
             <div className="absolute inset-0 flex items-center justify-center z-10">
-              {/* Media Visual background */}
-              <img 
-                src={activeCourse.image} 
-                className={`w-full h-full object-cover transition-all duration-1000 ${
-                  isPlaying ? 'opacity-20 blur-[1px]' : 'opacity-35 blur-none'
-                }`}
-                alt="Cinematic Streaming Interface"
-              />
               
               {/* Cinematic Vignette Overlay */}
               <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/90"></div>
               <div className="absolute inset-0 bg-radial-gradient"></div>
 
               {/* Secure Fingerprint Key */}
-              {!isPlaying && (
+              {!isPlaying && !isLoading && (
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center space-y-4 z-20 pointer-events-none">
                   <div className="w-16 h-16 rounded-full bg-slate-900/80 border border-slate-800 flex items-center justify-center shadow-2xl text-premium-accent/80 animate-pulse">
                     <Fingerprint className="w-8 h-8" />
@@ -274,11 +605,35 @@ const CourseWatch = () => {
                 </div>
               )}
 
+              {/* Premium skeleton shimmer while loading */}
+              {isLoading && (
+                <div className="absolute inset-0 z-20">
+                  <div className="absolute inset-0 bg-slate-950/60"></div>
+                  <div className="absolute inset-0 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+                  </div>
+                  <div className="absolute top-6 left-6 right-6">
+                    <div className="h-3 w-40 rounded bg-slate-800/60"></div>
+                    <div className="mt-3 h-2.5 w-64 rounded bg-slate-800/40"></div>
+                  </div>
+                </div>
+              )}
+
+              {/* Buffering indicator */}
+              {isBuffering && !isLoading && (
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-3 pointer-events-none">
+                  <div className="w-14 h-14 rounded-full bg-slate-950/70 border border-slate-800 flex items-center justify-center shadow-2xl backdrop-blur-md">
+                    <div className="w-6 h-6 rounded-full border-2 border-premium-accent/90 border-t-transparent animate-spin"></div>
+                  </div>
+                  <span className="text-[9px] text-slate-400 font-mono tracking-widest uppercase">BUFFERING SECURE STREAM</span>
+                </div>
+              )}
+
               {/* HUD Play Button */}
               <motion.button 
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => setIsPlaying(!isPlaying)}
+                onClick={togglePlay}
                 className="w-20 h-20 bg-gradient-premium hover:shadow-[0_0_40px_rgba(37,99,235,0.4)] text-white rounded-full flex items-center justify-center shadow-2xl z-30 cursor-pointer border border-blue-400/20 transition-all duration-300"
               >
                 {isPlaying ? (
@@ -289,7 +644,7 @@ const CourseWatch = () => {
               </motion.button>
               
               {/* Session Status HUD Banner */}
-              {!isPlaying && (
+              {!isPlaying && !isLoading && (
                 <div className="absolute bottom-16 left-1/2 -translate-x-1/2 bg-slate-950/90 border border-slate-800/80 px-6 py-3 rounded-2xl flex items-center gap-3 shadow-2xl z-20 backdrop-blur-md">
                   <span className="w-2 h-2 rounded-full bg-premium-accent animate-ping"></span>
                   <span className="text-[9px] text-slate-300 font-mono uppercase tracking-widest font-bold">
@@ -320,17 +675,16 @@ const CourseWatch = () => {
             </div>
 
             {/* Custom Cinematic controls bar */}
-            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30 space-y-4">
+            <div className={`absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent transition-opacity duration-300 z-30 space-y-4 ${
+              showControls || !isPlaying ? 'opacity-100' : 'opacity-0'
+            }`}>
               
               {/* Scrubber timeline */}
               <div 
                 className="relative h-1.5 w-full bg-slate-800 rounded-full cursor-pointer group/timeline"
-                onClick={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const clickX = e.clientX - rect.left;
-                  const percentage = Math.round((clickX / rect.width) * 100);
-                  setVideoProgress(percentage);
-                }}
+                onClick={handleSeek}
+                onTouchStart={handleSeek}
+                onTouchMove={handleSeek}
               >
                 <div 
                   className="absolute top-0 left-0 h-full bg-premium-accent rounded-full shadow-[0_0_12px_rgba(37,99,235,0.8)]" 
@@ -345,9 +699,9 @@ const CourseWatch = () => {
               {/* Left/Right Controllers */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-6">
-                  <button className="text-slate-400 hover:text-white transition-colors cursor-pointer"><SkipBack className="w-5 h-5" /></button>
+                  <button onClick={() => seekBy(-10)} className="text-slate-400 hover:text-white transition-colors cursor-pointer" title="Back 10s"><SkipBack className="w-5 h-5" /></button>
                   <button 
-                    onClick={() => setIsPlaying(!isPlaying)}
+                    onClick={togglePlay}
                     className="text-white hover:text-premium-accent transition-colors cursor-pointer"
                   >
                     {isPlaying ? (
@@ -356,22 +710,34 @@ const CourseWatch = () => {
                       <Play className="w-5 h-5 fill-current text-white" />
                     )}
                   </button>
-                  <button className="text-slate-400 hover:text-white transition-colors cursor-pointer"><SkipForward className="w-5 h-5" /></button>
+                  <button onClick={() => seekBy(10)} className="text-slate-400 hover:text-white transition-colors cursor-pointer" title="Forward 10s"><SkipForward className="w-5 h-5" /></button>
                   
                   {/* Volume block */}
                   <div className="flex items-center gap-2.5 ml-4">
-                    <Volume2 className="w-4.5 h-4.5 text-slate-400" />
+                    <button 
+                      onClick={toggleMute}
+                      className="text-slate-400 hover:text-white transition-colors cursor-pointer focus:outline-none"
+                      title={isMuted ? "Unmute" : "Mute"}
+                    >
+                      {isMuted || volume === 0 ? (
+                        <VolumeX className="w-4.5 h-4.5 text-red-500 animate-pulse" />
+                      ) : volume < 40 ? (
+                        <Volume1 className="w-4.5 h-4.5 text-slate-300" />
+                      ) : (
+                        <Volume2 className="w-4.5 h-4.5 text-slate-300" />
+                      )}
+                    </button>
                     <input 
                       type="range" 
                       min="0" 
                       max="100" 
                       value={volume}
-                      onChange={(e) => setVolume(e.target.value)}
+                      onChange={handleVolumeChange}
                       className="w-16 h-1 bg-slate-800 rounded-full appearance-none cursor-pointer accent-premium-accent"
                     />
                   </div>
                   <span className="text-[10px] text-slate-500 font-mono ml-4 uppercase tracking-widest font-black">
-                    {Math.floor((videoProgress / 100) * 32)}:15 / 32:10
+                    {formatTime(currentTime)} / {formatTime(duration)}
                   </span>
                 </div>
                 
@@ -380,10 +746,34 @@ const CourseWatch = () => {
                     4K ULTRA
                   </Badge>
 
+                  {/* Quality selector */}
+                  <div className="relative shrink-0">
+                    <button 
+                      onClick={() => { setShowQualityMenu(!showQualityMenu); setShowSettings(false); }}
+                      className="text-[10px] font-bold text-slate-400 hover:text-white border border-slate-800 rounded-lg px-2.5 py-1 bg-slate-900 flex items-center gap-1 cursor-pointer focus:outline-none"
+                      title="Quality"
+                    >
+                      Q: {selectedQuality}
+                    </button>
+                    {showQualityMenu && (
+                      <div className="absolute bottom-9 right-0 w-24 bg-slate-900 border border-slate-850 rounded-lg shadow-xl p-1 z-40 text-left">
+                        {QUALITY_OPTIONS.map(q => (
+                          <button
+                            key={q}
+                            onClick={() => { setSelectedQuality(q); setShowQualityMenu(false); }}
+                            className="block w-full text-left px-2.5 py-1.5 rounded text-[10px] text-slate-400 hover:bg-slate-800 hover:text-white font-bold"
+                          >
+                            {q}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
                   {/* Playback speed selector */}
                   <div className="relative shrink-0">
                     <button 
-                      onClick={() => setShowSettings(!showSettings)}
+                      onClick={() => { setShowSettings(!showSettings); setShowQualityMenu(false); }}
                       className="text-[10px] font-bold text-slate-400 hover:text-white border border-slate-800 rounded-lg px-2.5 py-1 bg-slate-900 flex items-center gap-1 cursor-pointer focus:outline-none"
                     >
                       Speed: {playbackSpeed}
@@ -393,7 +783,7 @@ const CourseWatch = () => {
                         {['0.75x', '1.0x', '1.25x', '1.5x', '2.0x'].map(speed => (
                           <button
                             key={speed}
-                            onClick={() => { setPlaybackSpeed(speed); setShowSettings(false); }}
+                            onClick={() => handleSpeedChange(speed)}
                             className="block w-full text-left px-2.5 py-1.5 rounded text-[10px] text-slate-400 hover:bg-slate-800 hover:text-white font-bold"
                           >
                             {speed}
@@ -404,7 +794,15 @@ const CourseWatch = () => {
                   </div>
                   
                   <button className="text-slate-400 hover:text-white transition-colors cursor-pointer"><Settings className="w-4.5 h-4.5" /></button>
-                  <button className="text-slate-400 hover:text-white transition-colors cursor-pointer"><Maximize className="w-4.5 h-4.5" /></button>
+                  <button 
+                    onClick={toggleFullscreen}
+                    className={`transition-colors cursor-pointer ${
+                      isFullscreen ? 'text-premium-accent hover:text-white' : 'text-slate-400 hover:text-white'
+                    }`}
+                    title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+                  >
+                    <Maximize className="w-4.5 h-4.5" />
+                  </button>
                 </div>
               </div>
             </div>
@@ -456,168 +854,198 @@ const CourseWatch = () => {
             </div>
 
             {/* Workspace Content Display */}
-            <div className="max-w-4xl space-y-6 text-left">
-              
-              {/* Tab 1: Overview */}
-              {activeTab === 'Overview' && (
-                <div className="space-y-6 animate-in">
-                  <h3 className="text-base font-black text-white uppercase tracking-wider">Module Objectives & Directives</h3>
-                  <p className="text-xs md:text-sm text-slate-300 leading-relaxed font-medium">
-                    {activeCourse.overviewText}
-                  </p>
-                  
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="flex items-center gap-3.5 p-5 bg-[#0b101b] border border-slate-850 rounded-2xl shadow-md hover:border-slate-800 transition-all">
-                      <div className="w-10 h-10 bg-premium-accent/15 rounded-xl flex items-center justify-center border border-premium-accent/20 shrink-0">
-                        <Trophy className="text-premium-accent w-5 h-5" />
-                      </div>
-                      <div className="text-left">
-                        <p className="text-xs font-black text-white uppercase tracking-wider">Accredited Standard</p>
-                        <p className="text-[10px] text-slate-400 font-bold mt-0.5">Approved for commercial audit licensing.</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3.5 p-5 bg-[#0b101b] border border-slate-850 rounded-2xl shadow-md hover:border-slate-800 transition-all">
-                      <div className="w-10 h-10 bg-premium-accent/15 rounded-xl flex items-center justify-center border border-premium-accent/20 shrink-0">
-                        <Shield className="text-premium-accent w-5 h-5" />
-                      </div>
-                      <div className="text-left">
-                        <p className="text-xs font-black text-white uppercase tracking-wider">Secure Resource Vault</p>
-                        <p className="text-[10px] text-slate-400 font-bold mt-0.5">Asset matrices contain unique download tokens.</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Tab 2: Spreadsheets */}
-              {activeTab === 'Spreadsheets & Resources' && (
-                <div className="space-y-4 animate-in">
-                  <div className="p-4 bg-amber-500/5 border border-amber-500/20 rounded-2xl flex items-center gap-3 mb-2 shadow-inner">
-                    <AlertTriangle className="text-amber-500 w-5 h-5 shrink-0" />
-                    <p className="text-[11px] text-amber-200/90 leading-relaxed font-bold">
-                      <strong>Audit Warning:</strong> All spreadsheets and scripts downloads are encrypted with your active terminal IP footprint. Distributing source calculations is monitored under terms of agreement.
+            <div className="max-w-4xl min-h-[400px] text-left relative overflow-hidden">
+              <AnimatePresence mode="wait">
+                
+                {/* Tab 1: Overview */}
+                {activeTab === 'Overview' && (
+                  <motion.div
+                    key="Overview"
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -15 }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
+                    className="space-y-6"
+                  >
+                    <h3 className="text-base font-black text-white uppercase tracking-wider">Module Objectives & Directives</h3>
+                    <p className="text-xs md:text-sm text-slate-300 leading-relaxed font-medium">
+                      {activeCourse.overviewText}
                     </p>
-                  </div>
-
-                  {activeCourse.resources.map((file, i) => (
-                    <div 
-                      key={i} 
-                      className="flex items-center justify-between p-4 bg-[#0b101b] rounded-2xl border border-slate-850 hover:border-premium-accent/30 hover:bg-[#0f1625]/60 transition-all shadow-md group"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="w-11 h-11 bg-slate-900 border border-slate-800 flex items-center justify-center rounded-xl shrink-0 group-hover:scale-105 transition-transform duration-300">
-                          <FileText className="w-5.5 h-5.5 text-slate-400" />
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="flex items-center gap-3.5 p-5 bg-[#0b101b] border border-slate-850 rounded-2xl shadow-md hover:border-slate-800 transition-all">
+                        <div className="w-10 h-10 bg-premium-accent/15 rounded-xl flex items-center justify-center border border-premium-accent/20 shrink-0">
+                          <Trophy className="text-premium-accent w-5 h-5" />
                         </div>
                         <div className="text-left">
-                          <p className="text-xs font-black text-white leading-none">{file.name}</p>
-                          <p className="text-[10px] text-slate-400 font-bold mt-1.5">{file.desc} • {file.size}</p>
+                          <p className="text-xs font-black text-white uppercase tracking-wider">Accredited Standard</p>
+                          <p className="text-[10px] text-slate-400 font-bold mt-0.5">Approved for commercial audit licensing.</p>
                         </div>
                       </div>
-                      <Button variant="outline" size="icon" className="h-10 w-10 bg-slate-900 border border-slate-800 hover:border-premium-accent text-slate-400 hover:text-white cursor-pointer active:scale-95 shadow-md">
-                        <Download className="w-4 h-4" />
-                      </Button>
+
+                      <div className="flex items-center gap-3.5 p-5 bg-[#0b101b] border border-slate-850 rounded-2xl shadow-md hover:border-slate-800 transition-all">
+                        <div className="w-10 h-10 bg-premium-accent/15 rounded-xl flex items-center justify-center border border-premium-accent/20 shrink-0">
+                          <Shield className="text-premium-accent w-5 h-5" />
+                        </div>
+                        <div className="text-left">
+                          <p className="text-xs font-black text-white uppercase tracking-wider">Secure Resource Vault</p>
+                          <p className="text-[10px] text-slate-400 font-bold mt-0.5">Asset matrices contain unique download tokens.</p>
+                        </div>
+                      </div>
                     </div>
-                  ))}
-                </div>
-              )}
+                  </motion.div>
+                )}
 
-              {/* Tab 3: Student Notebook */}
-              {activeTab === 'Student Notebook' && (
-                <div className="space-y-6 animate-in">
-                  <div className="space-y-2 text-left">
-                    <h3 className="text-xs font-black text-white uppercase tracking-wider">Active Workspace Notepad</h3>
-                    <p className="text-[10px] text-slate-400 font-bold">Jot down critical deal guidelines. Notes are saved to your secure profile log.</p>
-                  </div>
-                  <div className="space-y-4">
-                    <textarea 
-                      placeholder="Calculate debt caps, write objection hooks, or make general observations here..." 
-                      value={savedNotes}
-                      onChange={(e) => setSavedNotes(e.currentTarget.value)}
-                      className="w-full h-40 bg-slate-950 border border-slate-850 rounded-2xl p-4 text-xs font-bold text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-premium-accent/20 focus:border-premium-accent font-semibold shadow-inner"
-                    ></textarea>
-                    <Button 
-                      variant="primary" 
-                      onClick={handleSaveNote}
-                      className="text-[10px] uppercase tracking-widest font-black h-11 px-6 rounded-xl cursor-pointer"
-                    >
-                      Save Session Note
-                    </Button>
-                  </div>
+                {/* Tab 2: Spreadsheets */}
+                {activeTab === 'Spreadsheets & Resources' && (
+                  <motion.div
+                    key="Resources"
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -15 }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
+                    className="space-y-4"
+                  >
+                    <div className="p-4 bg-amber-500/5 border border-amber-500/20 rounded-2xl flex items-center gap-3 mb-2 shadow-inner">
+                      <AlertTriangle className="text-amber-500 w-5 h-5 shrink-0" />
+                      <p className="text-[11px] text-amber-200/90 leading-relaxed font-bold">
+                        <strong>Audit Warning:</strong> All spreadsheets and scripts downloads are encrypted with your active terminal IP footprint. Distributing source calculations is monitored under terms of agreement.
+                      </p>
+                    </div>
 
-                  {notesList.length > 0 && (
-                    <div className="space-y-3.5 pt-4 border-t border-slate-850">
-                      <h4 className="text-xs font-black text-white uppercase tracking-wider">Saved Notes Log ({notesList.length})</h4>
-                      <div className="space-y-3">
-                        {notesList.map(note => (
-                          <div key={note.id} className="p-4 bg-[#0b101b] border border-slate-850 rounded-2xl text-left space-y-2">
-                            <div className="flex justify-between items-center text-[10px] font-black uppercase text-premium-accent tracking-wider">
-                              <span>Lecture: {note.lectureTitle}</span>
-                              <span className="text-slate-500 font-mono">{note.timestamp}</span>
-                            </div>
-                            <p className="text-[11px] text-slate-300 font-medium leading-relaxed">{note.text}</p>
+                    {activeCourse.resources.map((file, i) => (
+                      <div 
+                        key={i} 
+                        className="flex items-center justify-between p-4 bg-[#0b101b] rounded-2xl border border-slate-850 hover:border-premium-accent/30 hover:bg-[#0f1625]/60 transition-all shadow-md group"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="w-11 h-11 bg-slate-900 border border-slate-800 flex items-center justify-center rounded-xl shrink-0 group-hover:scale-105 transition-transform duration-300">
+                            <FileText className="w-5.5 h-5.5 text-slate-400" />
                           </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Tab 4: Discussion Chat */}
-              {activeTab === 'Discussion Q&A' && (
-                <div className="space-y-5 animate-in">
-                  <div className="space-y-1.5 text-left">
-                    <h3 className="text-xs font-black text-white uppercase tracking-wider">Elite Discussion Panel</h3>
-                    <p className="text-[10px] text-slate-400 font-bold">Ask questions directly to the mentors. Real-time Q&A stream is actively audited.</p>
-                  </div>
-                  
-                  {/* Chat Message Box */}
-                  <div className="bg-slate-950 border border-slate-850 rounded-2xl p-4 h-64 overflow-y-auto space-y-4 scrollbar-thin text-left">
-                    {chatMessages.map(msg => (
-                      <div key={msg.id} className="flex flex-col space-y-1 leading-normal max-w-2xl">
-                        <div className="flex items-center gap-2">
-                          <span className={`text-[10px] font-black uppercase tracking-wider ${
-                            msg.isInstructor ? 'text-amber-400' : 'text-slate-300'
-                          }`}>
-                            {msg.sender}
-                          </span>
-                          <span className="text-[8px] bg-slate-900 border border-slate-800 text-slate-400 px-1.5 py-0.5 rounded font-black tracking-widest uppercase">
-                            {msg.role}
-                          </span>
-                          <span className="text-[8px] text-slate-500 font-mono">{msg.time}</span>
+                          <div className="text-left">
+                            <p className="text-xs font-black text-white leading-none">{file.name}</p>
+                            <p className="text-[10px] text-slate-400 font-bold mt-1.5">{file.desc} • {file.size}</p>
+                          </div>
                         </div>
-                        <div className={`p-3 rounded-2xl text-xs font-medium leading-relaxed border ${
-                          msg.isInstructor 
-                            ? 'bg-amber-500/5 border-amber-500/10 text-amber-100/90' 
-                            : 'bg-slate-900 border-slate-850 text-slate-300'
-                        }`}>
-                          {msg.message}
-                        </div>
+                        <Button variant="outline" size="icon" className="h-10 w-10 bg-slate-900 border border-slate-800 hover:border-premium-accent text-slate-400 hover:text-white cursor-pointer active:scale-95 shadow-md">
+                          <Download className="w-4 h-4" />
+                        </Button>
                       </div>
                     ))}
-                  </div>
+                  </motion.div>
+                )}
 
-                  {/* Send Input */}
-                  <form onSubmit={handleSendMessage} className="flex gap-2">
-                    <input 
-                      type="text" 
-                      placeholder="Type your underwriting question or observation..." 
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.currentTarget.value)}
-                      className="bg-slate-950 border border-slate-850 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-premium-accent/20 focus:border-premium-accent flex-1 font-semibold"
-                    />
-                    <Button 
-                      variant="primary" 
-                      type="submit" 
-                      className="h-11 px-5 rounded-xl flex items-center justify-center cursor-pointer"
-                    >
-                      <Send className="w-4 h-4" />
-                    </Button>
-                  </form>
-                </div>
-              )}
+                {/* Tab 3: Student Notebook */}
+                {activeTab === 'Student Notebook' && (
+                  <motion.div
+                    key="Notebook"
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -15 }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
+                    className="space-y-6"
+                  >
+                    <div className="space-y-2 text-left">
+                      <h3 className="text-xs font-black text-white uppercase tracking-wider">Active Workspace Notepad</h3>
+                      <p className="text-[10px] text-slate-400 font-bold">Jot down critical deal guidelines. Notes are saved to your secure profile log.</p>
+                    </div>
+                    <div className="space-y-4">
+                      <textarea 
+                        placeholder="Calculate debt caps, write objection hooks, or make general observations here..." 
+                        value={savedNotes}
+                        onChange={(e) => setSavedNotes(e.currentTarget.value)}
+                        className="w-full h-40 bg-slate-950 border border-slate-850 rounded-2xl p-4 text-xs font-bold text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-premium-accent/20 focus:border-premium-accent font-semibold shadow-inner"
+                      ></textarea>
+                      <Button 
+                        variant="primary" 
+                        onClick={handleSaveNote}
+                        className="text-[10px] uppercase tracking-widest font-black h-11 px-6 rounded-xl cursor-pointer"
+                      >
+                        Save Session Note
+                      </Button>
+                    </div>
 
+                    {notesList.length > 0 && (
+                      <div className="space-y-3.5 pt-4 border-t border-slate-850">
+                        <h4 className="text-xs font-black text-white uppercase tracking-wider">Saved Notes Log ({notesList.length})</h4>
+                        <div className="space-y-3">
+                          {notesList.map(note => (
+                            <div key={note.id} className="p-4 bg-[#0b101b] border border-slate-850 rounded-2xl text-left space-y-2">
+                              <div className="flex justify-between items-center text-[10px] font-black uppercase text-premium-accent tracking-wider">
+                                <span>Lecture: {note.lectureTitle}</span>
+                                <span className="text-slate-500 font-mono">{note.timestamp}</span>
+                              </div>
+                              <p className="text-[11px] text-slate-300 font-medium leading-relaxed">{note.text}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+
+                {/* Tab 4: Discussion Chat */}
+                {activeTab === 'Discussion Q&A' && (
+                  <motion.div
+                    key="Discussion"
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -15 }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
+                    className="space-y-5"
+                  >
+                    <div className="space-y-1.5 text-left">
+                      <h3 className="text-xs font-black text-white uppercase tracking-wider">Elite Discussion Panel</h3>
+                      <p className="text-[10px] text-slate-400 font-bold">Ask questions directly to the mentors. Real-time Q&A stream is actively audited.</p>
+                    </div>
+                    
+                    {/* Chat Message Box */}
+                    <div className="bg-slate-950 border border-slate-850 rounded-2xl p-4 h-64 overflow-y-auto space-y-4 scrollbar-thin text-left">
+                      {chatMessages.map(msg => (
+                        <div key={msg.id} className="flex flex-col space-y-1 leading-normal max-w-2xl">
+                          <div className="flex items-center gap-2">
+                            <span className={`text-[10px] font-black uppercase tracking-wider ${
+                              msg.isInstructor ? 'text-amber-400' : 'text-slate-300'
+                            }`}>
+                              {msg.sender}
+                            </span>
+                            <span className="text-[8px] bg-slate-900 border border-slate-800 text-slate-400 px-1.5 py-0.5 rounded font-black tracking-widest uppercase">
+                              {msg.role}
+                            </span>
+                            <span className="text-[8px] text-slate-500 font-mono">{msg.time}</span>
+                          </div>
+                          <div className={`p-3 rounded-2xl text-xs font-medium leading-relaxed border ${
+                            msg.isInstructor 
+                              ? 'bg-amber-500/5 border-amber-500/10 text-amber-100/90' 
+                              : 'bg-slate-900 border-slate-850 text-slate-300'
+                          }`}>
+                            {msg.message}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Send Input */}
+                    <form onSubmit={handleSendMessage} className="flex gap-2">
+                      <input 
+                        type="text" 
+                        placeholder="Type your underwriting question or observation..." 
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.currentTarget.value)}
+                        className="bg-slate-950 border border-slate-850 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-premium-accent/20 focus:border-premium-accent flex-1 font-semibold"
+                      />
+                      <Button 
+                        variant="primary" 
+                        type="submit" 
+                        className="h-11 px-5 rounded-xl flex items-center justify-center cursor-pointer"
+                      >
+                        <Send className="w-4 h-4" />
+                      </Button>
+                    </form>
+                  </motion.div>
+                )}
+
+              </AnimatePresence>
             </div>
           </div>
         </main>
@@ -625,114 +1053,150 @@ const CourseWatch = () => {
         {/* Playlist Sidebar */}
         <AnimatePresence>
           {sidebarOpen && (
-            <motion.aside 
-              initial={{ width: 0, opacity: 0 }}
-              animate={{ width: 360, opacity: 1 }}
-              exit={{ width: 0, opacity: 0 }}
-              className="hidden lg:flex flex-col bg-slate-950 border-l border-slate-850 shrink-0 z-10 shadow-2xl relative"
-            >
-              {/* Radial gradient side lighting */}
-              <div className="absolute top-0 right-0 w-24 h-24 bg-premium-accent/5 rounded-full blur-3xl pointer-events-none"></div>
+            <>
+              {/* Mobile Backdrop Overlay */}
+              {isMobile && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 0.6 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setSidebarOpen(false)}
+                  className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 lg:hidden"
+                />
+              )}
 
-              {/* Progress HUD */}
-              <div className="p-6 border-b border-slate-850/80 space-y-4 text-left relative">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-black text-xs uppercase tracking-widest text-white">Course Syllabus</h3>
-                  <span className="text-[9px] font-mono font-black text-premium-accent bg-premium-accent/10 border border-premium-accent/20 px-2 py-0.5 rounded">
-                    Syllabus progress: 62%
-                  </span>
-                </div>
-                <div className="h-2 w-full bg-slate-900 border border-slate-800 rounded-full overflow-hidden shadow-inner">
-                  <div className="h-full bg-gradient-to-r from-blue-600 to-premium-accent shadow-[0_0_8px_rgba(37,99,235,0.4)]" style={{ width: '62%' }}></div>
-                </div>
-              </div>
-              
-              {/* Syllabus Chapters */}
-              <div className="flex-1 overflow-y-auto custom-scrollbar text-left scrollbar-thin">
-                <div className="p-4 bg-slate-900/30 border-b border-slate-950">
-                  <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest font-mono">MODULE 1: ACQUISITION DEEP DIVE</span>
-                </div>
-                {activeCourse.lectures.map((lecture, i) => {
-                  const isActive = activeLecture.id === lecture.id;
-                  
-                  return (
-                    <div 
-                      key={lecture.id}
-                      onClick={() => !lecture.locked && setActiveLecture(lecture)}
-                      className={`p-5 border-b border-slate-900/60 cursor-pointer transition-all duration-300 ${
-                        isActive 
-                          ? 'bg-[#0f1625]/60 border-l-2 border-l-premium-accent shadow-inner' 
-                          : 'hover:bg-slate-900/40'
-                      } ${lecture.locked ? 'opacity-35 grayscale pointer-events-none' : ''}`}
+              <motion.aside 
+                initial={isMobile ? { x: '100%', opacity: 1 } : { width: 0, opacity: 0 }}
+                animate={isMobile ? { x: 0, opacity: 1 } : { width: 360, opacity: 1 }}
+                exit={isMobile ? { x: '100%', opacity: 1 } : { width: 0, opacity: 0 }}
+                transition={{ type: 'spring', damping: 26, stiffness: 220 }}
+                className={`flex flex-col bg-slate-950 border-l border-slate-850 shrink-0 shadow-2xl relative ${
+                  isMobile 
+                    ? 'fixed right-0 top-0 bottom-0 z-50 w-[320px] sm:w-[360px]' 
+                    : 'z-10 h-full'
+                }`}
+              >
+                {/* Mobile Close Header */}
+                {isMobile && (
+                  <div className="flex items-center justify-between p-6 border-b border-slate-850/80">
+                    <h3 className="font-black text-xs uppercase tracking-widest text-white">Course Syllabus</h3>
+                    <button 
+                      onClick={() => setSidebarOpen(false)}
+                      className="h-8 w-8 flex items-center justify-center rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-white cursor-pointer"
                     >
-                      <div className="flex gap-4">
-                        {/* Checkbox state */}
-                        <div className="shrink-0 mt-0.5">
-                          {lecture.completed ? (
-                            <div className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center shadow-md">
-                              <CheckCircle className="w-3 h-3 text-white" />
-                            </div>
-                          ) : lecture.locked ? (
-                            <Lock className="w-3.5 h-3.5 text-slate-500" />
-                          ) : (
-                            <div className={`w-4 h-4 rounded-full border-2 ${
-                              isActive ? 'border-premium-accent shadow-[0_0_6px_rgba(37,99,235,0.4)]' : 'border-slate-700'
-                            }`}></div>
-                          )}
-                        </div>
-
-                        {/* Class name & Duration */}
-                        <div className="flex-1 min-w-0 text-left">
-                          <p className={`font-black text-xs truncate leading-snug ${
-                            isActive ? 'text-white font-black' : 'text-slate-300'
-                          }`}>
-                            Lecture {i + 1}: {lecture.title}
-                          </p>
-                          <div className="flex items-center gap-2.5 text-[9px] text-slate-500 font-mono uppercase mt-1.5">
-                            <span>{lecture.duration} mins</span>
-                            {lecture.locked && (
-                              <span className="text-[8px] font-black text-amber-500 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded tracking-widest">
-                                Elite Locked
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Secure Active Footprint logs */}
-              <div className="p-6 bg-slate-900/50 border-t border-slate-850 space-y-4 text-left relative">
-                <div className="absolute top-0 left-0 right-0 h-px bg-slate-800/60"></div>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-premium-accent/10 border border-premium-accent/20 rounded-xl flex items-center justify-center shrink-0">
-                    <Monitor className="text-premium-accent w-5 h-5" />
+                      <X className="w-4 h-4" />
+                    </button>
                   </div>
-                  <div>
-                    <p className="text-[10px] text-slate-500 uppercase tracking-widest font-black leading-none">Access Center</p>
-                    <p className="text-xs font-black text-white mt-1.5 leading-none">Security Node Active</p>
+                )}
+
+                {/* Radial gradient side lighting */}
+                <div className="absolute top-0 right-0 w-24 h-24 bg-premium-accent/5 rounded-full blur-3xl pointer-events-none"></div>
+
+                {/* Progress HUD */}
+                <div className="p-6 border-b border-slate-850/80 space-y-4 text-left relative">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-black text-xs uppercase tracking-widest text-white">Course Syllabus</h3>
+                    <span className="text-[9px] font-mono font-black text-premium-accent bg-premium-accent/10 border border-premium-accent/20 px-2 py-0.5 rounded">
+                      Syllabus progress: 62%
+                    </span>
+                  </div>
+                  <div className="h-2 w-full bg-slate-900 border border-slate-800 rounded-full overflow-hidden shadow-inner">
+                    <div className="h-full bg-gradient-to-r from-blue-600 to-premium-accent shadow-[0_0_8px_rgba(37,99,235,0.4)]" style={{ width: '62%' }}></div>
                   </div>
                 </div>
                 
-                {/* Simulated connection diagnostics */}
-                <div className="p-3 bg-slate-950 rounded-xl border border-slate-850 text-[9px] font-mono text-slate-400 space-y-1 shadow-inner font-semibold">
-                  <p className="text-emerald-500 font-black flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></span>
-                    ● SSL ENCRYPTED CONNECTION
-                  </p>
-                  <p>Client footprint: 192.168.1.104</p>
-                  <p>Terminal: Chrome Desktop / Linux</p>
+                {/* Syllabus Chapters */}
+                <div className="flex-1 overflow-y-auto custom-scrollbar text-left scrollbar-thin">
+                  <div className="p-4 bg-slate-900/30 border-b border-slate-950">
+                    <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest font-mono">MODULE 1: ACQUISITION DEEP DIVE</span>
+                  </div>
+                  {activeCourse.lectures.map((lecture, i) => {
+                    const isActive = activeLecture.id === lecture.id;
+                    
+                    return (
+                      <div 
+                        key={lecture.id}
+                        onClick={() => {
+                          if (!lecture.locked) {
+                            setActiveLecture(lecture);
+                            if (isMobile) setSidebarOpen(false);
+                          }
+                        }}
+                        className={`p-5 border-b border-slate-900/60 cursor-pointer transition-all duration-300 ${
+                          isActive 
+                            ? 'bg-[#0f1625]/60 border-l-2 border-l-premium-accent shadow-inner' 
+                            : 'hover:bg-slate-900/40'
+                        } ${lecture.locked ? 'opacity-35 grayscale pointer-events-none' : ''}`}
+                      >
+                        <div className="flex gap-4">
+                          {/* Checkbox state */}
+                          <div className="shrink-0 mt-0.5">
+                            {lecture.completed ? (
+                              <div className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center shadow-md">
+                                <CheckCircle className="w-3 h-3 text-white" />
+                              </div>
+                            ) : lecture.locked ? (
+                              <Lock className="w-3.5 h-3.5 text-slate-500" />
+                            ) : (
+                              <div className={`w-4 h-4 rounded-full border-2 ${
+                                isActive ? 'border-premium-accent shadow-[0_0_6px_rgba(37,99,235,0.4)]' : 'border-slate-700'
+                              }`}></div>
+                            )}
+                          </div>
+
+                          {/* Class name & Duration */}
+                          <div className="flex-1 min-w-0 text-left">
+                            <p className={`font-black text-xs truncate leading-snug ${
+                              isActive ? 'text-white font-black' : 'text-slate-300'
+                            }`}>
+                              Lecture {i + 1}: {lecture.title}
+                            </p>
+                            <div className="flex items-center gap-2.5 text-[9px] text-slate-500 font-mono uppercase mt-1.5">
+                              <span>{lecture.duration} mins</span>
+                              {lecture.locked && (
+                                <span className="text-[8px] font-black text-amber-500 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded tracking-widest font-mono">
+                                  Elite Locked
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-                <button 
-                  onClick={() => alert("Credentials Audited. Encryption Signature: BJ-SEC-2983848-OK")}
-                  className="w-full text-[9px] uppercase font-black tracking-widest h-10 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-slate-300 transition-all duration-300 cursor-pointer shadow-md active:scale-95"
-                >
-                  Verify Encryption Key
-                </button>
-              </div>
-            </motion.aside>
+
+                {/* Secure Active Footprint logs */}
+                <div className="p-6 bg-slate-900/50 border-t border-slate-850 space-y-4 text-left relative">
+                  <div className="absolute top-0 left-0 right-0 h-px bg-slate-800/60"></div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-premium-accent/10 border border-premium-accent/20 rounded-xl flex items-center justify-center shrink-0">
+                      <Monitor className="text-premium-accent w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-slate-500 uppercase tracking-widest font-black leading-none">Access Center</p>
+                      <p className="text-xs font-black text-white mt-1.5 leading-none">Security Node Active</p>
+                    </div>
+                  </div>
+                  
+                  {/* Simulated connection diagnostics */}
+                  <div className="p-3 bg-slate-950 rounded-xl border border-slate-850 text-[9px] font-mono text-slate-400 space-y-1 shadow-inner font-semibold">
+                    <p className="text-emerald-500 font-black flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></span>
+                      ● SSL ENCRYPTED CONNECTION
+                    </p>
+                    <p>Client footprint: 192.168.1.104</p>
+                    <p>Terminal: Chrome Desktop / Linux</p>
+                  </div>
+                  <button 
+                    onClick={() => alert("Credentials Audited. Encryption Signature: BJ-SEC-2983848-OK")}
+                    className="w-full text-[9px] uppercase font-black tracking-widest h-10 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-slate-300 transition-all duration-300 cursor-pointer shadow-md active:scale-95"
+                  >
+                    Verify Encryption Key
+                  </button>
+                </div>
+              </motion.aside>
+            </>
           )}
         </AnimatePresence>
       </div>

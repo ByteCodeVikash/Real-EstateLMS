@@ -1,19 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useMemo, useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { 
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend 
 } from 'recharts';
 import { 
-  BookOpen, Clock, CheckCircle, Zap, Play, Calendar, Users, Star, 
-  Flame, Laptop, ExternalLink, Award, TrendingUp, Download, ArrowUpRight, 
-  Activity, Video, Check 
+  BookOpen, Clock, CheckCircle, Play, Star, 
+  Flame, ExternalLink, Download, Video
 } from 'lucide-react';
 import { GlassCard, Badge, Button } from '../components/UI';
 import { Link } from 'react-router-dom';
+import { useNow } from '../hooks/useNow';
+import { formatCountdownParts, formatLocalDateTime, formatRelativeStart, getTimerPhase, getUrgencyTone, safeParseDate } from '../utils/countdown';
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('Activity');
+  const nowMs = useNow();
+  // Capture a stable "session opened at" time without calling Date.now() during render.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const baseMs = useMemo(() => nowMs, []);
 
   // Simulate premium skeleton loading state
   useEffect(() => {
@@ -104,6 +109,45 @@ const Dashboard = () => {
     { deal: "Dallas Single-Family Rehab ARV Worksheet", date: "May 15, 2026", type: "Valuation Matrix", size: "2.4 MB", score: "88%" },
     { deal: "Lease Waterfall Commission Agreement Template", date: "May 12, 2026", type: "Legal Draft", size: "1.2 MB", score: "Accredited Completed" }
   ];
+
+  const upcomingBroadcast = useMemo(() => {
+    const base = baseMs;
+    const startAt = new Date(base + 90 * 60 * 1000).toISOString(); // ~90 minutes from page open
+    const endAt = new Date(base + 90 * 60 * 1000 + 75 * 60 * 1000).toISOString();
+    return {
+      title: 'Dallas Multifamily Deal Audit',
+      host: 'Robert Sterling',
+      startAt,
+      endAt,
+    };
+  }, [baseMs]);
+
+  const nextAssignmentDue = useMemo(() => {
+    // Keep this in sync with the demo Assignments page seed dates (and safe if missing)
+    const seededDueDates = ['May 22, 2026', 'May 19, 2026', 'May 15, 2026'];
+    const parsed = seededDueDates
+      .map((d) => safeParseDate(d))
+      .filter(Boolean)
+      .sort((a, b) => a.getTime() - b.getTime());
+
+    const future = parsed.find((d) => d.getTime() > baseMs);
+    const dueAt = (future || parsed[0])?.toISOString?.() || new Date(baseMs + 36 * 60 * 60 * 1000).toISOString();
+    return { title: 'Next Assignment Deadline', dueAt };
+  }, [baseMs]);
+
+  const broadcastPhase = getTimerPhase({ nowMs, startAt: upcomingBroadcast.startAt, endAt: upcomingBroadcast.endAt });
+  const broadcastStartMs = safeParseDate(upcomingBroadcast.startAt)?.getTime?.() ?? null;
+  const broadcastEndMs = safeParseDate(upcomingBroadcast.endAt)?.getTime?.() ?? null;
+  const broadcastRemainingMs = (() => {
+    if (!broadcastStartMs) return 0;
+    if (broadcastPhase.phase === 'live' && broadcastEndMs) return Math.max(0, broadcastEndMs - nowMs);
+    return Math.max(0, broadcastStartMs - nowMs);
+  })();
+  const broadcastTone = getUrgencyTone(broadcastRemainingMs);
+
+  const assignmentDueMs = safeParseDate(nextAssignmentDue.dueAt)?.getTime?.() ?? null;
+  const assignmentRemainingMs = assignmentDueMs ? Math.max(0, assignmentDueMs - nowMs) : 0;
+  const assignmentTone = getUrgencyTone(assignmentRemainingMs);
 
   if (loading) {
     return (
@@ -290,7 +334,27 @@ const Dashboard = () => {
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <h3 className="text-base font-black text-premium-heading">Upcoming Broadcast</h3>
-              <Badge variant="danger" className="animate-pulse bg-red-50 text-red-500 border border-red-100 text-[8px] font-black uppercase">Live Webinar</Badge>
+              {broadcastPhase.phase === 'live' ? (
+                <Badge variant="danger" className="bg-red-50 text-red-500 border border-red-100 text-[8px] font-black uppercase animate-pulse">
+                  LIVE NOW
+                </Badge>
+              ) : broadcastPhase.phase === 'ended' ? (
+                <Badge variant="outline" className="bg-slate-50 text-slate-500 border border-slate-100 text-[8px] font-black uppercase">
+                  Ended
+                </Badge>
+              ) : broadcastPhase.phase === 'invalid' ? (
+                <Badge variant="outline" className="bg-slate-50 text-slate-500 border border-slate-100 text-[8px] font-black uppercase">
+                  TBD
+                </Badge>
+              ) : (
+                <Badge variant="premium" className={`text-[8px] font-black uppercase border ${
+                  broadcastTone === 'critical'
+                    ? 'bg-amber-50 text-amber-700 border-amber-100 animate-pulse'
+                    : 'bg-violet-50 text-violet-600 border-violet-100'
+                }`}>
+                  Upcoming
+                </Badge>
+              )}
             </div>
             
             <div className="p-4 rounded-2xl bg-slate-50 border border-premium-border/40 text-left space-y-4">
@@ -299,13 +363,65 @@ const Dashboard = () => {
                   <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=100" className="w-full h-full object-cover" alt="mentor" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-xs text-premium-heading line-clamp-1 leading-snug">Dallas Multifamily Deal Audit</h4>
-                  <p className="text-[9px] text-slate-400 font-bold mt-0.5">Mentor: Robert Sterling</p>
+                  <h4 className="font-bold text-xs text-premium-heading line-clamp-1 leading-snug">{upcomingBroadcast.title}</h4>
+                  <p className="text-[9px] text-slate-400 font-bold mt-0.5">Mentor: {upcomingBroadcast.host}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2 text-[10px] text-premium-accent font-black border-t border-slate-200/50 pt-3">
                 <Clock className="w-3.5 h-3.5" />
-                <span>Today, 10:00 PM (1h 45m left)</span>
+                <span className={`flex items-center gap-2 ${
+                  broadcastPhase.phase === 'live'
+                    ? 'text-red-500'
+                    : broadcastTone === 'critical'
+                      ? 'text-amber-700'
+                      : 'text-premium-accent'
+                }`}>
+                  <span className={`w-2 h-2 rounded-full ${
+                    broadcastPhase.phase === 'live'
+                      ? 'bg-red-500 animate-ping'
+                      : broadcastTone === 'critical'
+                        ? 'bg-amber-500 animate-pulse'
+                        : 'bg-premium-accent/80 animate-pulse'
+                  }`} />
+                  {broadcastPhase.phase === 'invalid'
+                    ? 'Time TBD'
+                    : broadcastPhase.phase === 'ended'
+                      ? `Broadcast ended • ${formatLocalDateTime(upcomingBroadcast.startAt, { withDate: true })}`
+                      : broadcastPhase.phase === 'live'
+                        ? `Live now • ${formatCountdownParts(broadcastRemainingMs)} left`
+                        : `${formatLocalDateTime(upcomingBroadcast.startAt, { withDate: true })} • ${formatRelativeStart({ nowMs, startAt: upcomingBroadcast.startAt })} • ${formatCountdownParts(broadcastRemainingMs)}`
+                  }
+                </span>
+              </div>
+            </div>
+
+            {/* Assignment deadline countdown */}
+            <div className="p-4 rounded-2xl bg-slate-50 border border-premium-border/40 text-left space-y-3">
+              <div className="flex items-center justify-between">
+                <h4 className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Assignment Due</h4>
+                {assignmentRemainingMs <= 0 ? (
+                  <Badge variant="danger" className="bg-red-50 text-red-500 border border-red-100 text-[8px] font-black uppercase">
+                    Expired
+                  </Badge>
+                ) : assignmentTone === 'critical' ? (
+                  <Badge variant="danger" className="bg-amber-50 text-amber-700 border border-amber-100 text-[8px] font-black uppercase animate-pulse">
+                    Due Soon
+                  </Badge>
+                ) : (
+                  <Badge variant="outline" className="bg-white/70 text-slate-500 border border-slate-200/60 text-[8px] font-black uppercase">
+                    Active
+                  </Badge>
+                )}
+              </div>
+              <div className="flex items-center gap-2 text-[10px] font-black">
+                <Clock className={`w-3.5 h-3.5 ${
+                  assignmentRemainingMs <= 0 ? 'text-red-500' : assignmentTone === 'critical' ? 'text-amber-600' : 'text-premium-accent'
+                }`} />
+                <span className={`${
+                  assignmentRemainingMs <= 0 ? 'text-red-500' : assignmentTone === 'critical' ? 'text-amber-700' : 'text-premium-accent'
+                }`}>
+                  Due {formatLocalDateTime(nextAssignmentDue.dueAt, { withDate: true })} • {assignmentRemainingMs <= 0 ? 'Past due' : formatCountdownParts(assignmentRemainingMs)}
+                </span>
               </div>
             </div>
 

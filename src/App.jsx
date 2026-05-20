@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import LandingPage from './pages/LandingPage';
@@ -12,10 +12,11 @@ import Notifications from './pages/Notifications';
 import { Sidebar, Navbar } from './components/Layout';
 
 const DashboardLayout = ({ children }) => {
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   return (
     <div className="min-h-screen bg-premium-bg text-premium-text">
-      <Sidebar />
-      <Navbar />
+      <Sidebar isOpen={mobileSidebarOpen} onClose={() => setMobileSidebarOpen(false)} />
+      <Navbar onMenuOpen={() => setMobileSidebarOpen(true)} />
       <main className="lg:pl-64 pt-20">
         <div className="p-8">
           {children}
@@ -27,8 +28,6 @@ const DashboardLayout = ({ children }) => {
 
 function App() {
   const location = useLocation();
-  const isWatchPage = location.pathname.startsWith('/watch');
-  const isLandingPage = location.pathname === '/';
 
   return (
     <AnimatePresence mode="wait">
