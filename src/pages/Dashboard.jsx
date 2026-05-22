@@ -155,7 +155,7 @@ const Dashboard = () => {
         {/* Welcome Header Skeleton */}
         <div className="h-28 bg-slate-200 rounded-3xl w-full"></div>
         {/* Stats skeleton */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
           {[1,2,3,4,5].map(i => (
             <div key={i} className="h-20 bg-slate-200 rounded-2xl w-full"></div>
           ))}
@@ -203,7 +203,7 @@ const Dashboard = () => {
       </div>
 
       {/* 5 Premium Statistics Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
         {stats.map((stat, i) => (
           <GlassCard key={i} className={`relative overflow-hidden group border ${stat.border} bg-white p-6 shadow-sm hover:shadow-[0_12px_35px_rgba(15,23,42,0.05)] hover:border-premium-accent/20 transition-all duration-300 rounded-2xl`}>
             <div className="relative z-10 flex flex-col justify-between h-full space-y-4">

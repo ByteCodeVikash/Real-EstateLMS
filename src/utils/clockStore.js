@@ -3,10 +3,12 @@ const DEFAULT_TICK_MS = 1000;
 let listeners = new Set();
 let intervalId = null;
 let tickMs = DEFAULT_TICK_MS;
+let now = Date.now();
 
 const start = () => {
   if (intervalId !== null) return;
   intervalId = setInterval(() => {
+    now = Date.now();
     listeners.forEach((listener) => {
       try { listener(); } catch { /* ignore */ }
     });
@@ -38,5 +40,5 @@ export const subscribe = (listener) => {
   };
 };
 
-export const getSnapshot = () => Date.now();
+export const getSnapshot = () => now;
 

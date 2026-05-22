@@ -188,7 +188,7 @@ export const Navbar = ({ onMenuOpen }) => {
       </button>
 
       {/* Search Bar */}
-      <div className="flex-1 max-w-lg">
+      <div className="hidden md:block flex-1 max-w-lg">
         <div className="relative group text-left">
           <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-premium-accent transition-colors">
             <Search className="w-4 h-4" />

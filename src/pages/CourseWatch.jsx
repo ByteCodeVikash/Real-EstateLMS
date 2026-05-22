@@ -119,7 +119,7 @@ const CourseWatch = () => {
   const activeCourse = coursesData[courseId] || coursesData[1];
 
   const [activeLecture, setActiveLecture] = useState(activeCourse.lectures[3] || activeCourse.lectures[0]);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(() => typeof window !== 'undefined' ? window.innerWidth >= 1024 : true);
   const [activeTab, setActiveTab] = useState('Overview');
   const [watermarkPos, setWatermarkPos] = useState({ top: '30%', left: '20%' });
   const [isPlaying, setIsPlaying] = useState(false);
@@ -836,12 +836,12 @@ const CourseWatch = () => {
 
           {/* Tab Selection Area */}
           <div className="flex-1 p-6 md:p-8 space-y-6">
-            <div className="flex items-center gap-6 border-b border-slate-850 mb-6">
+            <div className="flex items-center gap-6 border-b border-slate-850 mb-6 overflow-x-auto whitespace-nowrap scrollbar-none">
               {['Overview', 'Spreadsheets & Resources', 'Student Notebook', 'Discussion Q&A'].map(tab => (
                 <button 
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`pb-4 px-1 font-black text-xs uppercase tracking-wider transition-all relative cursor-pointer focus:outline-none ${
+                  className={`pb-4 px-1 font-black text-xs uppercase tracking-wider transition-all relative cursor-pointer focus:outline-none shrink-0 ${
                     activeTab === tab ? 'text-white font-black' : 'text-slate-400 hover:text-white'
                   }`}
                 >
