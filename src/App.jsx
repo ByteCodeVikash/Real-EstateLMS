@@ -11,6 +11,21 @@ import ProfileSecurity from './pages/ProfileSecurity';
 import Notifications from './pages/Notifications';
 import { Sidebar, Navbar } from './components/Layout';
 
+// Admin imports
+import { AdminLayout } from './components/admin/AdminLayout';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminStudents from './pages/admin/AdminStudents';
+import AdminCourses from './pages/admin/AdminCourses';
+import AdminInstructors from './pages/admin/AdminInstructors';
+import AdminLiveClasses from './pages/admin/AdminLiveClasses';
+import AdminAssignments from './pages/admin/AdminAssignments';
+import AdminAnalytics from './pages/admin/AdminAnalytics';
+import AdminRevenue from './pages/admin/AdminRevenue';
+import AdminCertificates from './pages/admin/AdminCertificates';
+import AdminNotifications from './pages/admin/AdminNotifications';
+import AdminSecurity from './pages/admin/AdminSecurity';
+import AdminSettings from './pages/admin/AdminSettings';
+
 const DashboardLayout = ({ children }) => {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   return (
@@ -23,6 +38,14 @@ const DashboardLayout = ({ children }) => {
         </div>
       </main>
     </div>
+  );
+};
+
+const AdminDashboardLayout = ({ children }) => {
+  return (
+    <AdminLayout>
+      {children}
+    </AdminLayout>
   );
 };
 
@@ -46,6 +69,21 @@ function App() {
         <Route path="/security" element={<DashboardLayout><ProfileSecurity /></DashboardLayout>} />
         <Route path="/notifications" element={<DashboardLayout><Notifications /></DashboardLayout>} />
         
+        {/* Admin Console Routes (Shared Admin Layout) */}
+        <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+        <Route path="/admin/dashboard" element={<AdminDashboardLayout><AdminDashboard /></AdminDashboardLayout>} />
+        <Route path="/admin/students" element={<AdminDashboardLayout><AdminStudents /></AdminDashboardLayout>} />
+        <Route path="/admin/courses" element={<AdminDashboardLayout><AdminCourses /></AdminDashboardLayout>} />
+        <Route path="/admin/instructors" element={<AdminDashboardLayout><AdminInstructors /></AdminDashboardLayout>} />
+        <Route path="/admin/live" element={<AdminDashboardLayout><AdminLiveClasses /></AdminDashboardLayout>} />
+        <Route path="/admin/assignments" element={<AdminDashboardLayout><AdminAssignments /></AdminDashboardLayout>} />
+        <Route path="/admin/analytics" element={<AdminDashboardLayout><AdminAnalytics /></AdminDashboardLayout>} />
+        <Route path="/admin/revenue" element={<AdminDashboardLayout><AdminRevenue /></AdminDashboardLayout>} />
+        <Route path="/admin/certificates" element={<AdminDashboardLayout><AdminCertificates /></AdminDashboardLayout>} />
+        <Route path="/admin/notifications" element={<AdminDashboardLayout><AdminNotifications /></AdminDashboardLayout>} />
+        <Route path="/admin/security" element={<AdminDashboardLayout><AdminSecurity /></AdminDashboardLayout>} />
+        <Route path="/admin/settings" element={<AdminDashboardLayout><AdminSettings /></AdminDashboardLayout>} />
+
         {/* Redirects */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
