@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ChevronLeft, ChevronRight, Search, SlidersHorizontal, 
@@ -290,7 +291,7 @@ export const AdminDrawer = ({ isOpen, onClose, title, children }) => {
     return () => document.body.classList.remove('overflow-hidden');
   }, [isOpen]);
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <>
@@ -328,13 +329,14 @@ export const AdminDrawer = ({ isOpen, onClose, title, children }) => {
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
 
 // Premium Modal Dialog (e.g., Delete actions, quick setup modals)
 export const AdminModal = ({ isOpen, onClose, title, children }) => {
-  return (
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <>
@@ -373,6 +375,7 @@ export const AdminModal = ({ isOpen, onClose, title, children }) => {
           </div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };

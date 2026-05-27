@@ -329,8 +329,8 @@ export const AdminLayout = ({ children }) => {
       </header>
 
       {/* Main View Area */}
-      <main className="lg:pl-64 pt-20 transition-all duration-300">
-        <div className="p-4 sm:p-6 lg:p-8 min-h-[calc(100vh-80px)]">
+      <main className="lg:pl-64 pt-28 transition-all duration-300">
+        <div className="p-4 sm:p-6 lg:p-8 min-h-[calc(100vh-112px)]">
           {children}
         </div>
       </main>
