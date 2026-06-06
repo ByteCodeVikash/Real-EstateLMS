@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Bell, Send, CheckCircle, Mail, Globe, Users, Trash2 } from 'lucide-react';
 import { AdminTable } from '../../components/admin/AdminComponents';
 import { Button } from '../../components/UI';
+import { useAuth } from '../../context/AuthContext';
 
 const initialAlerts = [
   { id: 1, title: "Syllabus Update: Luxury Flipping Module 8", message: "New valuation spreadsheet modeling exercises uploaded. Check classroom modules.", target: "Luxury Flipping Students", channel: "In-App + Email", sentDate: "2026-05-22", author: "Sarah Jenkins" },
@@ -10,33 +11,85 @@ const initialAlerts = [
 ];
 
 export default function AdminNotifications() {
-  const [alerts, setAlerts] = useState(initialAlerts);
+  const { token, API_BASE_URL } = useAuth();
+  const [alerts, setAlerts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [composer, setComposer] = useState({ title: '', message: '', target: 'All Students', emailChannel: true, pushChannel: true });
 
-  const handleSendBroadcast = (e) => {
-    e.preventDefault();
-    const channels = [];
-    if (composer.emailChannel) channels.push("Email");
-    if (composer.pushChannel) channels.push("In-App");
-    
-    const newAlert = {
-      id: alerts.length + 1,
-      title: composer.title,
-      message: composer.message,
-      target: composer.target,
-      channel: channels.join(" + ") || "In-App System",
-      sentDate: new Date().toISOString().split('T')[0],
-      author: "Vikash Sharma"
-    };
-
-    setAlerts([newAlert, ...alerts]);
-    alert(`Broadcast dispatched to ${composer.target} via ${channels.join(" & ") || "System Dashboard"}!`);
-    setComposer({ title: '', message: '', target: 'All Students', emailChannel: true, pushChannel: true });
+  const fetchAnnouncements = async () => {
+    if (!token) return;
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/announcements`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      if (data.status === 'success' && Array.isArray(data.data)) {
+        const mapped = data.data.map(ann => ({
+          id: ann.id,
+          title: ann.title,
+          message: ann.content,
+          target: "All Students",
+          channel: "In-App Push",
+          sentDate: ann.created_at ? ann.created_at.substring(0, 10) : "",
+          author: ann.author_name || "Console System"
+        }));
+        setAlerts(mapped);
+      }
+    } catch (err) {
+      console.error("Failed to fetch announcements:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDelete = (id) => {
+  useEffect(() => {
+    fetchAnnouncements();
+  }, [token]);
+
+  const handleSendBroadcast = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/announcements`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          title: composer.title,
+          content: composer.message
+        })
+      });
+      const resData = await response.json();
+      if (resData.status === 'success' || response.status === 201) {
+        alert("Broadcast announcement posted successfully!");
+        fetchAnnouncements();
+        setComposer({ title: '', message: '', target: 'All Students', emailChannel: true, pushChannel: true });
+      } else {
+        alert("Failed to post announcement: " + (resData.message || "Unknown error"));
+      }
+    } catch (err) {
+      console.error("Failed to dispatch broadcast:", err);
+      alert("Error posting announcement.");
+    }
+  };
+
+  const handleDelete = async (id) => {
     if (confirm("Are you sure you want to delete this alert from student feed logs?")) {
-      setAlerts(prev => prev.filter(a => a.id !== id));
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/announcements/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const resData = await response.json();
+        if (resData.status === 'success') {
+          fetchAnnouncements();
+        } else {
+          alert("Failed to delete: " + (resData.message || "Unknown error"));
+        }
+      } catch (err) {
+        console.error("Failed to delete announcement:", err);
+      }
     }
   };
 

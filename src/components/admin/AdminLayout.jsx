@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { BGLogo } from '../Layout';
 import { cn } from '../UI';
+import { useAuth } from '../../context/AuthContext';
 
 const adminMenuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/dashboard' },
@@ -28,6 +29,14 @@ const adminMenuItems = [
 export const AdminSidebarContent = ({ onItemClick, isDarkMode, toggleDarkMode }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    onItemClick?.();
+    await logout();
+    navigate('/admin/login');
+  };
 
   const isItemActive = (path) => {
     return location.pathname === path;
@@ -98,14 +107,13 @@ export const AdminSidebarContent = ({ onItemClick, isDarkMode, toggleDarkMode })
           <ArrowRight className="w-3.5 h-3.5" />
         </Link>
         
-        <Link 
-          to="/" 
-          onClick={onItemClick} 
-          className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-slate-500 hover:bg-red-500/10 hover:text-red-400 transition-all duration-300 font-bold text-xs uppercase tracking-wider"
+        <button 
+          onClick={handleLogout} 
+          className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-slate-500 hover:bg-red-500/10 hover:text-red-400 transition-all duration-300 font-bold text-xs uppercase tracking-wider text-left bg-transparent border-none cursor-pointer"
         >
           <LogOut className="w-4.5 h-4.5" />
           <span>Exit Console</span>
-        </Link>
+        </button>
       </div>
     </>
   );
@@ -120,6 +128,15 @@ export const AdminLayout = ({ children }) => {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [globalSearchTerm, setGlobalSearchTerm] = useState('');
+  const { logout, user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    setProfileDropdownOpen(false);
+    await logout();
+    navigate('/admin/login');
+  };
 
   // Handle dark mode DOM sync
   useEffect(() => {
@@ -299,8 +316,10 @@ export const AdminLayout = ({ children }) => {
             {profileDropdownOpen && (
               <div className="absolute right-0 top-12 w-56 bg-[#0b0b0d] border border-premium-border/80 rounded-2xl shadow-xl p-2.5 z-50 text-left text-slate-400">
                 <div className="px-3.5 py-2.5 border-b border-slate-800 pb-3 mb-2">
-                  <p className="text-xs font-black text-white">Vikash Sharma</p>
-                  <p className="text-[9px] text-premium-accent uppercase font-black tracking-widest mt-0.5">Platform Owner</p>
+                  <p className="text-xs font-black text-white">{user?.full_name || 'Admin'}</p>
+                  <p className="text-[9px] text-premium-accent uppercase font-black tracking-widest mt-0.5">
+                    {user?.role === 'super_admin' ? 'Super Admin' : 'Platform Manager'}
+                  </p>
                 </div>
                 <Link 
                   to="/admin/security" 
@@ -315,12 +334,12 @@ export const AdminLayout = ({ children }) => {
                   <Settings className="w-4 h-4 text-slate-500" /> System Settings
                 </Link>
                 <div className="h-px bg-slate-800 my-1.5"></div>
-                <Link 
-                  to="/" 
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-red-500 hover:bg-red-950/20 hover:text-red-400 transition-all"
+                <button 
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 px-3 py-2.5 w-full rounded-xl text-xs font-bold text-red-500 hover:bg-red-950/20 hover:text-red-400 transition-all text-left bg-transparent border-none cursor-pointer"
                 >
-                  <LogOut className="w-4 h-4" /> Exit Console
-                </Link>
+                  <LogOut className="w-4 h-4 text-slate-500" /> Exit Console
+                </button>
               </div>
             )}
           </div>

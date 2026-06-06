@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Search, Filter, Play, Clock, BookOpen, Star, Lock, SlidersHorizontal, ChevronDown, Sparkles, Trophy, ArrowRight, ShieldCheck, HelpCircle } from 'lucide-react';
 import { GlassCard, Badge, Button } from '../components/UI';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const MyCourses = () => {
+  const { token, API_BASE_URL } = useAuth();
   const [filter, setFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('highest-progress');
@@ -12,102 +14,143 @@ const MyCourses = () => {
   const [loading, setLoading] = useState(true);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [selectedLockedCourse, setSelectedLockedCourse] = useState(null);
+  const [isEnrolling, setIsEnrolling] = useState(false);
 
-  // Simulated premium stagger loading
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 900);
-    return () => clearTimeout(timer);
-  }, []);
+  const [allCourses, setAllCourses] = useState([]);
+  const [enrolledCourses, setEnrolledCourses] = useState([]);
 
-  const categories = ['All', 'Investment', 'Sales Coaching', 'Negotiations', 'Luxury Marketing', 'Lead Gen'];
+  const fetchCoursesAndEnrollments = async () => {
+    try {
+      const [allRes, enrolledRes] = await Promise.all([
+        fetch(`${API_BASE_URL}/api/courses`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        fetch(`${API_BASE_URL}/api/my-courses`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
+      ]);
 
-  const courseList = [
-    {
-      id: 1,
-      title: "Real Estate Sales Masterclass",
-      subtitle: "Objections, high-ticket pitch frameworks, and premium closing strategies",
-      instructor: "Robert Sterling",
-      instructorRole: "High-Ticket Sales Veteran",
-      instructorAvatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=100",
-      category: "Sales Coaching",
-      specializationBadge: "High Ticket",
-      progress: 75,
-      duration: "12 Hours",
-      lessons: 24,
-      status: "Active",
-      isPremium: true,
-      image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=800",
-      description: "Master high-ticket closing structures, property value pitches, and objection bypass scripts."
-    },
-    {
-      id: 2,
-      title: "Property Investment Blueprint",
-      subtitle: "Deal underwriting, GP/LP waterfalls, DSCR metrics, and asset valuation modeling",
-      instructor: "Marcus Thorne",
-      instructorRole: "CRE Acquisition Expert",
-      instructorAvatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100",
-      category: "Investment",
-      specializationBadge: "CRE Underwriting",
-      progress: 40,
-      duration: "18 Hours",
-      lessons: 36,
-      status: "Active",
-      isPremium: true,
-      image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800",
-      description: "Build active spreadsheets for multi-family property assets modeling, GP/LP waterfalls, and DSCR metrics."
-    },
-    {
-      id: 3,
-      title: "Broker Closing Psychology",
-      subtitle: "Mastering creative financing, neuro-anchoring sales matrices, and high-urgency signatures",
-      instructor: "Sarah Jenkins",
-      instructorRole: "Behavioral Sales Coach",
-      instructorAvatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=100",
-      category: "Negotiations",
-      specializationBadge: "Creative Finance",
-      progress: 95,
-      duration: "8 Hours",
-      lessons: 16,
-      status: "Active",
-      isPremium: false,
-      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
-      description: "Learn advanced neuro-anchoring sales matrices and high-urgency closing signatures."
-    },
-    {
-      id: 4,
-      title: "Luxury Housing Market Training",
-      subtitle: "HNW networking circles, off-market listings, and ultra-high-net-worth styling codes",
-      instructor: "Elena Rodriguez",
-      instructorRole: "Ultra-Luxury Broker",
-      instructorAvatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=100",
-      category: "Luxury Marketing",
-      specializationBadge: "HNW Residential",
-      progress: 0,
-      duration: "10 Hours",
-      lessons: 15,
-      status: "Locked",
-      isPremium: true,
-      image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=800",
-      description: "Uncover HNW networking circles, secret off-market listing templates, and brand styling codes."
-    },
-    {
-      id: 5,
-      title: "Real Estate Lead Funnel",
-      subtitle: "Hyper-local social campaigns, high-converting lead magnets, and automated CRM routing",
-      instructor: "Elena Rodriguez",
-      instructorRole: "Digital Marketing Lead",
-      instructorAvatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=100",
-      category: "Lead Gen",
-      specializationBadge: "Digital Lead Gen",
-      progress: 15,
-      duration: "6 Hours",
-      lessons: 12,
-      status: "Active",
-      isPremium: false,
-      image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=800",
-      description: "Launch targeted local campaigns, landing lead magnets, and automated high-response CRMs."
+      if (allRes.ok) {
+        const allData = await allRes.json();
+        if (allData.status === 'success') {
+          setAllCourses(allData.data.courses || []);
+        }
+      }
+      if (enrolledRes.ok) {
+        const enrolledData = await enrolledRes.json();
+        if (enrolledData.status === 'success') {
+          setEnrolledCourses(enrolledData.data || []);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading courses:', error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  useEffect(() => {
+    if (token) {
+      fetchCoursesAndEnrollments();
+    }
+  }, [token, API_BASE_URL]);
+
+  // Handle course enrollment
+  const handleEnroll = async (courseId) => {
+    if (isEnrolling) return;
+    setIsEnrolling(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/enrollments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ course_id: courseId })
+      });
+
+      const data = await response.json();
+      if (response.ok && data.status === 'success') {
+        // Re-fetch courses and enrollments to reflect active status
+        await fetchCoursesAndEnrollments();
+        setShowUpgradeModal(false);
+      } else {
+        alert(data.message || 'Enrollment failed.');
+      }
+    } catch (error) {
+      console.error('Enrollment error:', error);
+      alert('Network error. Failed to enroll in course.');
+    } finally {
+      setIsEnrolling(false);
+    }
+  };
+
+  // Build categories list dynamically
+  const categories = useMemo(() => {
+    const list = new Set(['All']);
+    allCourses.forEach(c => {
+      if (c.category_name) {
+        list.add(c.category_name);
+      }
+    });
+    return Array.from(list);
+  }, [allCourses]);
+
+  // Combine database courses with enrollment status
+  const courseList = useMemo(() => {
+    return allCourses.map(course => {
+      const enrollment = enrolledCourses.find(e => e.id === course.id);
+      const isLocked = !enrollment;
+      
+      // Map premium thumbnails if using short color keys
+      let image = course.thumbnail;
+      if (image === 'grad-violet') {
+        image = "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=800";
+      } else if (image === 'grad-blue') {
+        image = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800";
+      } else if (!image) {
+        image = "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800";
+      }
+
+      // Instructor Avatar
+      let instructorAvatar = "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=100";
+      let instructorRole = "Academy Instructor";
+      if (stripos(course.mentor_name, 'Sarah') !== -1) {
+        instructorRole = "Behavioral Sales Coach";
+        instructorAvatar = "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=100";
+      } else if (stripos(course.mentor_name, 'Robert') !== -1 || stripos(course.mentor_name, 'Sterling') !== -1) {
+        instructorRole = "High-Ticket Sales Veteran";
+        instructorAvatar = "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=100";
+      } else if (stripos(course.mentor_name, 'Elena') !== -1) {
+        instructorRole = "Ultra-Luxury Broker";
+        instructorAvatar = "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=100";
+      }
+
+      // Helper function for stripos equivalent in JS
+      function stripos(f, s) {
+        if (!f || !s) return -1;
+        return f.toLowerCase().indexOf(s.toLowerCase());
+      }
+
+      return {
+        id: course.id,
+        title: course.title,
+        subtitle: course.description,
+        instructor: course.mentor_name || 'Robert Sterling',
+        instructorRole: instructorRole,
+        instructorAvatar: instructorAvatar,
+        category: course.category_name || 'General',
+        specializationBadge: course.category_name || 'General',
+        progress: enrollment ? enrollment.progress : 0,
+        duration: course.duration || '12 Hours',
+        lessons: course.modules ? course.modules.reduce((acc, m) => acc + (m.lectures?.length || 0), 0) : 0,
+        status: isLocked ? 'Locked' : 'Active',
+        isPremium: course.price > 0,
+        image: image,
+        description: course.description
+      };
+    });
+  }, [allCourses, enrolledCourses]);
 
   // Filters logic
   let filteredCourses = courseList.filter(course => {
@@ -371,7 +414,7 @@ const MyCourses = () => {
                         <div className="space-y-1.5">
                           <span className="text-[10px] uppercase font-black tracking-widest text-amber-400 leading-none">Upgrade Credentials Required</span>
                           <p className="text-[11px] text-slate-300 font-bold leading-relaxed max-w-[210px] mx-auto">
-                            Requires Elite Syllabus Enrollment. Contact mentorship team to request access.
+                            Requires Elite Syllabus Enrollment. Unlock instantly to start.
                           </p>
                         </div>
                       </div>
@@ -452,7 +495,7 @@ const MyCourses = () => {
                         <Button 
                           variant="outline" 
                           onClick={() => handleUnlockClick(course)}
-                          className="w-full text-xs uppercase tracking-widest font-black border-amber-200/60 bg-amber-500/100/8 hover:bg-amber-500/10 hover:border-amber-400 hover:text-amber-400 h-12 rounded-xl flex items-center justify-center gap-2 shadow-none cursor-pointer"
+                          className="w-full text-xs uppercase tracking-widest font-black border-amber-200/60 bg-amber-500/8 hover:bg-amber-500/10 hover:border-amber-400 hover:text-amber-400 h-12 rounded-xl flex items-center justify-center gap-2 shadow-none cursor-pointer"
                         >
                           <Lock className="w-4 h-4 text-amber-500" />
                           Unlock Course
@@ -570,13 +613,11 @@ const MyCourses = () => {
                   </Button>
                   <Button 
                     variant="gold" 
-                    className="flex-1 text-xs uppercase tracking-wider font-extrabold h-12 rounded-xl flex items-center justify-center gap-1.5 shadow-md shadow-violet-500/10 bg-gradient-premium"
-                    onClick={() => {
-                      alert("Mentorship team has been notified. We will reach out to you within 2 business hours!");
-                      setShowUpgradeModal(false);
-                    }}
+                    disabled={isEnrolling}
+                    className="flex-1 text-xs uppercase tracking-wider font-extrabold h-12 rounded-xl flex items-center justify-center gap-1.5 shadow-md shadow-violet-500/10 bg-gradient-premium disabled:opacity-50"
+                    onClick={() => handleEnroll(selectedLockedCourse.id)}
                   >
-                    <span>Request Upgrade</span>
+                    <span>{isEnrolling ? 'Unlocking...' : 'Unlock Instantly'}</span>
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>

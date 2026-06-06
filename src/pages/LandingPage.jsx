@@ -600,7 +600,7 @@ const LandingPage = () => {
       </AnimatePresence>
 
       {/* HERO */}
-      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+      <section className="relative min-h-[80vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
             src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&q=80&w=2000"
@@ -614,14 +614,14 @@ const LandingPage = () => {
         <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-[#0A66C2]/5 rounded-full blur-[200px] animate-pulse-slow pointer-events-none"></div>
         <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-[#D4AF37]/5 rounded-full blur-[200px] animate-pulse-slow pointer-events-none"></div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 w-full py-24 md:py-32">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 w-full py-16 md:py-24">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
 
             <motion.div 
               initial={{ opacity: 0, y: 60 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="lg:col-span-7 space-y-8"
+              className="lg:col-span-7 space-y-6"
             >
               <div className="flex flex-wrap gap-3">
                 <div className="inline-flex items-center gap-2 bg-[#D4AF37]/10 border border-[#D4AF37]/20 px-3.5 py-1.5 rounded-full">
@@ -792,13 +792,13 @@ const LandingPage = () => {
       </section>
 
       {/* TRUST BAR */}
-      <section className="relative py-16 border-t border-white/[0.03] overflow-hidden">
+      <section className="relative py-10 md:py-14 border-t border-white/[0.03] overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37]/[0.02] via-transparent to-[#0A66C2]/[0.02]"></div>
         <div className="max-w-7xl mx-auto px-6 md:px-12 text-center relative z-10">
           <motion.p 
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            className="text-[10px] text-[#CFCFCF]/40 uppercase tracking-[0.25em] font-black mb-8"
+            className="text-[10px] text-[#CFCFCF]/50 uppercase tracking-[0.25em] font-black mb-6"
           >
             Trusted by Elite Agencies & Developers
           </motion.p>
@@ -832,14 +832,14 @@ const LandingPage = () => {
       </section>
 
       {/* WHY BG REALTY */}
-      <section className="relative py-28 px-6 md:px-12" id="highlights">
+      <section className="relative py-16 md:py-20 px-6 md:px-12" id="highlights">
         <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-[#0B0B0B]/50 to-[#050505]"></div>
         
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="text-left mb-20 space-y-4"
+            className="text-left mb-10 md:mb-12 space-y-4"
           >
             <div className="inline-flex items-center gap-2 bg-[#D4AF37]/10 border border-[#D4AF37]/20 px-4 py-1.5 rounded-full">
               <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
@@ -849,7 +849,7 @@ const LandingPage = () => {
               Premium Training.<br />
               <span className="text-[#D4AF37]">Real Results.</span>
             </h2>
-            <p className="text-sm text-[#CFCFCF]/60 max-w-xl leading-relaxed font-medium">
+            <p className="text-sm text-[#CFCFCF]/80 max-w-xl leading-relaxed font-medium">
               A comprehensive curriculum focused on practical sales skills, live interaction, 
               executive mentorship, and guaranteed placement assistance.
             </p>
@@ -867,15 +867,15 @@ const LandingPage = () => {
                 variants={fadeUp}
                 custom={i}
                 whileHover={{ y: -6 }}
-                className="group relative bg-white/[0.02] border border-white/[0.06] rounded-3xl p-8 transition-all duration-500 hover:border-[#D4AF37]/20 hover:bg-white/[0.04] hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)]"
+                className="group relative bg-white/[0.02] border border-white/[0.06] rounded-3xl p-6 transition-all duration-500 hover:border-[#D4AF37]/20 hover:bg-white/[0.04] hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)]"
               >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#D4AF37]/5 to-transparent rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
                 
-                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${h.gradient} flex items-center justify-center mb-6 relative`}>
+                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${h.gradient} flex items-center justify-center mb-5 relative`}>
                   <h.icon className={`w-6 h-6 ${h.accent}`} />
                 </div>
-                <h3 className="text-lg font-black text-white mb-3 group-hover:text-[#D4AF37] transition-colors duration-300">{h.title}</h3>
-                <p className="text-sm text-[#CFCFCF]/60 leading-relaxed font-medium">{h.desc}</p>
+                <h3 className="text-lg font-black text-white mb-2 group-hover:text-[#D4AF37] transition-colors duration-300">{h.title}</h3>
+                <p className="text-sm text-[#CFCFCF]/70 leading-relaxed font-medium">{h.desc}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -883,12 +883,12 @@ const LandingPage = () => {
       </section>
 
       {/* CURRICULUM */}
-      <section className="relative py-28 px-6 md:px-12 bg-[#0B0B0B] border-t border-white/[0.03] border-b border-white/[0.03]" id="curriculum">
+      <section className="relative py-16 md:py-20 px-6 md:px-12 bg-[#0B0B0B] border-t border-white/[0.03] border-b border-white/[0.03]" id="curriculum">
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="text-left mb-16 space-y-4"
+            className="text-left mb-10 md:mb-12 space-y-4"
           >
             <div className="inline-flex items-center gap-2 bg-[#0A66C2]/10 border border-[#0A66C2]/20 px-4 py-1.5 rounded-full">
               <BookOpen className="w-3.5 h-3.5 text-[#0A66C2]" />
@@ -898,7 +898,7 @@ const LandingPage = () => {
               Executive<br />
               <span className="text-[#D4AF37]">Learning Journey</span>
             </h2>
-            <p className="text-sm text-[#CFCFCF]/60 max-w-xl leading-relaxed font-medium">
+            <p className="text-sm text-[#CFCFCF]/80 max-w-xl leading-relaxed font-medium">
               Explore each module. Every day builds toward mastery in real estate sales, 
               negotiation, legal compliance, and career readiness.
             </p>
@@ -948,7 +948,7 @@ const LandingPage = () => {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -30 }}
                     transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                    className="relative bg-white/[0.02] border border-white/[0.06] rounded-3xl p-8 md:p-10 h-full overflow-hidden"
+                    className="relative bg-white/[0.02] border border-white/[0.06] rounded-3xl p-8 h-full overflow-hidden"
                   >
                     <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent"></div>
                     
@@ -962,20 +962,20 @@ const LandingPage = () => {
                             <span className="bg-[#D4AF37]/10 text-[#D4AF37] text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-[0.1em] border border-[#D4AF37]/20">
                               Day {day.day}
                             </span>
-                            <span className="text-[10px] text-[#CFCFCF]/40 font-bold">{day.duration} Interactive</span>
+                            <span className="text-[10px] text-[#CFCFCF]/50 font-bold">{day.duration} Interactive</span>
                           </div>
                           <h3 className="text-xl md:text-2xl font-black text-white mt-2">{day.title}</h3>
                         </div>
                       </div>
 
-                      <p className="text-sm text-[#CFCFCF]/60 leading-relaxed font-medium">
+                      <p className="text-sm text-[#CFCFCF]/70 leading-relaxed font-medium">
                         {day.description}
                       </p>
 
                       <div className="space-y-3">
                         <div className="flex justify-between items-center">
                           <span className="text-[10px] text-[#D4AF37] font-black uppercase tracking-[0.1em]">Module Progress</span>
-                          <span className="text-[10px] text-[#CFCFCF]/40 font-bold">{day.day * 10}% Complete</span>
+                          <span className="text-[10px] text-[#CFCFCF]/50 font-bold">{day.day * 10}% Complete</span>
                         </div>
                         <div className="h-1.5 bg-white/[0.05] rounded-full overflow-hidden">
                           <div 
@@ -998,7 +998,7 @@ const LandingPage = () => {
                       </div>
 
                       <div className="pt-4 border-t border-white/[0.04] flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-[10px] text-[#CFCFCF]/40 font-bold">
+                        <div className="flex items-center gap-2 text-[10px] text-[#CFCFCF]/50 font-bold">
                           <Download className="w-3.5 h-3.5" />
                           Download module resources
                         </div>
@@ -1018,12 +1018,12 @@ const LandingPage = () => {
       </section>
 
       {/* CAREER OUTCOMES */}
-      <section className="relative py-28 px-6 md:px-12" id="careers">
+      <section className="relative py-16 md:py-20 px-6 md:px-12" id="careers">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="text-left mb-16 space-y-4"
+            className="text-left mb-10 md:mb-12 space-y-4"
           >
             <div className="inline-flex items-center gap-2 bg-[#D4AF37]/10 border border-[#D4AF37]/20 px-4 py-1.5 rounded-full">
               <TrendingUp className="w-3.5 h-3.5 text-[#D4AF37]" />
@@ -1033,7 +1033,7 @@ const LandingPage = () => {
               Your Future<br />
               <span className="text-[#D4AF37]">Career Roadmap</span>
             </h2>
-            <p className="text-sm text-[#CFCFCF]/60 max-w-xl leading-relaxed font-medium">
+            <p className="text-sm text-[#CFCFCF]/80 max-w-xl leading-relaxed font-medium">
               Choose your path. Each career track includes salary projections, 
               skill development, and a clear progression roadmap.
             </p>
@@ -1051,7 +1051,7 @@ const LandingPage = () => {
                 variants={fadeUp}
                 custom={i}
                 whileHover={{ y: -6 }}
-                className="group relative bg-white/[0.02] border border-white/[0.06] rounded-3xl p-8 overflow-hidden transition-all duration-500 hover:border-[#D4AF37]/20 hover:bg-white/[0.04]"
+                className="group relative bg-white/[0.02] border border-white/[0.06] rounded-3xl p-6 overflow-hidden transition-all duration-500 hover:border-[#D4AF37]/20 hover:bg-white/[0.04]"
               >
                 <div className={`absolute top-0 left-0 w-1 h-0 group-hover:h-full transition-all duration-500 bg-gradient-to-b ${career.gradient}`}></div>
                 
@@ -1067,7 +1067,7 @@ const LandingPage = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <span className="text-[9px] text-[#CFCFCF]/40 uppercase tracking-[0.15em] font-black">Skills Acquired</span>
+                    <span className="text-[9px] text-[#CFCFCF]/50 uppercase tracking-[0.15em] font-black">Skills Acquired</span>
                     <div className="flex flex-wrap gap-2">
                       {career.skills.map((skill, idx) => (
                         <span key={idx} className="bg-white/[0.03] border border-white/[0.06] text-[#CFCFCF]/70 text-[10px] font-bold px-3 py-1 rounded-full">
@@ -1078,8 +1078,8 @@ const LandingPage = () => {
                   </div>
 
                   <div className="pt-3 border-t border-white/[0.04]">
-                    <span className="text-[9px] text-[#CFCFCF]/40 uppercase tracking-[0.15em] font-black block mb-2">Career Progression</span>
-                    <div className="flex items-center gap-1.5 text-[10px] text-[#CFCFCF]/50 font-medium">
+                    <span className="text-[9px] text-[#CFCFCF]/50 uppercase tracking-[0.15em] font-black block mb-2">Career Progression</span>
+                    <div className="flex items-center gap-1.5 text-[10px] text-[#CFCFCF]/60 font-medium">
                       {career.roadmap.map((step, idx) => (
                         <React.Fragment key={idx}>
                           <span className="bg-white/[0.03] px-2 py-1 rounded-md">{step}</span>
@@ -1096,7 +1096,7 @@ const LandingPage = () => {
       </section>
 
       {/* PLACEMENT */}
-      <section className="relative py-28 px-6 md:px-12 bg-[#0B0B0B] border-t border-white/[0.03] border-b border-white/[0.03]" id="placement">
+      <section className="relative py-16 md:py-20 px-6 md:px-12 bg-[#0B0B0B] border-t border-white/[0.03] border-b border-white/[0.03]" id="placement">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             <motion.div
@@ -1113,7 +1113,7 @@ const LandingPage = () => {
                   Your Career.<br />
                   <span className="text-[#D4AF37]">We Deliver.</span>
                 </h2>
-                <p className="text-sm text-[#CFCFCF]/60 leading-relaxed font-medium">
+                <p className="text-sm text-[#CFCFCF]/80 leading-relaxed font-medium">
                   We don't stop until you're placed. Our dedicated career support team 
                   works with you from day one until you sign your offer letter.
                 </p>
@@ -1129,7 +1129,7 @@ const LandingPage = () => {
                   <div key={i} className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5 hover:border-[#0A66C2]/20 transition-all duration-300">
                     <item.icon className="w-5 h-5 text-[#D4AF37] mb-3" />
                     <h4 className="text-xs font-black text-white mb-1">{item.title}</h4>
-                    <p className="text-[10px] text-[#CFCFCF]/50 font-medium">{item.desc}</p>
+                    <p className="text-[10px] text-[#CFCFCF]/60 font-medium">{item.desc}</p>
                   </div>
                 ))}
               </div>
@@ -1140,7 +1140,7 @@ const LandingPage = () => {
               whileInView={{ opacity: 1, x: 0 }}
               className="lg:col-span-7 space-y-5"
             >
-              <span className="text-[10px] text-[#CFCFCF]/40 uppercase tracking-[0.2em] font-black block">Active Hiring Profiles</span>
+              <span className="text-[10px] text-[#CFCFCF]/50 uppercase tracking-[0.2em] font-black block">Active Hiring Profiles</span>
               
               {jobRoles.map((role, idx) => (
                 <motion.div
@@ -1156,7 +1156,7 @@ const LandingPage = () => {
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pl-0 group-hover:pl-4 transition-all">
                     <div>
                       <h4 className="text-sm font-black text-white">{role.role}</h4>
-                      <p className="text-[10px] text-[#CFCFCF]/50 font-bold mt-0.5">{role.company}</p>
+                      <p className="text-[10px] text-[#CFCFCF]/60 font-bold mt-0.5">{role.company}</p>
                     </div>
                     <span className="inline-flex items-center bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 text-[10px] font-black px-3 py-1.5 rounded-full">
                       {role.salary}
@@ -1164,7 +1164,7 @@ const LandingPage = () => {
                   </div>
                   <div className="mt-4 pt-4 border-t border-white/[0.04] flex flex-wrap gap-2">
                     {role.points.map((p, pIdx) => (
-                      <span key={pIdx} className="bg-white/[0.02] border border-white/[0.05] text-[#CFCFCF]/50 text-[9px] font-bold px-2.5 py-1 rounded-md">
+                      <span key={pIdx} className="bg-white/[0.02] border border-white/[0.05] text-[#CFCFCF]/60 text-[9px] font-bold px-2.5 py-1 rounded-md">
                         {p}
                       </span>
                     ))}
@@ -1180,7 +1180,7 @@ const LandingPage = () => {
                 ].map((stat, i) => (
                   <div key={i} className="text-center bg-white/[0.02] border border-white/[0.06] rounded-xl p-4">
                     <span className="text-2xl font-black text-[#D4AF37]">{stat.value}</span>
-                    <span className="text-[9px] text-[#CFCFCF]/40 uppercase tracking-[0.1em] font-black block mt-1">{stat.label}</span>
+                    <span className="text-[9px] text-[#CFCFCF]/50 uppercase tracking-[0.1em] font-black block mt-1">{stat.label}</span>
                   </div>
                 ))}
               </div>
@@ -1190,7 +1190,7 @@ const LandingPage = () => {
       </section>
 
       {/* CERTIFICATION */}
-      <section className="relative py-28 px-6 md:px-12" id="certification">
+      <section className="relative py-16 md:py-20 px-6 md:px-12" id="certification">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             <motion.div
@@ -1206,7 +1206,7 @@ const LandingPage = () => {
                 Earn Your<br />
                 <span className="text-[#D4AF37]">Professional Badge</span>
               </h2>
-              <p className="text-sm text-[#CFCFCF]/60 leading-relaxed font-medium">
+              <p className="text-sm text-[#CFCFCF]/80 leading-relaxed font-medium">
                 Showcase your expertise with a premium, verifiable certificate. 
                 Upon completion, receive a gold-sealed digital credential recognized across the industry.
               </p>
@@ -1223,7 +1223,7 @@ const LandingPage = () => {
                     </div>
                     <div>
                       <h4 className="text-xs font-black text-white">{item.title}</h4>
-                      <p className="text-[10px] text-[#CFCFCF]/50 font-medium mt-0.5">{item.desc}</p>
+                      <p className="text-[10px] text-[#CFCFCF]/60 font-medium mt-0.5">{item.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -1255,13 +1255,13 @@ const LandingPage = () => {
                 </div>
 
                 <div className="my-4 space-y-2 relative z-10">
-                  <p className="text-[10px] text-[#CFCFCF]/40 italic">This prestigious credential is awarded to</p>
+                  <p className="text-[10px] text-[#CFCFCF]/50 italic">This prestigious credential is awarded to</p>
                   <p className="text-lg md:text-xl font-black text-white font-serif border-b border-[#D4AF37]/20 w-3/4 mx-auto pb-2">
                     [Your Name]
                   </p>
                 </div>
 
-                <p className="text-[10px] md:text-[11px] text-[#CFCFCF]/50 leading-relaxed max-w-sm mx-auto relative z-10 font-medium">
+                <p className="text-[10px] md:text-[11px] text-[#CFCFCF]/60 leading-relaxed max-w-sm mx-auto relative z-10 font-medium">
                   for successfully completing the <strong className="text-white">10-Day Real Estate Training & Sales Program</strong>, 
                   demonstrating mastery in property consultation, communication, lead qualification, site visits, and negotiation.
                 </p>
@@ -1279,15 +1279,15 @@ const LandingPage = () => {
                 <div className="flex justify-between items-end mt-3 px-4 relative z-10">
                   <div className="text-left">
                     <div className="text-xs font-black text-white font-serif border-b border-[#D4AF37]/20 pb-1 px-1">Amit Sharma</div>
-                    <span className="text-[8px] text-[#CFCFCF]/40 font-bold mt-0.5 block">Director, BG Realty</span>
+                    <span className="text-[8px] text-[#CFCFCF]/50 font-bold mt-0.5 block">Director, BG Realty</span>
                   </div>
                   <div className="text-right">
                     <div className="text-xs font-black text-white font-serif border-b border-[#D4AF37]/20 pb-1 px-1">Rajesh Verma</div>
-                    <span className="text-[8px] text-[#CFCFCF]/40 font-bold mt-0.5 block">Lead Instructor</span>
+                    <span className="text-[8px] text-[#CFCFCF]/50 font-bold mt-0.5 block">Lead Instructor</span>
                   </div>
                 </div>
 
-                <div className="text-[8px] text-[#CFCFCF]/30 font-mono mt-3 relative z-10">
+                <div className="text-[8px] text-[#CFCFCF]/40 font-mono mt-3 relative z-10">
                   verify.bgrealtyacademy.com/CERT-2026-{Math.floor(Math.random() * 89999 + 10000)}
                 </div>
               </div>
@@ -1297,12 +1297,12 @@ const LandingPage = () => {
       </section>
 
       {/* TESTIMONIALS */}
-      <section className="relative py-28 px-6 md:px-12 bg-[#0B0B0B] border-t border-white/[0.03] border-b border-white/[0.03]" id="testimonials">
+      <section className="relative py-16 md:py-20 px-6 md:px-12 bg-[#0B0B0B] border-t border-white/[0.03] border-b border-white/[0.03]" id="testimonials">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="text-left mb-16 space-y-4"
+            className="text-left mb-10 md:mb-12 space-y-4"
           >
             <div className="inline-flex items-center gap-2 bg-[#D4AF37]/10 border border-[#D4AF37]/20 px-4 py-1.5 rounded-full">
               <Star className="w-3.5 h-3.5 text-[#D4AF37]" />
@@ -1331,7 +1331,7 @@ const LandingPage = () => {
                     <div className="flex items-center justify-between">
                       <div>
                         <h4 className="text-base font-black text-white">{test.author}</h4>
-                        <p className="text-xs text-[#CFCFCF]/50 font-medium">{test.role} • {test.city}</p>
+                        <p className="text-xs text-[#CFCFCF]/60 font-medium">{test.role} • {test.city}</p>
                       </div>
                       <div className="flex">
                         {[1,2,3,4,5].map(star => (
@@ -1348,15 +1348,15 @@ const LandingPage = () => {
 
                 <div className="grid grid-cols-3 gap-4 pt-5 border-t border-white/[0.04]">
                   <div className="text-center">
-                    <span className="text-[9px] text-[#CFCFCF]/40 uppercase tracking-[0.1em] font-black block mb-1">Before</span>
-                    <span className="text-sm font-black text-[#CFCFCF]/50">{test.salaryBefore}</span>
+                    <span className="text-[9px] text-[#CFCFCF]/50 uppercase tracking-[0.1em] font-black block mb-1">Before</span>
+                    <span className="text-sm font-black text-[#CFCFCF]/60">{test.salaryBefore}</span>
                   </div>
                   <div className="text-center border-x border-white/[0.04]">
                     <span className="text-[9px] text-[#D4AF37] uppercase tracking-[0.1em] font-black block mb-1">After</span>
                     <span className="text-sm font-black text-[#D4AF37]">{test.salaryAfter}</span>
                   </div>
                   <div className="text-center">
-                    <span className="text-[9px] text-[#CFCFCF]/40 uppercase tracking-[0.1em] font-black block mb-1">Deal Volume</span>
+                    <span className="text-[9px] text-[#CFCFCF]/50 uppercase tracking-[0.1em] font-black block mb-1">Deal Volume</span>
                     <span className="text-sm font-black text-white">{test.dealVolume}</span>
                   </div>
                 </div>
@@ -1367,12 +1367,12 @@ const LandingPage = () => {
       </section>
 
       {/* INSTRUCTORS */}
-      <section className="relative py-28 px-6 md:px-12" id="mentors">
+      <section className="relative py-16 md:py-20 px-6 md:px-12" id="mentors">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="text-left mb-16 space-y-4"
+            className="text-left mb-10 md:mb-12 space-y-4"
           >
             <div className="inline-flex items-center gap-2 bg-[#D4AF37]/10 border border-[#D4AF37]/20 px-4 py-1.5 rounded-full">
               <Users className="w-3.5 h-3.5 text-[#D4AF37]" />
@@ -1382,7 +1382,7 @@ const LandingPage = () => {
               Learn From<br />
               <span className="text-[#D4AF37]">The Best</span>
             </h2>
-            <p className="text-sm text-[#CFCFCF]/60 max-w-xl leading-relaxed font-medium">
+            <p className="text-sm text-[#CFCFCF]/80 max-w-xl leading-relaxed font-medium">
               Every mentor is an active practitioner closing multi-crore deals. 
               You learn strategies that work in today's market.
             </p>
@@ -1392,7 +1392,7 @@ const LandingPage = () => {
             variants={stagger}
             initial="hidden"
             whileInView="visible"
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             {teamMembers.map((member, i) => (
               <motion.div
@@ -1422,20 +1422,20 @@ const LandingPage = () => {
 
                 <div className="space-y-4">
                   <div>
-                    <span className="text-[8px] text-[#CFCFCF]/40 uppercase tracking-[0.15em] font-black block mb-1">Specialization</span>
+                    <span className="text-[8px] text-[#CFCFCF]/50 uppercase tracking-[0.15em] font-black block mb-1">Specialization</span>
                     <p className="text-xs font-black text-white">{member.specialization}</p>
                   </div>
                   
                   <div className="h-px bg-white/[0.04]"></div>
                   
                   <div>
-                    <span className="text-[8px] text-[#CFCFCF]/40 uppercase tracking-[0.15em] font-black block mb-1">Transaction Volume</span>
+                    <span className="text-[8px] text-[#CFCFCF]/50 uppercase tracking-[0.15em] font-black block mb-1">Transaction Volume</span>
                     <p className="text-sm font-black text-[#D4AF37]">{member.transactions}</p>
                   </div>
 
                   <div className="h-px bg-white/[0.04]"></div>
 
-                  <p className="text-[11px] text-[#CFCFCF]/50 font-medium leading-relaxed">
+                  <p className="text-[11px] text-[#CFCFCF]/60 font-medium leading-relaxed">
                     {member.experience}
                   </p>
 
@@ -1455,11 +1455,11 @@ const LandingPage = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="mt-16 bg-white/[0.02] border border-white/[0.06] rounded-3xl p-8 md:p-10"
+            className="mt-12 bg-white/[0.02] border border-white/[0.06] rounded-3xl p-8 md:p-10"
           >
             <div className="text-center mb-8">
               <span className="text-[10px] text-[#D4AF37] uppercase tracking-[0.2em] font-black block">Collective Expertise</span>
-              <p className="text-xs text-[#CFCFCF]/50 font-medium mt-1">The numbers behind our mentor panel</p>
+              <p className="text-xs text-[#CFCFCF]/60 font-medium mt-1">The numbers behind our mentor panel</p>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
@@ -1471,7 +1471,7 @@ const LandingPage = () => {
               ].map((stat, i) => (
                 <div key={i} className={i > 0 ? "border-l border-white/[0.06]" : ""}>
                   <span className="text-3xl md:text-4xl font-black text-[#D4AF37] block">{stat.value}</span>
-                  <span className="text-[9px] text-[#CFCFCF]/40 uppercase tracking-[0.1em] font-black block mt-1">{stat.label}</span>
+                  <span className="text-[9px] text-[#CFCFCF]/50 uppercase tracking-[0.1em] font-black block mt-1">{stat.label}</span>
                 </div>
               ))}
             </div>
@@ -1480,14 +1480,14 @@ const LandingPage = () => {
       </section>
 
       {/* PRICING */}
-      <section className="relative py-28 px-6 md:px-12 bg-[#0B0B0B] border-t border-white/[0.03]" id="pricing">
+      <section className="relative py-16 md:py-20 px-6 md:px-12 bg-[#0B0B0B] border-t border-white/[0.03]" id="pricing">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[#D4AF37]/3 rounded-full blur-[200px] pointer-events-none"></div>
 
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="text-center max-w-3xl mx-auto mb-20 space-y-4"
+            className="text-center max-w-3xl mx-auto mb-10 md:mb-12 space-y-4"
           >
             <div className="inline-flex items-center gap-2 bg-[#D4AF37]/10 border border-[#D4AF37]/20 px-4 py-1.5 rounded-full">
               <Gem className="w-3.5 h-3.5 text-[#D4AF37]" />
@@ -1497,7 +1497,7 @@ const LandingPage = () => {
               Premium Investment.<br />
               <span className="text-[#D4AF37]">Exceptional Returns.</span>
             </h2>
-            <p className="text-sm text-[#CFCFCF]/60 max-w-lg mx-auto leading-relaxed font-medium">
+            <p className="text-sm text-[#CFCFCF]/80 max-w-lg mx-auto leading-relaxed font-medium">
               One-time investment for a lifetime career. No hidden fees, no recurring charges. 
               Just pure, actionable real estate expertise.
             </p>
@@ -1541,7 +1541,7 @@ const LandingPage = () => {
 
                 <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5 space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-[10px] text-[#CFCFCF]/40 uppercase tracking-[0.15em] font-black">Enrollment Status</span>
+                    <span className="text-[10px] text-[#CFCFCF]/50 uppercase tracking-[0.15em] font-black">Enrollment Status</span>
                     <span className="text-[10px] text-[#D4AF37] font-black">{Math.round((enrollmentCount / 50) * 100)}% Booked</span>
                   </div>
                   <div className="h-2.5 bg-white/[0.05] rounded-full overflow-hidden">
@@ -1550,7 +1550,7 @@ const LandingPage = () => {
                       style={{ width: `${(enrollmentCount / 50) * 100}%` }}
                     ></div>
                   </div>
-                  <div className="flex justify-between text-[10px] text-[#CFCFCF]/50 font-medium">
+                  <div className="flex justify-between text-[10px] text-[#CFCFCF]/60 font-medium">
                     <span>{enrollmentCount} Seats Booked</span>
                     <span className="text-[#D4AF37] font-bold">{50 - enrollmentCount} Remaining</span>
                   </div>
@@ -1574,10 +1574,10 @@ const LandingPage = () => {
 
                 <div className="space-y-6">
                   <div className="text-center pt-4">
-                    <span className="text-[9px] text-[#CFCFCF]/40 uppercase tracking-[0.2em] font-black block">All-Inclusive Program Fee</span>
+                    <span className="text-[9px] text-[#CFCFCF]/50 uppercase tracking-[0.2em] font-black block">All-Inclusive Program Fee</span>
                     <div className="flex items-baseline justify-center gap-3 mt-3">
                       <span className="text-5xl md:text-6xl font-black text-[#D4AF37]">₹3,999</span>
-                      <span className="text-sm text-[#CFCFCF]/40 line-through">₹9,999</span>
+                      <span className="text-sm text-[#CFCFCF]/50 line-through">₹9,999</span>
                     </div>
                     <span className="inline-block mt-2 bg-[#D4AF37]/10 text-[#D4AF37] text-[10px] font-black px-3 py-1 rounded-full border border-[#D4AF37]/20">
                       Save 60% — Limited Offer
@@ -1585,7 +1585,7 @@ const LandingPage = () => {
                   </div>
 
                   <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4 text-center">
-                    <span className="text-[9px] text-[#CFCFCF]/40 uppercase tracking-[0.15em] font-black block mb-2">Offer Closes In</span>
+                    <span className="text-[9px] text-[#CFCFCF]/50 uppercase tracking-[0.15em] font-black block mb-2">Offer Closes In</span>
                     <div className="flex items-center justify-center gap-2">
                       <Clock className="w-4 h-4 text-[#D4AF37]" />
                       <span className="font-mono text-xl font-black text-[#D4AF37]">
@@ -1595,9 +1595,9 @@ const LandingPage = () => {
                   </div>
 
                   <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4">
-                    <span className="text-[9px] text-[#CFCFCF]/40 uppercase tracking-[0.15em] font-black block mb-2">EMI Options Available</span>
+                    <span className="text-[9px] text-[#CFCFCF]/50 uppercase tracking-[0.15em] font-black block mb-2">EMI Options Available</span>
                     <div className="flex justify-between text-xs">
-                      <span className="text-[#CFCFCF]/60 font-medium">Starting at</span>
+                      <span className="text-[#CFCFCF]/70 font-medium">Starting at</span>
                       <span className="text-white font-black">₹999/month</span>
                     </div>
                   </div>
@@ -1615,7 +1615,7 @@ const LandingPage = () => {
                     </Button>
                   </Link>
 
-                  <div className="flex justify-between items-center text-[9px] text-[#CFCFCF]/40 font-black uppercase tracking-[0.1em] pt-2 px-1">
+                  <div className="flex justify-between items-center text-[9px] text-[#CFCFCF]/50 font-black uppercase tracking-[0.1em] pt-2 px-1">
                     <span className="flex items-center gap-1">
                       <ShieldCheck className="w-3 h-3 text-[#D4AF37]" /> Secure Checkout
                     </span>
@@ -1631,12 +1631,12 @@ const LandingPage = () => {
       </section>
 
       {/* FAQ */}
-      <section className="relative py-28 px-6 md:px-12">
+      <section className="relative py-16 md:py-20 px-6 md:px-12">
         <div className="max-w-3xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="text-center mb-16 space-y-4"
+            className="text-center mb-10 md:mb-12 space-y-4"
           >
             <div className="inline-flex items-center gap-2 bg-[#D4AF37]/10 border border-[#D4AF37]/20 px-4 py-1.5 rounded-full">
               <HelpCircle className="w-3.5 h-3.5 text-[#D4AF37]" />
@@ -1661,10 +1661,10 @@ const LandingPage = () => {
               >
                 <button
                   onClick={() => setActiveFaq(activeFaq === i ? null : i)}
-                  className="w-full p-6 text-left flex justify-between items-center gap-4 text-white hover:text-[#D4AF37] transition-colors font-bold text-sm"
+                  className="w-full p-5 text-left flex justify-between items-center gap-4 text-white hover:text-[#D4AF37] transition-colors font-bold text-sm"
                 >
                   <span>{faq.question}</span>
-                  <ChevronDown className={`w-4 h-4 text-[#CFCFCF]/40 transition-transform duration-300 shrink-0 ${
+                  <ChevronDown className={`w-4 h-4 text-[#CFCFCF]/50 transition-transform duration-300 shrink-0 ${
                     activeFaq === i ? 'rotate-180 text-[#D4AF37]' : ''
                   }`} />
                 </button>
@@ -1677,7 +1677,7 @@ const LandingPage = () => {
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                     >
-                      <div className="px-6 pb-6 pt-2 text-sm text-[#CFCFCF]/60 leading-relaxed border-t border-white/[0.04] bg-white/[0.01] font-medium">
+                      <div className="px-5 pb-6 pt-2 text-sm text-[#CFCFCF]/70 leading-relaxed border-t border-white/[0.04] bg-white/[0.01] font-medium">
                         {faq.answer}
                       </div>
                     </motion.div>
@@ -1693,8 +1693,8 @@ const LandingPage = () => {
       <footer className="relative border-t border-white/[0.03] bg-[#0B0B0B]">
         <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent"></div>
 
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-20">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
             <div className="space-y-5">
               <Link to="/" className="flex items-center gap-3 group">
                 <BGLogo className="w-10 h-10" />
@@ -1707,13 +1707,13 @@ const LandingPage = () => {
                   </span>
                 </div>
               </Link>
-              <p className="text-xs text-[#CFCFCF]/50 leading-relaxed font-medium max-w-xs">
+              <p className="text-xs text-[#CFCFCF]/60 leading-relaxed font-medium max-w-xs">
                 The official real estate training division of BG Realty. Empowering 
                 professionals with elite sales, negotiation, and investment skills.
               </p>
               <div className="flex gap-3">
                 {[LinkedinIcon, Twitter, Instagram, Youtube].map((Icon, i) => (
-                  <a key={i} href="#" className="w-9 h-9 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-[#CFCFCF]/40 hover:text-[#D4AF37] hover:border-[#D4AF37]/20 transition-all duration-200">
+                  <a key={i} href="#" className="w-9 h-9 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-[#CFCFCF]/50 hover:text-[#D4AF37] hover:border-[#D4AF37]/20 transition-all duration-200">
                     <Icon className="w-4 h-4" />
                   </a>
                 ))}
@@ -1721,8 +1721,8 @@ const LandingPage = () => {
             </div>
 
             <div>
-              <h4 className="text-[10px] font-black text-white uppercase tracking-[0.15em] mb-6">Quick Links</h4>
-              <ul className="space-y-3.5">
+              <h4 className="text-[10px] font-black text-white uppercase tracking-[0.15em] mb-5">Quick Links</h4>
+              <ul className="space-y-3">
                 {[
                   { label: 'Program Highlights', href: '#highlights' },
                   { label: 'Course Curriculum', href: '#curriculum' },
@@ -1731,7 +1731,7 @@ const LandingPage = () => {
                   { label: 'Our Mentors', href: '#mentors' },
                 ].map((link, i) => (
                   <li key={i}>
-                    <a href={link.href} className="text-xs text-[#CFCFCF]/50 hover:text-[#D4AF37] transition-colors font-medium">
+                    <a href={link.href} className="text-xs text-[#CFCFCF]/60 hover:text-[#D4AF37] transition-colors font-medium">
                       {link.label}
                     </a>
                   </li>
@@ -1740,8 +1740,8 @@ const LandingPage = () => {
             </div>
 
             <div>
-              <h4 className="text-[10px] font-black text-white uppercase tracking-[0.15em] mb-6">Programs</h4>
-              <ul className="space-y-3.5">
+              <h4 className="text-[10px] font-black text-white uppercase tracking-[0.15em] mb-5">Programs</h4>
+              <ul className="space-y-3">
                 {[
                   { label: '10-Day Real Estate Masterclass', href: '#pricing' },
                   { label: 'Advanced Sales Coaching', href: '#' },
@@ -1750,7 +1750,7 @@ const LandingPage = () => {
                   { label: 'Custom Corporate Training', href: '#' },
                 ].map((link, i) => (
                   <li key={i}>
-                    <a href={link.href} className="text-xs text-[#CFCFCF]/50 hover:text-[#D4AF37] transition-colors font-medium">
+                    <a href={link.href} className="text-xs text-[#CFCFCF]/60 hover:text-[#D4AF37] transition-colors font-medium">
                       {link.label}
                     </a>
                   </li>
@@ -1758,19 +1758,19 @@ const LandingPage = () => {
               </ul>
             </div>
 
-            <div className="space-y-8">
+            <div className="space-y-6">
               <div className="space-y-4">
                 <h4 className="text-[10px] font-black text-white uppercase tracking-[0.15em]">Contact</h4>
                 <ul className="space-y-3">
-                  <li className="flex items-start gap-2 text-xs text-[#CFCFCF]/50 font-medium">
+                  <li className="flex items-start gap-2 text-xs text-[#CFCFCF]/60 font-medium">
                     <MapPin className="w-3.5 h-3.5 text-[#D4AF37] shrink-0 mt-0.5" />
                     Metro Building Sector 62, Noida, UP
                   </li>
-                  <li className="flex items-center gap-2 text-xs text-[#CFCFCF]/50 font-medium">
+                  <li className="flex items-center gap-2 text-xs text-[#CFCFCF]/60 font-medium">
                     <Phone className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
                     +91 98765 43210
                   </li>
-                  <li className="flex items-center gap-2 text-xs text-[#CFCFCF]/50 font-medium">
+                  <li className="flex items-center gap-2 text-xs text-[#CFCFCF]/60 font-medium">
                     <Mail className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
                     admissions@bgrealtyacademy.com
                   </li>
@@ -1780,16 +1780,16 @@ const LandingPage = () => {
               <div className="space-y-3">
                 <h4 className="text-[10px] font-black text-white uppercase tracking-[0.15em]">Trust & Legal</h4>
                 <div className="flex flex-wrap gap-2">
-                  <span className="bg-white/[0.03] border border-white/[0.06] text-[#CFCFCF]/50 text-[8px] font-bold px-2.5 py-1 rounded-md">RERA Compliant</span>
-                  <span className="bg-white/[0.03] border border-white/[0.06] text-[#CFCFCF]/50 text-[8px] font-bold px-2.5 py-1 rounded-md">ISO Certified</span>
-                  <span className="bg-white/[0.03] border border-white/[0.06] text-[#CFCFCF]/50 text-[8px] font-bold px-2.5 py-1 rounded-md">SSL Secure</span>
-                  <span className="bg-white/[0.03] border border-white/[0.06] text-[#CFCFCF]/50 text-[8px] font-bold px-2.5 py-1 rounded-md">Verified</span>
+                  <span className="bg-white/[0.03] border border-white/[0.06] text-[#CFCFCF]/60 text-[8px] font-bold px-2.5 py-1 rounded-md">RERA Compliant</span>
+                  <span className="bg-white/[0.03] border border-white/[0.06] text-[#CFCFCF]/60 text-[8px] font-bold px-2.5 py-1 rounded-md">ISO Certified</span>
+                  <span className="bg-white/[0.03] border border-white/[0.06] text-[#CFCFCF]/60 text-[8px] font-bold px-2.5 py-1 rounded-md">SSL Secure</span>
+                  <span className="bg-white/[0.03] border border-white/[0.06] text-[#CFCFCF]/60 text-[8px] font-bold px-2.5 py-1 rounded-md">Verified</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="mt-16 pt-8 border-t border-white/[0.04] flex flex-col md:flex-row justify-between items-center gap-4 text-[9px] text-[#CFCFCF]/30 font-black uppercase tracking-[0.15em]">
+          <div className="mt-10 pt-6 border-t border-white/[0.04] flex flex-col md:flex-row justify-between items-center gap-4 text-[9px] text-[#CFCFCF]/40 font-black uppercase tracking-[0.15em]">
             <p>© 2026 BG Realty Training Academy. All rights reserved.</p>
             <div className="flex gap-6">
               <a href="#" className="hover:text-[#D4AF37] transition-colors">Privacy Policy</a>

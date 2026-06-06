@@ -13,6 +13,7 @@ import ProfileSecurity from './pages/ProfileSecurity';
 import Notifications from './pages/Notifications';
 import AccessDenied from './pages/AccessDenied';
 import { Sidebar, Navbar } from './components/Layout';
+import ProtectedRoute from './components/ProtectedRoute';
 
 // Admin imports
 import { AdminLayout } from './components/admin/AdminLayout';
@@ -69,30 +70,30 @@ function App() {
         <Route path="/access-denied" element={<AccessDenied />} />
 
         {/* Course Watch Page (Standalone Layout) */}
-        <Route path="/watch/:id" element={<CourseWatch />} />
+        <Route path="/watch/:id" element={<ProtectedRoute allowedRoles={['student', 'admin', 'super_admin']}><CourseWatch /></ProtectedRoute>} />
 
         {/* Dashboard Routes (Shared Layout) */}
-        <Route path="/dashboard" element={<DashboardLayout><Dashboard /></DashboardLayout>} />
-        <Route path="/courses" element={<DashboardLayout><MyCourses /></DashboardLayout>} />
-        <Route path="/assignments" element={<DashboardLayout><Assignments /></DashboardLayout>} />
-        <Route path="/live" element={<DashboardLayout><LiveClasses /></DashboardLayout>} />
-        <Route path="/security" element={<DashboardLayout><ProfileSecurity /></DashboardLayout>} />
-        <Route path="/notifications" element={<DashboardLayout><Notifications /></DashboardLayout>} />
+        <Route path="/dashboard" element={<ProtectedRoute allowedRoles={['student', 'admin', 'super_admin']}><DashboardLayout><Dashboard /></DashboardLayout></ProtectedRoute>} />
+        <Route path="/courses" element={<ProtectedRoute allowedRoles={['student', 'admin', 'super_admin']}><DashboardLayout><MyCourses /></DashboardLayout></ProtectedRoute>} />
+        <Route path="/assignments" element={<ProtectedRoute allowedRoles={['student', 'admin', 'super_admin']}><DashboardLayout><Assignments /></DashboardLayout></ProtectedRoute>} />
+        <Route path="/live" element={<ProtectedRoute allowedRoles={['student', 'admin', 'super_admin']}><DashboardLayout><LiveClasses /></DashboardLayout></ProtectedRoute>} />
+        <Route path="/security" element={<ProtectedRoute allowedRoles={['student', 'admin', 'super_admin']}><DashboardLayout><ProfileSecurity /></DashboardLayout></ProtectedRoute>} />
+        <Route path="/notifications" element={<ProtectedRoute allowedRoles={['student', 'admin', 'super_admin']}><DashboardLayout><Notifications /></DashboardLayout></ProtectedRoute>} />
         
         {/* Admin Console Routes (Shared Admin Layout) */}
         <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
-        <Route path="/admin/dashboard" element={<AdminDashboardLayout><AdminDashboard /></AdminDashboardLayout>} />
-        <Route path="/admin/students" element={<AdminDashboardLayout><AdminStudents /></AdminDashboardLayout>} />
-        <Route path="/admin/courses" element={<AdminDashboardLayout><AdminCourses /></AdminDashboardLayout>} />
-        <Route path="/admin/instructors" element={<AdminDashboardLayout><AdminInstructors /></AdminDashboardLayout>} />
-        <Route path="/admin/live" element={<AdminDashboardLayout><AdminLiveClasses /></AdminDashboardLayout>} />
-        <Route path="/admin/assignments" element={<AdminDashboardLayout><AdminAssignments /></AdminDashboardLayout>} />
-        <Route path="/admin/analytics" element={<AdminDashboardLayout><AdminAnalytics /></AdminDashboardLayout>} />
-        <Route path="/admin/revenue" element={<AdminDashboardLayout><AdminRevenue /></AdminDashboardLayout>} />
-        <Route path="/admin/certificates" element={<AdminDashboardLayout><AdminCertificates /></AdminDashboardLayout>} />
-        <Route path="/admin/notifications" element={<AdminDashboardLayout><AdminNotifications /></AdminDashboardLayout>} />
-        <Route path="/admin/security" element={<AdminDashboardLayout><AdminSecurity /></AdminDashboardLayout>} />
-        <Route path="/admin/settings" element={<AdminDashboardLayout><AdminSettings /></AdminDashboardLayout>} />
+        <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={['admin', 'super_admin']}><AdminDashboardLayout><AdminDashboard /></AdminDashboardLayout></ProtectedRoute>} />
+        <Route path="/admin/students" element={<ProtectedRoute allowedRoles={['admin', 'super_admin']}><AdminDashboardLayout><AdminStudents /></AdminDashboardLayout></ProtectedRoute>} />
+        <Route path="/admin/courses" element={<ProtectedRoute allowedRoles={['admin', 'super_admin']}><AdminDashboardLayout><AdminCourses /></AdminDashboardLayout></ProtectedRoute>} />
+        <Route path="/admin/instructors" element={<ProtectedRoute allowedRoles={['admin', 'super_admin']}><AdminDashboardLayout><AdminInstructors /></AdminDashboardLayout></ProtectedRoute>} />
+        <Route path="/admin/live" element={<ProtectedRoute allowedRoles={['admin', 'super_admin']}><AdminDashboardLayout><AdminLiveClasses /></AdminDashboardLayout></ProtectedRoute>} />
+        <Route path="/admin/assignments" element={<ProtectedRoute allowedRoles={['admin', 'super_admin']}><AdminDashboardLayout><AdminAssignments /></AdminDashboardLayout></ProtectedRoute>} />
+        <Route path="/admin/analytics" element={<ProtectedRoute allowedRoles={['admin', 'super_admin']}><AdminDashboardLayout><AdminAnalytics /></AdminDashboardLayout></ProtectedRoute>} />
+        <Route path="/admin/revenue" element={<ProtectedRoute allowedRoles={['admin', 'super_admin']}><AdminDashboardLayout><AdminRevenue /></AdminDashboardLayout></ProtectedRoute>} />
+        <Route path="/admin/certificates" element={<ProtectedRoute allowedRoles={['admin', 'super_admin']}><AdminDashboardLayout><AdminCertificates /></AdminDashboardLayout></ProtectedRoute>} />
+        <Route path="/admin/notifications" element={<ProtectedRoute allowedRoles={['admin', 'super_admin']}><AdminDashboardLayout><AdminNotifications /></AdminDashboardLayout></ProtectedRoute>} />
+        <Route path="/admin/security" element={<ProtectedRoute allowedRoles={['admin', 'super_admin']}><AdminDashboardLayout><AdminSecurity /></AdminDashboardLayout></ProtectedRoute>} />
+        <Route path="/admin/settings" element={<ProtectedRoute allowedRoles={['admin', 'super_admin']}><AdminDashboardLayout><AdminSettings /></AdminDashboardLayout></ProtectedRoute>} />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />

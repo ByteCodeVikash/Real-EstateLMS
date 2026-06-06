@@ -52,6 +52,26 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    const handleMessage = async (event) => {
+      if (event.origin !== window.location.origin) return;
+      if (event.data?.type === 'GOOGLE_AUTH_SUCCESS') {
+        setLoading(true);
+        setError('');
+        const idToken = event.data.idToken;
+        const result = await loginWithGoogle(idToken, false);
+        setLoading(false);
+        if (result.success) {
+          navigate('/dashboard');
+        } else {
+          setError(result.message);
+        }
+      } else if (event.data?.type === 'GOOGLE_AUTH_FAILURE') {
+        setError(event.data.message || 'Google signup failed.');
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+
     const hash = window.location.hash.substring(1);
     const search = window.location.search.substring(1);
     const params = new URLSearchParams(hash || search);
@@ -69,6 +89,8 @@ const Signup = () => {
       window.history.replaceState(null, null, window.location.pathname);
       setError(authError || 'Google signup failed.');
     }
+
+    return () => window.removeEventListener('message', handleMessage);
   }, [navigate, loginWithGoogle]);
 
   const handleSubmit = async (e) => {
@@ -99,10 +121,18 @@ const Signup = () => {
       return;
     }
     const clientId = '476678466295-8pj5ao3k65gc35grt1o31m7uk60rqvnn.apps.googleusercontent.com';
-    const redirectUri = window.location.origin + '/signup';
+    const redirectUri = window.location.origin + '/google-callback.html';
     const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=id_token&scope=openid%20email%20profile&state=google_signup&nonce=nonce-${Math.random().toString(36).substring(2)}`;
-    setLoading(true);
-    window.location.href = googleUrl;
+    
+    const width = 500;
+    const height = 600;
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+    window.open(
+      googleUrl,
+      'GoogleSignupPopup',
+      `width=${width},height=${height},left=${left},top=${top},status=no,resizable=yes,scrollbars=yes`
+    );
   };
 
   return (

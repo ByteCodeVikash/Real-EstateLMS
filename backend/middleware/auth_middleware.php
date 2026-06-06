@@ -70,9 +70,25 @@ function requireAuth(): array {
     
     try {
         $db = Database::getConnection();
-        $stmt = $db->prepare("SELECT id, full_name, email, role, status FROM users WHERE id = ?");
-        $stmt->execute([$payload['id']]);
-        $user = $stmt->fetch();
+        $user = null;
+        $role = $payload['role'] ?? 'student';
+        
+        if ($role === 'admin' || $role === 'super_admin') {
+            $stmt = $db->prepare("SELECT id, name AS full_name, email, role, 'Active' AS status FROM admins WHERE id = ?");
+            $stmt->execute([$payload['id']]);
+            $user = $stmt->fetch();
+            if ($user) {
+                $user['role'] = ($user['role'] === 'Super Admin') ? 'super_admin' : 'admin';
+            } else {
+                $stmt = $db->prepare("SELECT id, full_name, email, role, status FROM users WHERE id = ?");
+                $stmt->execute([$payload['id']]);
+                $user = $stmt->fetch();
+            }
+        } else {
+            $stmt = $db->prepare("SELECT id, full_name, email, role, status FROM users WHERE id = ?");
+            $stmt->execute([$payload['id']]);
+            $user = $stmt->fetch();
+        }
         
         if (!$user) {
             sendResponse(401, null, "Unauthorized: User account no longer exists.");

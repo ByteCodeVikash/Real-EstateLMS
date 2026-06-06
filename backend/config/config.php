@@ -7,7 +7,7 @@
 date_default_timezone_set('Asia/Kolkata');
 
 // Detect environment mode: 'development' or 'production'
-$isLocal = in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1']) || in_array($_SERVER['SERVER_NAME'] ?? '', ['localhost', '127.0.0.1']);
+$isLocal = (php_sapi_name() === 'cli') || in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1']) || in_array($_SERVER['SERVER_NAME'] ?? '', ['localhost', '127.0.0.1']);
 define('APP_ENV', $isLocal ? 'development' : 'production');
 
 // Error reporting settings based on environment

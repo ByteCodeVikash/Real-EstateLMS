@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, Reorder } from 'framer-motion';
 import { 
@@ -9,6 +9,7 @@ import {
   ArrowLeft, ChevronRight, Check, X, ShieldAlert, BookOpenCheck
 } from 'lucide-react';
 import { Button, Badge, GlassCard } from '../../components/UI';
+import { useAuth } from '../../context/AuthContext';
 import { AdminStatCard } from '../../components/admin/AdminComponents';
 import { 
   ResponsiveContainer, AreaChart, Area, BarChart, Bar, 
@@ -207,7 +208,77 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function AdminCourses() {
-  const [courses, setCourses] = useState(initialCourses);
+  const { token, API_BASE_URL } = useAuth();
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchCourses = async () => {
+    if (!token) return;
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/courses?limit=1000`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      if (data.status === 'success' && data.data?.courses) {
+        const mapped = data.data.courses.map(c => ({
+          id: c.id,
+          title: c.title,
+          instructor: c.mentor_name || 'Robert Sterling',
+          price: Number(c.price) || 0,
+          duration: c.duration || '8 Weeks',
+          students: Number(c.students_count) || 0,
+          completionRate: 85,
+          revenue: (Number(c.students_count) || 0) * (Number(c.price) || 0),
+          status: c.status || 'Draft',
+          rating: 4.8,
+          category: c.category_name || 'Luxury Brokerage',
+          tags: c.tags ? (typeof c.tags === 'string' ? JSON.parse(c.tags) : c.tags) : ['Underwriting'],
+          thumbnailPreset: c.thumbnail || 'grad-blue',
+          description: c.description || '',
+          modules: c.modules || []
+        }));
+        setCourses(mapped);
+      }
+    } catch (err) {
+      console.error("Failed to fetch courses:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getOrCreateCategoryId = async (catName) => {
+    if (!token) return 1;
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/categories`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      if (data.status === 'success') {
+        const found = data.data.find(c => c.name.toLowerCase() === catName.toLowerCase());
+        if (found) return found.id;
+      }
+      // Create new category
+      const createResponse = await fetch(`${API_BASE_URL}/api/categories`, {
+        method: 'POST',
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: catName, description: `Category for ${catName}`, status: 'Active' })
+      });
+      const createData = await createResponse.json();
+      if (createData.status === 'success' || createResponse.status === 201) {
+        return createData.data.id;
+      }
+    } catch (err) {
+      console.error("Failed to find/create category:", err);
+    }
+    return 1;
+  };
+
+  useEffect(() => {
+    fetchCourses();
+  }, [token]);
   const [viewMode, setViewMode] = useState('grid'); // grid | table
   const [showAnalytics, setShowAnalytics] = useState(true);
   
@@ -318,19 +389,41 @@ export default function AdminCourses() {
   };
 
   // Status controls
-  const handleToggleStatus = (id, currentStatus) => {
+  const handleToggleStatus = async (id, currentStatus) => {
     const nextStatus = currentStatus === "Published" ? "Draft" : "Published";
     setCourses(prev => prev.map(c => c.id === id ? { ...c, status: nextStatus } : c));
+    try {
+      await fetch(`${API_BASE_URL}/api/courses/${id}`, {
+        method: 'PUT',
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: nextStatus })
+      });
+      fetchCourses();
+    } catch (err) {
+      console.error("Failed to toggle course status:", err);
+    }
   };
 
-  const handleDeleteCourse = (id) => {
+  const handleDeleteCourse = async (id) => {
     if (confirm("Are you absolutely sure you want to delete this course from the inventory? This cannot be undone.")) {
       setCourses(prev => prev.filter(c => c.id !== id));
+      try {
+        await fetch(`${API_BASE_URL}/api/courses/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        fetchCourses();
+      } catch (err) {
+        console.error("Failed to delete course:", err);
+      }
     }
   };
 
   // Form Submissions
-  const handleSaveCourse = (e) => {
+  const handleSaveCourse = async (e) => {
     e.preventDefault();
     if (!formState.title || !formState.duration || !formState.price) {
       alert("Please fill in all required fields.");
@@ -341,40 +434,70 @@ export default function AdminCourses() {
       ? formState.tags.split(',').map(t => t.trim()).filter(Boolean)
       : [];
 
+    const categoryId = await getOrCreateCategoryId(formState.category);
+
+    const payload = {
+      category_id: categoryId,
+      title: formState.title,
+      description: formState.description,
+      thumbnail: formState.thumbnailPreset,
+      mentor_name: formState.instructor,
+      duration: formState.duration,
+      price: Number(formState.price),
+      status: selectedCourse ? selectedCourse.status : "Draft",
+      modules: formState.modules.map((m, mIdx) => ({
+        title: m.title,
+        description: m.description || '',
+        sort_order: mIdx + 1,
+        lectures: (m.lectures || []).map((l, lIdx) => ({
+          title: l.title,
+          description: l.description || '',
+          video_url: l.video_url || 'https://www.w3schools.com/html/mov_bbb.mp4',
+          duration: l.duration || '15m',
+          sort_order: lIdx + 1,
+          is_preview: l.is_preview ? 1 : 0,
+          video_type: l.video_type || 'html5',
+          video_id: l.video_id || ''
+        }))
+      }))
+    };
+
     if (selectedCourse) {
       // Edit
-      setCourses(prev => prev.map(c => c.id === selectedCourse.id ? {
-        ...c,
-        title: formState.title,
-        description: formState.description,
-        instructor: formState.instructor,
-        price: Number(formState.price),
-        duration: formState.duration,
-        category: formState.category,
-        tags: tagsArray,
-        thumbnailPreset: formState.thumbnailPreset,
-        modules: formState.modules
-      } : c));
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/courses/${selectedCourse.id}`, {
+          method: 'PUT',
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.status === 'success') {
+          fetchCourses();
+        }
+      } catch (err) {
+        console.error("Failed to update course:", err);
+      }
     } else {
       // Create
-      const newCourse = {
-        id: courses.length + 1,
-        title: formState.title,
-        description: formState.description,
-        instructor: formState.instructor,
-        price: Number(formState.price),
-        duration: formState.duration,
-        students: 0,
-        completionRate: 0,
-        revenue: 0,
-        status: "Draft",
-        rating: 0.0,
-        category: formState.category,
-        tags: tagsArray,
-        thumbnailPreset: formState.thumbnailPreset,
-        modules: formState.modules
-      };
-      setCourses(prev => [...prev, newCourse]);
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/courses`, {
+          method: 'POST',
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.status === 'success' || res.status === 201) {
+          fetchCourses();
+        }
+      } catch (err) {
+        console.error("Failed to create course:", err);
+      }
     }
     setModalOpen(false);
   };

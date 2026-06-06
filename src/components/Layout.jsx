@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Layout as LayoutIcon, BookOpen, FileText, Video, Shield, Settings, 
@@ -7,6 +7,7 @@ import {
   Menu, X
 } from 'lucide-react';
 import { cn } from './UI';
+import { useAuth } from '../context/AuthContext';
 
 export const BGLogo = ({ className = "w-10 h-10" }) => (
   <svg className={className} viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -55,6 +56,15 @@ export const SidebarContent = ({ onItemClick }) => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search || '');
   const nav = searchParams.get('nav');
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    onItemClick?.();
+    await logout();
+    navigate('/login');
+  };
 
   const isItemActive = (itemPath) => {
     try {
@@ -105,10 +115,13 @@ export const SidebarContent = ({ onItemClick }) => {
     </nav>
 
     <div className="p-4 border-t border-slate-900 shrink-0">
-      <Link to="/" onClick={onItemClick} className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-slate-500 hover:bg-red-500/10 hover:text-red-400 transition-all duration-300 font-bold text-xs uppercase tracking-wider">
+      <button 
+        onClick={handleLogout} 
+        className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-slate-500 hover:bg-red-500/10 hover:text-red-400 transition-all duration-300 font-bold text-xs uppercase tracking-wider text-left bg-transparent border-none cursor-pointer"
+      >
         <LogOut className="w-4.5 h-4.5" />
         <span>Exit Academy</span>
-      </Link>
+      </button>
     </div>
   </>
   );
@@ -182,6 +195,15 @@ export const Sidebar = ({ isOpen, onClose }) => {
 
 export const Navbar = ({ onMenuOpen }) => {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const { logout, user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    setProfileDropdownOpen(false);
+    await logout();
+    navigate('/login');
+  };
 
   return (
     <header className="h-20 bg-premium-card/90 backdrop-blur-md border-b border-premium-border/80 fixed top-0 right-0 left-0 lg:left-64 z-40 px-6 sm:px-8 flex items-center justify-between shadow-lg">
@@ -229,8 +251,10 @@ export const Navbar = ({ onMenuOpen }) => {
             className="flex items-center gap-2 sm:gap-3 pl-3 sm:pl-6 border-l border-premium-border/60 cursor-pointer group focus:outline-none"
           >
             <div className="text-right hidden md:block">
-              <p className="text-xs font-black text-white group-hover:text-premium-accent transition-colors">Johnathan Doe</p>
-              <p className="text-[9px] text-premium-accent uppercase font-black tracking-widest mt-0.5">Premium Student</p>
+              <p className="text-xs font-black text-white group-hover:text-premium-accent transition-colors">{user?.full_name || 'Student'}</p>
+              <p className="text-[9px] text-premium-accent uppercase font-black tracking-widest mt-0.5">
+                {user?.role === 'super_admin' ? 'Super Admin' : user?.role === 'admin' ? 'Admin' : 'Premium Student'}
+              </p>
             </div>
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-premium-border/60 group-hover:border-premium-accent transition-all overflow-hidden shadow-sm shrink-0">
               <img
@@ -260,13 +284,12 @@ export const Navbar = ({ onMenuOpen }) => {
                 <Settings className="w-4 h-4" /> Security Settings
               </Link>
               <div className="h-px bg-slate-800/80 my-1"></div>
-              <Link 
-                to="/" 
-                onClick={() => setProfileDropdownOpen(false)}
-                className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold text-red-500 hover:bg-red-950/20 hover:text-red-400 transition-all"
+              <button 
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-3 py-2.5 w-full rounded-lg text-xs font-bold text-red-500 hover:bg-red-950/20 hover:text-red-400 transition-all text-left bg-transparent border-none cursor-pointer"
               >
                 <LogOut className="w-4 h-4" /> Exit Academy
-              </Link>
+              </button>
             </div>
           )}
         </div>

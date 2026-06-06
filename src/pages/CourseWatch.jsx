@@ -8,6 +8,7 @@ import {
 import { useParams, Link } from 'react-router-dom';
 import { Button, Badge } from '../components/UI';
 import { loadFromStorage, saveToStorage, STORAGE_KEYS } from '../utils/storage';
+import { useAuth } from '../context/AuthContext';
 
 // Seed chat messages defined at module level so they are stable across renders
 const SEED_CHAT_MESSAGES = [
@@ -19,106 +20,14 @@ const SEED_CHAT_MESSAGES = [
 const CourseWatch = () => {
   const { id } = useParams();
   const courseId = parseInt(id) || 1;
+  const { token, API_BASE_URL, user } = useAuth();
 
-  // Course specifications map (memoized to avoid re-creating large objects each render)
-  const coursesData = useMemo(() => ({
-    1: {
-      title: "Real Estate Sales Masterclass",
-      category: "Sales Coaching",
-      specializationBadge: "High Ticket",
-      image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=1200",
-      lectures: [
-        { id: 1, title: "Introduction to High-Ticket Sales Psychology", duration: "12:15", completed: true, locked: false, videoUrl: "" },
-        { id: 2, title: "Structuring the Ideal Discovery Call", duration: "18:40", completed: true, locked: false, videoUrl: "" },
-        { id: 3, title: "Overcoming Seller Fee & Commissions Objections", duration: "25:30", completed: true, locked: false, videoUrl: "" },
-        { id: 4, title: "Constructing the Irresistible Listing Pitch", duration: "32:10", completed: false, locked: false, videoUrl: "" },
-        { id: 5, title: "Creative Closing Anchors & Urgency Matrices", duration: "22:50", completed: false, locked: true, videoUrl: "" },
-        { id: 6, title: "Exit Closing Roleplay: Luxury Buyers", duration: "28:15", completed: false, locked: true, videoUrl: "" }
-      ],
-      resources: [
-        { name: "High_Ticket_Objection_Handling_Scripts.pdf", size: "4.2 MB", desc: "Verbatim bypass scripts for commission pushback." },
-        { name: "BJ_Academy_Listing_Presentation_Deck.pptx", size: "12.8 MB", desc: "Editable premium slides for high-end pitches." }
-      ],
-      overviewText: "This active coaching syllabus details high-ticket sales objection handling, value positioning, and negotiation structures. Learn key objection-bypasses, high-impact listing slides, and behavioral close anchor formulas used by elite listing agents."
-    },
-    2: {
-      title: "Property Investment Blueprint",
-      category: "Investment",
-      specializationBadge: "CRE Underwriting",
-      image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200",
-      lectures: [
-        { id: 1, title: "Macroeconomic Real Estate Cycles & Timing", duration: "14:20", completed: true, locked: false, videoUrl: "" },
-        { id: 2, title: "Cap Rate Decoupling & Sensitivity Analysis", duration: "19:15", completed: true, locked: false, videoUrl: "" },
-        { id: 3, title: "Structuring GP/LP Equity Splits & Cascades", duration: "28:45", completed: true, locked: false, videoUrl: "" },
-        { id: 4, title: "Commercial Debt Leveraging & DSCR Modeling", duration: "34:50", completed: false, locked: false, videoUrl: "" },
-        { id: 5, title: "Asset Optimization & Post-Purchase Value Add", duration: "24:10", completed: false, locked: true, videoUrl: "" },
-        { id: 6, title: "Exit Underwriting & Refinancing Recaps", duration: "30:15", completed: false, locked: true, videoUrl: "" }
-      ],
-      resources: [
-        { name: "Commercial_Underwriting_Matrix_v5.xlsx", size: "6.8 MB", desc: "GP/LP waterfall calculator, cap rate sensitivity templates." },
-        { name: "Multi-Family_DSCR_Modeler_Sheet.xlsx", size: "3.2 MB", desc: "Debt amortization rules and DSCR leveraging matrices." }
-      ],
-      overviewText: "This premium underwriting syllabus breaks down debt and equity cascading models. We walk through multi-family mortgage amortization rules, debt service coverage ratio (DSCR) underwriting benchmarks, and exit valuation models using modern cap rates."
-    },
-    3: {
-      title: "Broker Closing Psychology",
-      category: "Negotiations",
-      specializationBadge: "Creative Finance",
-      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200",
-      lectures: [
-        { id: 1, title: "Cognitive Reframing in High-Urgencies", duration: "11:45", completed: true, locked: false, videoUrl: "" },
-        { id: 2, title: "Neuro-Anchoring Sales Matrices", duration: "16:20", completed: true, locked: false, videoUrl: "" },
-        { id: 3, title: "Designing Creative Financing Proposals", duration: "24:10", completed: true, locked: false, videoUrl: "" },
-        { id: 4, title: "Signature Stage Negotiation Overcomes", duration: "30:30", completed: false, locked: false, videoUrl: "" },
-        { id: 5, title: "Advanced Deal Salvaging Under Stress", duration: "27:15", completed: false, locked: true, videoUrl: "" }
-      ],
-      resources: [
-        { name: "Creative_Finance_Agreement_Templates.docx", size: "2.8 MB", desc: "Standard contracts for seller-financing and subject-to purchases." },
-        { name: "Neuro_Anchoring_Sales_Handout.pdf", size: "1.5 MB", desc: "Visual anchor matrices and high-pressure close guidelines." }
-      ],
-      overviewText: "Uncover advanced psychological mechanisms used by the industry's top 1% brokers. Learn neuro-anchoring, seller-financing framing strategies, and transaction rescue protocols during high-stress closing standoffs."
-    },
-    4: {
-      title: "Luxury Housing Market Training",
-      category: "Luxury Marketing",
-      specializationBadge: "HNW Residential",
-      image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1200",
-      lectures: [
-        { id: 1, title: "Unlocking HNW Networking Circles", duration: "15:30", completed: true, locked: false, videoUrl: "" },
-        { id: 2, title: "Elite Branding & Property Styling Codes", duration: "20:45", completed: true, locked: false, videoUrl: "" },
-        { id: 3, title: "Sourcing Secret Off-Market Listings", duration: "26:15", completed: false, locked: false, videoUrl: "" },
-        { id: 4, title: "Concierge Listing Campaigns & Showings", duration: "31:40", completed: false, locked: true, videoUrl: "" },
-        { id: 5, title: "High-Value Client Retention Secrets", duration: "22:15", completed: false, locked: true, videoUrl: "" }
-      ],
-      resources: [
-        { name: "HNW_Client_Outreach_Swipe_File.docx", size: "1.9 MB", desc: "Concierge cold emails, exclusive listing agreements." },
-        { name: "Luxury_House_Styling_Codebook.pdf", size: "7.4 MB", desc: "High-end staging protocols and off-market showing criteria." }
-      ],
-      overviewText: "Enter the ultra-high-net-worth real estate tier. This curriculum covers staging and branding rules, accessing HNW networking groups, securing highly exclusive off-market listings, and arranging high-value concierge showings."
-    },
-    5: {
-      title: "Real Estate Lead Funnel",
-      category: "Lead Gen",
-      specializationBadge: "Digital Lead Gen",
-      image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=1200",
-      lectures: [
-        { id: 1, title: "Hyper-Local Target Ads Strategy", duration: "10:15", completed: true, locked: false, videoUrl: "" },
-        { id: 2, title: "Building High-Response Landing Magnets", duration: "15:50", completed: true, locked: false, videoUrl: "" },
-        { id: 3, title: "Creating Automatic Email Nurture CRM", duration: "21:30", completed: false, locked: false, videoUrl: "" },
-        { id: 4, title: "Lead Scoring & Fast Calling Workflows", duration: "26:40", completed: false, locked: true, videoUrl: "" },
-        { id: 5, title: "Analytics: Optimizing Cost Per Acquisition", duration: "19:45", completed: false, locked: true, videoUrl: "" }
-      ],
-      resources: [
-        { name: "Lead_Funnel_Google_Ads_Keywords.csv", size: "0.8 MB", desc: "Curated high-intent search keywords for buyer campaigns." },
-        { name: "Auto_CRM_Nurture_Workflow.pdf", size: "2.2 MB", desc: "Visual automation maps and copy-paste SMS/email sequences." }
-      ],
-      overviewText: "Construct a automated marketing asset that sources listing leads on autopilot. This guide steps through high-impact Meta/Google Ads target parameters, custom lead magnets, automated CRMs, and call-back structures."
-    }
-  }), []);
+  const [course, setCourse] = useState(null);
+  const [resources, setResources] = useState([]);
+  const [activeLecture, setActiveLecture] = useState(null);
+  const [courseProgress, setCourseProgress] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-  const activeCourse = coursesData[courseId] || coursesData[1];
-
-  const [activeLecture, setActiveLecture] = useState(activeCourse.lectures[3] || activeCourse.lectures[0]);
   const [sidebarOpen, setSidebarOpen] = useState(() => typeof window !== 'undefined' ? window.innerWidth >= 1024 : true);
   const [activeTab, setActiveTab] = useState('Overview');
   const [watermarkPos, setWatermarkPos] = useState({ top: '30%', left: '20%' });
@@ -145,6 +54,8 @@ const CourseWatch = () => {
   const canPlayHandlerRef = useRef(null);
   
   const [isMobile, setIsMobile] = useState(false);
+  const lastSavedTimeRef = useRef(0);
+  const initialPlayheadRef = useRef(0);
 
   useEffect(() => {
     const handleResize = () => {
@@ -154,6 +65,54 @@ const CourseWatch = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Fetch course details & resources
+  useEffect(() => {
+    if (!token) return;
+
+    const fetchCourseDetails = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/courses/${courseId}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.status === 'success' && data.data) {
+            setCourse(data.data);
+            setCourseProgress(data.data.progress || 0);
+
+            // Find first lecture across all modules
+            let firstLecture = null;
+            if (data.data.modules && data.data.modules.length > 0) {
+              for (const mod of data.data.modules) {
+                if (mod.lectures && mod.lectures.length > 0) {
+                  firstLecture = mod.lectures[0];
+                  break;
+                }
+              }
+            }
+            setActiveLecture(firstLecture);
+          }
+        }
+
+        const resRes = await fetch(`${API_BASE_URL}/api/courses/${courseId}/resources`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (resRes.ok) {
+          const rData = await resRes.json();
+          if (rData.status === 'success') {
+            setResources(rData.data || []);
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching course watch details:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourseDetails();
+  }, [courseId, token, API_BASE_URL]);
 
   // Real-time Discussion Chat Panel state — loaded from localStorage per course
   const [chatMessages, setChatMessages] = useState(
@@ -178,12 +137,11 @@ const CourseWatch = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Reload notes & chat from storage when courseId changes (user navigates to a different course)
+  // Reload notes & chat from storage when courseId changes
   useEffect(() => {
-    setActiveLecture(activeCourse.lectures[3] || activeCourse.lectures[0]);
     setNotesList(loadFromStorage(STORAGE_KEYS.courseNotes(courseId), []));
     setChatMessages(loadFromStorage(STORAGE_KEYS.courseChat(courseId), SEED_CHAT_MESSAGES));
-  }, [courseId, activeCourse]);
+  }, [courseId]);
 
   // Persist notes list whenever it changes
   useEffect(() => {
@@ -199,6 +157,83 @@ const CourseWatch = () => {
   useEffect(() => () => { if (controlsTimerRef.current) clearTimeout(controlsTimerRef.current); }, []);
   useEffect(() => () => { if (bufferingDelayRef.current) clearTimeout(bufferingDelayRef.current); }, []);
 
+  // Fetch initial playhead progress when active lecture changes
+  useEffect(() => {
+    if (!activeLecture?.id || !token) return;
+    
+    // Reset playhead tracker
+    lastSavedTimeRef.current = 0;
+    initialPlayheadRef.current = 0;
+
+    fetch(`${API_BASE_URL}/api/lectures/${activeLecture.id}/progress`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === 'success' && data.data) {
+        const progress = data.data;
+        const playhead = progress.playhead_seconds || 0;
+        initialPlayheadRef.current = playhead;
+        
+        // If standard HTML5 video, seek immediately if video metadata is already loaded
+        if (videoRef.current && isFinite(playhead) && playhead > 0) {
+          videoRef.current.currentTime = playhead;
+          setCurrentTime(playhead);
+        }
+      }
+    })
+    .catch(err => console.error('Error fetching playhead progress:', err));
+  }, [activeLecture?.id, token, API_BASE_URL]);
+
+  // Save progress handler
+  const saveProgress = async (seconds, isCompleted = 0) => {
+    if (!activeLecture?.id || !token) return;
+    if (Math.abs(seconds - lastSavedTimeRef.current) < 2 && isCompleted === 0) return;
+
+    lastSavedTimeRef.current = seconds;
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/lectures/${activeLecture.id}/progress`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          playhead_seconds: Math.floor(seconds),
+          duration_seconds: Math.floor(videoRef.current?.duration || duration || 0),
+          is_completed: isCompleted ? 1 : 0
+        })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        if (result.status === 'success' && result.data) {
+          if (result.data.course_progress !== undefined) {
+            setCourseProgress(result.data.course_progress);
+          }
+          // Mark completed in active lecture object if returned
+          if (isCompleted && course) {
+            setCourse(prev => {
+              if (!prev) return prev;
+              const updatedModules = prev.modules.map(mod => {
+                const updatedLectures = mod.lectures.map(lec => {
+                  if (lec.id === activeLecture.id) {
+                    return { ...lec, completed: true };
+                  }
+                  return lec;
+                });
+                return { ...mod, lectures: updatedLectures };
+              });
+              return { ...prev, modules: updatedModules };
+            });
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error saving progress playhead:', error);
+    }
+  };
+
   // Custom Fullscreen API Toggle handler
   const toggleFullscreen = () => {
     const container = playerRef.current;
@@ -208,7 +243,6 @@ const CourseWatch = () => {
       const request = container?.requestFullscreen?.bind(container) || v?.requestFullscreen?.bind(v);
       if (request) {
         request().then(() => setIsFullscreen(true)).catch((err) => {
-          // iOS Safari fallback
           if (v?.webkitEnterFullscreen) {
             try { v.webkitEnterFullscreen(); } catch { /* ignore */ }
             return;
@@ -239,12 +273,15 @@ const CourseWatch = () => {
 
   // ── Real Video Helpers ──────────────────────────────────────────────────────
   const QUALITY_OPTIONS = ['Auto', '720p', '480p'];
-  const getVideoUrl = (lectureId, quality) => {
-    // Same sample video for every lecture (local assets for reliable demo playback)
-    // `lectureId` kept for future per-lecture mapping without touching playlist logic.
+  const getVideoUrl = (lecture, quality) => {
+    if (!lecture) return '';
+    if (lecture.video_url) {
+      return lecture.video_url;
+    }
+    // Default fallback to local mock sample video
     const q = quality || 'Auto';
     if (q === '480p') return '/videos/lecture-sample-480p.mp4';
-    return '/videos/lecture-sample-720p.mp4'; // Auto + 720p
+    return '/videos/lecture-sample-720p.mp4';
   };
 
   const formatTime = (sec) => {
@@ -259,6 +296,11 @@ const CourseWatch = () => {
     if (!v) return;
     setCurrentTime(v.currentTime);
     setVideoProgress((v.currentTime / (v.duration || 1)) * 100);
+
+    // Save progress periodically (approx. every 5 seconds)
+    if (Math.floor(v.currentTime) % 5 === 0) {
+      saveProgress(v.currentTime, 0);
+    }
   };
 
   const handleLoadedMetadata = () => {
@@ -268,9 +310,23 @@ const CourseWatch = () => {
     v.volume = volume / 100;
     v.muted = isMuted;
     v.playbackRate = parseFloat(playbackSpeed) || 1.0;
+
+    // Apply restored playhead if any
+    const playhead = initialPlayheadRef.current;
+    if (isFinite(playhead) && playhead > 0) {
+      v.currentTime = playhead;
+      setCurrentTime(playhead);
+      setVideoProgress((playhead / (v.duration || 1)) * 100);
+      initialPlayheadRef.current = 0; // Reset once applied
+    }
   };
 
-  const handleVideoEnded = () => { setIsPlaying(false); setVideoProgress(0); setCurrentTime(0); setShowControls(true); };
+  const handleVideoEnded = () => { 
+    setIsPlaying(false); 
+    setVideoProgress(100); 
+    setShowControls(true); 
+    saveProgress(duration, 1); // Mark Completed
+  };
 
   const togglePlay = () => {
     const v = videoRef.current;
@@ -287,6 +343,7 @@ const CourseWatch = () => {
     const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
     v.currentTime = pct * duration;
     setVideoProgress(pct * 100);
+    saveProgress(pct * duration, 0);
   };
 
   const seekBy = (deltaSec) => {
@@ -337,15 +394,14 @@ const CourseWatch = () => {
       setIsBuffering(false);
       return;
     }
-    // Delay to avoid flicker on very fast seeks / local playback
     bufferingDelayRef.current = setTimeout(() => setIsBuffering(true), 120);
   };
 
   const loadVideo = ({ preserveTime }) => {
     const v = videoRef.current;
-    if (!v) return;
+    if (!v || !activeLecture) return;
 
-    const nextSrc = getVideoUrl(activeLecture?.id || 1, selectedQuality);
+    const nextSrc = getVideoUrl(activeLecture, selectedQuality);
     if (lastLoadedSrcRef.current === nextSrc && preserveTime) return;
 
     const wasPlaying = !v.paused && !v.ended;
@@ -398,7 +454,6 @@ const CourseWatch = () => {
   const handleKeyDown = (e) => {
     const v = videoRef.current;
     if (!v) return;
-    // Don't hijack shortcuts while typing in inputs/textareas/contenteditable
     const tag = e?.target?.tagName?.toLowerCase?.();
     if (tag === 'input' || tag === 'textarea' || e?.target?.isContentEditable) return;
     const actions = {
@@ -417,19 +472,17 @@ const CourseWatch = () => {
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown, { passive: false });
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isMuted, volume, playbackSpeed, selectedQuality, duration, isFullscreen]);
+  }, [isMuted, volume, playbackSpeed, selectedQuality, duration, isFullscreen, activeLecture]);
 
   // Load lecture video when active lecture changes
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    loadVideo({ preserveTime: false });
+    if (activeLecture) {
+      loadVideo({ preserveTime: false });
+    }
   }, [activeLecture?.id]);
 
   // Preserve playback position when switching quality
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadVideo({ preserveTime: true });
   }, [selectedQuality]);
 
@@ -439,8 +492,8 @@ const CourseWatch = () => {
 
     const message = {
       id: chatMessages.length + 1,
-      sender: "Johnathan Doe",
-      role: "Premium Student",
+      sender: user?.name || "Premium Student",
+      role: user?.role === 'admin' ? 'Administrator' : 'Premium Student',
       message: newMessage,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       isInstructor: false
@@ -451,17 +504,53 @@ const CourseWatch = () => {
   };
 
   const handleSaveNote = () => {
-    if (!savedNotes.trim()) return;
+    if (!savedNotes.trim() || !activeLecture) return;
     const note = {
       id: Date.now(),
       text: savedNotes,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       lectureTitle: activeLecture.title
     };
-    // Prepend new note — save useEffect will automatically persist to localStorage
     setNotesList((prev) => [note, ...prev]);
-    setSavedNotes('');
+    savedNotes && setSavedNotes('');
   };
+
+  // Handle external video embeds (YouTube / Vimeo)
+  const isYoutube = activeLecture?.video_url?.includes('youtube.com') || activeLecture?.video_url?.includes('youtu.be') || activeLecture?.video_type === 'youtube';
+  const isVimeo = activeLecture?.video_url?.includes('vimeo.com') || activeLecture?.video_type === 'vimeo';
+
+  const getYoutubeEmbedUrl = (url, vid) => {
+    let id = vid;
+    if (!id && url) {
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = url.match(regExp);
+      id = (match && match[2].length === 11) ? match[2] : null;
+    }
+    return `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;
+  };
+
+  const getVimeoEmbedUrl = (url, vid) => {
+    let id = vid;
+    if (!id && url) {
+      const match = url.match(/vimeo\.com\/(\d+)/);
+      id = match ? match[1] : null;
+    }
+    return `https://player.vimeo.com/video/${id}?autoplay=1`;
+  };
+
+  if (loading || !course || !activeLecture) {
+    return (
+      <div className="fixed inset-0 bg-[#070b13] flex items-center justify-center text-slate-400">
+        <div className="text-center space-y-4">
+          <div className="w-12 h-12 rounded-full border-4 border-premium-accent border-t-transparent animate-spin mx-auto"></div>
+          <p className="text-xs font-black uppercase tracking-widest text-slate-500">Decrypting course catalog stream...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Count total lectures for course modules
+  const totalLectures = course.modules?.reduce((acc, m) => acc + (m.lectures?.length || 0), 0) || 0;
 
   return (
     <div className="fixed inset-0 bg-[#070b13] flex flex-col z-[60] overflow-hidden text-left font-sans text-slate-300">
@@ -486,7 +575,7 @@ const CourseWatch = () => {
                 Secure AES-256 Stream Session
               </p>
               <h1 className="font-black text-sm md:text-base text-white mt-1 truncate max-w-[140px] xs:max-w-[200px] md:max-w-md">
-                {activeCourse.title}
+                {course.title}
               </h1>
             </div>
           </div>
@@ -555,104 +644,254 @@ const CourseWatch = () => {
             {/* Ambient Background Glow */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[70%] bg-blue-500/5 blur-[120px] rounded-full pointer-events-none z-10"></div>
             
-            {/* Media Visual background (kept for premium ambiance) */}
-            <img 
-              src={activeCourse.image} 
-              className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ${
-                isPlaying ? 'opacity-15 blur-[1px]' : 'opacity-25 blur-none'
-              }`}
-              alt="Cinematic Streaming Interface"
-            />
+            {/* Render Standard Player OR Youtube/Vimeo Embed */}
+            {isYoutube ? (
+              <iframe
+                src={getYoutubeEmbedUrl(activeLecture.video_url, activeLecture.video_id)}
+                className="absolute inset-0 w-full h-full border-0 z-20"
+                allow="autoplay; encrypted-media"
+                allowFullScreen
+              />
+            ) : isVimeo ? (
+              <iframe
+                src={getVimeoEmbedUrl(activeLecture.video_url, activeLecture.video_id)}
+                className="absolute inset-0 w-full h-full border-0 z-20"
+                allow="autoplay; fullscreen"
+                allowFullScreen
+              />
+            ) : (
+              <>
+                {/* Poster Background */}
+                <img 
+                  src={course.thumbnail ? (course.thumbnail.startsWith('http') ? course.thumbnail : "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=1200") : "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=1200"} 
+                  className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ${
+                    isPlaying ? 'opacity-15 blur-[1px]' : 'opacity-25 blur-none'
+                  }`}
+                  alt="Cinematic Streaming Interface"
+                />
 
-            {/* Real HTML5 video layer */}
-            <video
-              ref={videoRef}
-              className={`absolute inset-0 w-full h-full object-contain bg-black transition-opacity duration-500 ${
-                isLoading ? 'opacity-0' : 'opacity-100'
-              }`}
-              playsInline
-              disablePictureInPicture
-              controlsList="nodownload noremoteplayback"
-              preload="metadata"
-              poster={activeCourse.image}
-              onTimeUpdate={handleTimeUpdate}
-              onLoadedMetadata={handleLoadedMetadata}
-              onLoadStart={() => { setIsLoading(true); setBuffering(false); }}
-              onLoadedData={() => setIsLoading(false)}
-              onCanPlay={() => { setIsLoading(false); setBuffering(false); }}
-              onWaiting={() => setBuffering(true)}
-              onPlaying={() => { setIsPlaying(true); setBuffering(false); handleMouseMove(); }}
-              onPause={() => { setIsPlaying(false); setShowControls(true); }}
-              onSeeking={() => setBuffering(true)}
-              onSeeked={() => setBuffering(false)}
-              onEnded={handleVideoEnded}
-              onError={() => { setIsLoading(false); setBuffering(false); }}
-            />
-            
-            <div className="absolute inset-0 flex items-center justify-center z-10">
-              
-              {/* Cinematic Vignette Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/90"></div>
-              <div className="absolute inset-0 bg-radial-gradient"></div>
+                {/* Real HTML5 video layer */}
+                <video
+                  ref={videoRef}
+                  className={`absolute inset-0 w-full h-full object-contain bg-black transition-opacity duration-500 ${
+                    isLoading ? 'opacity-0' : 'opacity-100'
+                  }`}
+                  playsInline
+                  disablePictureInPicture
+                  controlsList="nodownload noremoteplayback"
+                  preload="metadata"
+                  onTimeUpdate={handleTimeUpdate}
+                  onLoadedMetadata={handleLoadedMetadata}
+                  onLoadStart={() => { setIsLoading(true); setBuffering(false); }}
+                  onLoadedData={() => setIsLoading(false)}
+                  onCanPlay={() => { setIsLoading(false); setBuffering(false); }}
+                  onWaiting={() => setBuffering(true)}
+                  onPlaying={() => { setIsPlaying(true); setBuffering(false); handleMouseMove(); }}
+                  onPause={onPause}
+                  onSeeking={() => setBuffering(true)}
+                  onSeeked={() => setBuffering(false)}
+                  onEnded={handleVideoEnded}
+                  onError={() => { setIsLoading(false); setBuffering(false); }}
+                />
 
-              {/* Secure Fingerprint Key */}
-              {!isPlaying && !isLoading && (
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center space-y-4 z-20 pointer-events-none">
-                  <div className="w-16 h-16 rounded-full bg-slate-900/80 border border-slate-800 flex items-center justify-center shadow-2xl text-premium-accent/80 animate-pulse">
-                    <Fingerprint className="w-8 h-8" />
-                  </div>
-                  <span className="text-[9px] text-slate-400 font-mono tracking-widest uppercase">ENCRYPTED LECTURE DECODER ACTIVE</span>
+                <div className="absolute inset-0 flex items-center justify-center z-10">
+                  {/* Cinematic Vignette Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/90"></div>
+                  <div className="absolute inset-0 bg-radial-gradient"></div>
+
+                  {/* Secure Fingerprint Key */}
+                  {!isPlaying && !isLoading && (
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center space-y-4 z-20 pointer-events-none">
+                      <div className="w-16 h-16 rounded-full bg-slate-900/80 border border-slate-800 flex items-center justify-center shadow-2xl text-premium-accent/80 animate-pulse">
+                        <Fingerprint className="w-8 h-8" />
+                      </div>
+                      <span className="text-[9px] text-slate-400 font-mono tracking-widest uppercase">ENCRYPTED LECTURE DECODER ACTIVE</span>
+                    </div>
+                  )}
+
+                  {/* Premium skeleton shimmer while loading */}
+                  {isLoading && (
+                    <div className="absolute inset-0 z-20">
+                      <div className="absolute inset-0 bg-slate-950/60"></div>
+                      <div className="absolute inset-0 overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+                      </div>
+                      <div className="absolute top-6 left-6 right-6">
+                        <div className="h-3 w-40 rounded bg-slate-800/60"></div>
+                        <div className="mt-3 h-2.5 w-64 rounded bg-slate-800/40"></div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Buffering indicator */}
+                  {isBuffering && !isLoading && (
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-3 pointer-events-none">
+                      <div className="w-14 h-14 rounded-full bg-slate-950/70 border border-slate-800 flex items-center justify-center shadow-2xl backdrop-blur-md">
+                        <div className="w-6 h-6 rounded-full border-2 border-premium-accent/90 border-t-transparent animate-spin"></div>
+                      </div>
+                      <span className="text-[9px] text-slate-400 font-mono tracking-widest uppercase">BUFFERING SECURE STREAM</span>
+                    </div>
+                  )}
+
+                  {/* HUD Play Button */}
+                  <motion.button 
+                    whileHover={{ scale: 1.08 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={togglePlay}
+                    className="w-20 h-20 bg-gradient-premium hover:shadow-[0_0_40px_rgba(37,99,235,0.4)] text-white rounded-full flex items-center justify-center shadow-2xl z-30 cursor-pointer border border-blue-400/20 transition-all duration-300"
+                  >
+                    {isPlaying ? (
+                      <Pause className="w-8 h-8 fill-current text-white" />
+                    ) : (
+                      <Play className="w-8 h-8 fill-current ml-1.5 text-white" />
+                    )}
+                  </motion.button>
+                  
+                  {/* Session Status HUD Banner */}
+                  {!isPlaying && !isLoading && (
+                    <div className="absolute bottom-16 left-1/2 -translate-x-1/2 bg-slate-950/90 border border-slate-800/80 px-6 py-3 rounded-2xl flex items-center gap-3 shadow-2xl z-20 backdrop-blur-md">
+                      <span className="w-2 h-2 rounded-full bg-premium-accent animate-ping"></span>
+                      <span className="text-[9px] text-slate-300 font-mono uppercase tracking-widest font-bold">
+                        Authenticated stream • 4K UHD 60fps • L3 DRM
+                      </span>
+                    </div>
+                  )}
                 </div>
-              )}
 
-              {/* Premium skeleton shimmer while loading */}
-              {isLoading && (
-                <div className="absolute inset-0 z-20">
-                  <div className="absolute inset-0 bg-slate-950/60"></div>
-                  <div className="absolute inset-0 overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+                {/* Custom Cinematic controls bar */}
+                <div className={`absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent transition-opacity duration-300 z-30 space-y-4 ${
+                  showControls || !isPlaying ? 'opacity-100' : 'opacity-0'
+                }`}>
+                  
+                  {/* Scrubber timeline */}
+                  <div 
+                    className="relative h-1.5 w-full bg-slate-800 rounded-full cursor-pointer group/timeline"
+                    onClick={handleSeek}
+                    onTouchStart={handleSeek}
+                    onTouchMove={handleSeek}
+                  >
+                    <div 
+                      className="absolute top-0 left-0 h-full bg-premium-accent rounded-full shadow-[0_0_12px_rgba(37,99,235,0.8)]" 
+                      style={{ width: `${videoProgress}%` }}
+                    ></div>
+                    <div 
+                      className="absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 bg-[#0b0b0d] rounded-full opacity-0 group-hover/timeline:opacity-100 transition-opacity shadow-lg"
+                      style={{ left: `calc(${videoProgress}% - 7px)` }}
+                    ></div>
                   </div>
-                  <div className="absolute top-6 left-6 right-6">
-                    <div className="h-3 w-40 rounded bg-slate-800/60"></div>
-                    <div className="mt-3 h-2.5 w-64 rounded bg-slate-800/40"></div>
+                  
+                  {/* Left/Right Controllers */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-6">
+                      <button onClick={() => seekBy(-10)} className="text-slate-400 hover:text-white transition-colors cursor-pointer" title="Back 10s"><SkipBack className="w-5 h-5" /></button>
+                      <button 
+                        onClick={togglePlay}
+                        className="text-white hover:text-premium-accent transition-colors cursor-pointer"
+                      >
+                        {isPlaying ? (
+                          <Pause className="w-5 h-5 text-white" />
+                        ) : (
+                          <Play className="w-5 h-5 fill-current text-white" />
+                        )}
+                      </button>
+                      <button onClick={() => seekBy(10)} className="text-slate-400 hover:text-white transition-colors cursor-pointer" title="Forward 10s"><SkipForward className="w-5 h-5" /></button>
+                      
+                      {/* Volume block */}
+                      <div className="flex items-center gap-2.5 ml-4">
+                        <button 
+                          onClick={toggleMute}
+                          className="text-slate-400 hover:text-white transition-colors cursor-pointer focus:outline-none"
+                          title={isMuted ? "Unmute" : "Mute"}
+                        >
+                          {isMuted || volume === 0 ? (
+                            <VolumeX className="w-4.5 h-4.5 text-red-500 animate-pulse" />
+                          ) : volume < 40 ? (
+                            <Volume1 className="w-4.5 h-4.5 text-slate-300" />
+                          ) : (
+                            <Volume2 className="w-4.5 h-4.5 text-slate-300" />
+                          )}
+                        </button>
+                        <input 
+                          type="range" 
+                          min="0" 
+                          max="100" 
+                          value={volume}
+                          onChange={handleVolumeChange}
+                          className="w-16 h-1 bg-slate-800 rounded-full appearance-none cursor-pointer accent-premium-accent"
+                        />
+                      </div>
+                      <span className="text-[10px] text-slate-500 font-mono ml-4 uppercase tracking-widest font-black">
+                        {formatTime(currentTime)} / {formatTime(duration)}
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-center gap-5">
+                      <Badge className="text-[8px] font-black text-premium-accent bg-slate-900 border border-premium-accent/20 px-2 py-0.5 rounded tracking-widest font-mono">
+                        4K ULTRA
+                      </Badge>
+
+                      {/* Quality selector */}
+                      <div className="relative shrink-0">
+                        <button 
+                          onClick={() => { setShowQualityMenu(!showQualityMenu); setShowSettings(false); }}
+                          className="text-[10px] font-bold text-slate-400 hover:text-white border border-slate-800 rounded-lg px-2.5 py-1 bg-slate-900 flex items-center gap-1 cursor-pointer focus:outline-none"
+                          title="Quality"
+                        >
+                          Q: {selectedQuality}
+                        </button>
+                        {showQualityMenu && (
+                          <div className="absolute bottom-9 right-0 w-24 bg-slate-900 border border-slate-850 rounded-lg shadow-xl p-1 z-40 text-left">
+                            {QUALITY_OPTIONS.map(q => (
+                              <button
+                                key={q}
+                                onClick={() => { setSelectedQuality(q); setShowQualityMenu(false); }}
+                                className="block w-full text-left px-2.5 py-1.5 rounded text-[10px] text-slate-400 hover:bg-slate-800 hover:text-white font-bold"
+                              >
+                                {q}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Playback speed selector */}
+                      <div className="relative shrink-0">
+                        <button 
+                          onClick={() => { setShowSettings(!showSettings); setShowQualityMenu(false); }}
+                          className="text-[10px] font-bold text-slate-400 hover:text-white border border-slate-800 rounded-lg px-2.5 py-1 bg-slate-900 flex items-center gap-1 cursor-pointer focus:outline-none"
+                        >
+                          Speed: {playbackSpeed}
+                        </button>
+                        {showSettings && (
+                          <div className="absolute bottom-9 right-0 w-24 bg-slate-900 border border-slate-850 rounded-lg shadow-xl p-1 z-40 text-left">
+                            {['0.75x', '1.0x', '1.25x', '1.5x', '2.0x'].map(speed => (
+                              <button
+                                key={speed}
+                                onClick={() => handleSpeedChange(speed)}
+                                className="block w-full text-left px-2.5 py-1.5 rounded text-[10px] text-slate-400 hover:bg-slate-800 hover:text-white font-bold"
+                              >
+                                {speed}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      
+                      <button className="text-slate-400 hover:text-white transition-colors cursor-pointer"><Settings className="w-4.5 h-4.5" /></button>
+                      <button 
+                        onClick={toggleFullscreen}
+                        className={`transition-colors cursor-pointer ${
+                          isFullscreen ? 'text-premium-accent hover:text-white' : 'text-slate-400 hover:text-white'
+                        }`}
+                        title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+                      >
+                        <Maximize className="w-4.5 h-4.5" />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              )}
-
-              {/* Buffering indicator */}
-              {isBuffering && !isLoading && (
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-3 pointer-events-none">
-                  <div className="w-14 h-14 rounded-full bg-slate-950/70 border border-slate-800 flex items-center justify-center shadow-2xl backdrop-blur-md">
-                    <div className="w-6 h-6 rounded-full border-2 border-premium-accent/90 border-t-transparent animate-spin"></div>
-                  </div>
-                  <span className="text-[9px] text-slate-400 font-mono tracking-widest uppercase">BUFFERING SECURE STREAM</span>
-                </div>
-              )}
-
-              {/* HUD Play Button */}
-              <motion.button 
-                whileHover={{ scale: 1.08 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={togglePlay}
-                className="w-20 h-20 bg-gradient-premium hover:shadow-[0_0_40px_rgba(37,99,235,0.4)] text-white rounded-full flex items-center justify-center shadow-2xl z-30 cursor-pointer border border-blue-400/20 transition-all duration-300"
-              >
-                {isPlaying ? (
-                  <Pause className="w-8 h-8 fill-current text-white" />
-                ) : (
-                  <Play className="w-8 h-8 fill-current ml-1.5 text-white" />
-                )}
-              </motion.button>
-              
-              {/* Session Status HUD Banner */}
-              {!isPlaying && !isLoading && (
-                <div className="absolute bottom-16 left-1/2 -translate-x-1/2 bg-slate-950/90 border border-slate-800/80 px-6 py-3 rounded-2xl flex items-center gap-3 shadow-2xl z-20 backdrop-blur-md">
-                  <span className="w-2 h-2 rounded-full bg-premium-accent animate-ping"></span>
-                  <span className="text-[9px] text-slate-300 font-mono uppercase tracking-widest font-bold">
-                    Authenticated stream • 4K UHD 60fps • L3 DRM
-                  </span>
-                </div>
-              )}
-            </div>
+              </>
+            )}
 
             {/* Dynamic anti-piracy moving watermark */}
             <motion.div 
@@ -660,9 +899,9 @@ const CourseWatch = () => {
               transition={{ duration: 1.5, ease: "easeInOut" }}
               className="absolute pointer-events-none text-slate-500/10 text-[9px] font-mono z-30 select-none whitespace-nowrap leading-relaxed tracking-wider border border-white/5 bg-slate-900/[0.05] p-3.5 rounded-xl backdrop-blur-[0.5px]"
             >
-              <p className="font-black">STUDENT ID: john.doe@bgrealtyacademy.com</p>
-              <p>SECURE TERMINAL: 192.168.1.104</p>
-              <p>ENCRYPTION AUTH KEY: BJ-SEC-2983848</p>
+              <p className="font-black">STUDENT EMAIL: {user?.email || "student@bjrealty.com"}</p>
+              <p>SECURE TERMINAL ID: BJ-LMS-NODE-{user?.id || "0"}</p>
+              <p>ENCRYPTION AUTH KEY: BJ-SEC-{(user?.id || 99) * 23848}</p>
               <p>TIMESTAMP: {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</p>
             </motion.div>
 
@@ -673,159 +912,26 @@ const CourseWatch = () => {
                 SSL SECURE CAPTURE SHIELD
               </div>
             </div>
-
-            {/* Custom Cinematic controls bar */}
-            <div className={`absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent transition-opacity duration-300 z-30 space-y-4 ${
-              showControls || !isPlaying ? 'opacity-100' : 'opacity-0'
-            }`}>
-              
-              {/* Scrubber timeline */}
-              <div 
-                className="relative h-1.5 w-full bg-slate-800 rounded-full cursor-pointer group/timeline"
-                onClick={handleSeek}
-                onTouchStart={handleSeek}
-                onTouchMove={handleSeek}
-              >
-                <div 
-                  className="absolute top-0 left-0 h-full bg-premium-accent rounded-full shadow-[0_0_12px_rgba(37,99,235,0.8)]" 
-                  style={{ width: `${videoProgress}%` }}
-                ></div>
-                <div 
-                  className="absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 bg-[#0b0b0d] rounded-full opacity-0 group-hover/timeline:opacity-100 transition-opacity shadow-lg"
-                  style={{ left: `calc(${videoProgress}% - 7px)` }}
-                ></div>
-              </div>
-              
-              {/* Left/Right Controllers */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-6">
-                  <button onClick={() => seekBy(-10)} className="text-slate-400 hover:text-white transition-colors cursor-pointer" title="Back 10s"><SkipBack className="w-5 h-5" /></button>
-                  <button 
-                    onClick={togglePlay}
-                    className="text-white hover:text-premium-accent transition-colors cursor-pointer"
-                  >
-                    {isPlaying ? (
-                      <Pause className="w-5 h-5 text-white" />
-                    ) : (
-                      <Play className="w-5 h-5 fill-current text-white" />
-                    )}
-                  </button>
-                  <button onClick={() => seekBy(10)} className="text-slate-400 hover:text-white transition-colors cursor-pointer" title="Forward 10s"><SkipForward className="w-5 h-5" /></button>
-                  
-                  {/* Volume block */}
-                  <div className="flex items-center gap-2.5 ml-4">
-                    <button 
-                      onClick={toggleMute}
-                      className="text-slate-400 hover:text-white transition-colors cursor-pointer focus:outline-none"
-                      title={isMuted ? "Unmute" : "Mute"}
-                    >
-                      {isMuted || volume === 0 ? (
-                        <VolumeX className="w-4.5 h-4.5 text-red-500 animate-pulse" />
-                      ) : volume < 40 ? (
-                        <Volume1 className="w-4.5 h-4.5 text-slate-300" />
-                      ) : (
-                        <Volume2 className="w-4.5 h-4.5 text-slate-300" />
-                      )}
-                    </button>
-                    <input 
-                      type="range" 
-                      min="0" 
-                      max="100" 
-                      value={volume}
-                      onChange={handleVolumeChange}
-                      className="w-16 h-1 bg-slate-800 rounded-full appearance-none cursor-pointer accent-premium-accent"
-                    />
-                  </div>
-                  <span className="text-[10px] text-slate-500 font-mono ml-4 uppercase tracking-widest font-black">
-                    {formatTime(currentTime)} / {formatTime(duration)}
-                  </span>
-                </div>
-                
-                <div className="flex items-center gap-5">
-                  <Badge className="text-[8px] font-black text-premium-accent bg-slate-900 border border-premium-accent/20 px-2 py-0.5 rounded tracking-widest font-mono">
-                    4K ULTRA
-                  </Badge>
-
-                  {/* Quality selector */}
-                  <div className="relative shrink-0">
-                    <button 
-                      onClick={() => { setShowQualityMenu(!showQualityMenu); setShowSettings(false); }}
-                      className="text-[10px] font-bold text-slate-400 hover:text-white border border-slate-800 rounded-lg px-2.5 py-1 bg-slate-900 flex items-center gap-1 cursor-pointer focus:outline-none"
-                      title="Quality"
-                    >
-                      Q: {selectedQuality}
-                    </button>
-                    {showQualityMenu && (
-                      <div className="absolute bottom-9 right-0 w-24 bg-slate-900 border border-slate-850 rounded-lg shadow-xl p-1 z-40 text-left">
-                        {QUALITY_OPTIONS.map(q => (
-                          <button
-                            key={q}
-                            onClick={() => { setSelectedQuality(q); setShowQualityMenu(false); }}
-                            className="block w-full text-left px-2.5 py-1.5 rounded text-[10px] text-slate-400 hover:bg-slate-800 hover:text-white font-bold"
-                          >
-                            {q}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Playback speed selector */}
-                  <div className="relative shrink-0">
-                    <button 
-                      onClick={() => { setShowSettings(!showSettings); setShowQualityMenu(false); }}
-                      className="text-[10px] font-bold text-slate-400 hover:text-white border border-slate-800 rounded-lg px-2.5 py-1 bg-slate-900 flex items-center gap-1 cursor-pointer focus:outline-none"
-                    >
-                      Speed: {playbackSpeed}
-                    </button>
-                    {showSettings && (
-                      <div className="absolute bottom-9 right-0 w-24 bg-slate-900 border border-slate-850 rounded-lg shadow-xl p-1 z-40 text-left">
-                        {['0.75x', '1.0x', '1.25x', '1.5x', '2.0x'].map(speed => (
-                          <button
-                            key={speed}
-                            onClick={() => handleSpeedChange(speed)}
-                            className="block w-full text-left px-2.5 py-1.5 rounded text-[10px] text-slate-400 hover:bg-slate-800 hover:text-white font-bold"
-                          >
-                            {speed}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                  
-                  <button className="text-slate-400 hover:text-white transition-colors cursor-pointer"><Settings className="w-4.5 h-4.5" /></button>
-                  <button 
-                    onClick={toggleFullscreen}
-                    className={`transition-colors cursor-pointer ${
-                      isFullscreen ? 'text-premium-accent hover:text-white' : 'text-slate-400 hover:text-white'
-                    }`}
-                    title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
-                  >
-                    <Maximize className="w-4.5 h-4.5" />
-                  </button>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Active Lecture Header bar */}
           <div className="bg-[#0b101b] border-b border-slate-800/60 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div className="space-y-1 text-left">
               <span className="text-[9px] font-black text-premium-accent uppercase tracking-widest">
-                Currently Playing • Module {activeLecture.id}
+                Currently Playing • Lecture {activeLecture.sort_order || 1}
               </span>
               <h2 className="text-xl font-black text-white leading-tight">
                 {activeLecture.title}
               </h2>
-              <p className="text-xs text-slate-400 font-medium">
-                {activeCourse.category} SPECIALIZATION SYLLABUS
+              <p className="text-xs text-slate-400 font-medium uppercase tracking-wider">
+                {course.category_name || 'General'} Specialization Syllabus
               </p>
             </div>
             
             <div className="flex flex-wrap gap-2.5 shrink-0">
               <Badge variant="premium" className="rounded-lg h-8 text-[9px] font-black tracking-wider bg-slate-900 border border-premium-accent/20 flex items-center gap-1">
                 <Sparkles className="w-3.5 h-3.5 text-premium-accent" />
-                Specialty: {activeCourse.specializationBadge}
+                Specialty: {course.category_name || 'General'}
               </Badge>
               <Badge variant="success" className="rounded-lg h-8 text-[9px] font-black tracking-wider bg-slate-900 border border-green-800/40 flex items-center gap-1 text-emerald-400">
                 <CheckCircle className="w-3.5 h-3.5" />
@@ -869,7 +975,7 @@ const CourseWatch = () => {
                   >
                     <h3 className="text-base font-black text-white uppercase tracking-wider">Module Objectives & Directives</h3>
                     <p className="text-xs md:text-sm text-slate-300 leading-relaxed font-medium">
-                      {activeCourse.overviewText}
+                      {activeLecture.description || course.description}
                     </p>
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -913,25 +1019,36 @@ const CourseWatch = () => {
                       </p>
                     </div>
 
-                    {activeCourse.resources.map((file, i) => (
-                      <div 
-                        key={i} 
-                        className="flex items-center justify-between p-4 bg-[#0b101b] rounded-2xl border border-slate-850 hover:border-premium-accent/30 hover:bg-[#0f1625]/60 transition-all shadow-md group"
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className="w-11 h-11 bg-slate-900 border border-slate-800 flex items-center justify-center rounded-xl shrink-0 group-hover:scale-105 transition-transform duration-300">
-                            <FileText className="w-5.5 h-5.5 text-slate-400" />
+                    {resources.length === 0 ? (
+                      <p className="text-xs text-slate-500 font-bold">No spreadsheets or templates have been uploaded for this course yet.</p>
+                    ) : (
+                      resources.map((file, i) => (
+                        <div 
+                          key={file.id || i} 
+                          className="flex items-center justify-between p-4 bg-[#0b101b] rounded-2xl border border-slate-850 hover:border-premium-accent/30 hover:bg-[#0f1625]/60 transition-all shadow-md group"
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className="w-11 h-11 bg-slate-900 border border-slate-800 flex items-center justify-center rounded-xl shrink-0 group-hover:scale-105 transition-transform duration-300">
+                              <FileText className="w-5.5 h-5.5 text-slate-400" />
+                            </div>
+                            <div className="text-left">
+                              <p className="text-xs font-black text-white leading-none">{file.filename || file.title}</p>
+                              <p className="text-[10px] text-slate-400 font-bold mt-1.5">{file.description || 'Blueprint Calculator Asset'} • {(file.file_size / 1024 / 1024).toFixed(2)} MB</p>
+                            </div>
                           </div>
-                          <div className="text-left">
-                            <p className="text-xs font-black text-white leading-none">{file.name}</p>
-                            <p className="text-[10px] text-slate-400 font-bold mt-1.5">{file.desc} • {file.size}</p>
-                          </div>
+                          <a 
+                            href={`${API_BASE_URL}/${file.file_path}`} 
+                            download 
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <Button variant="outline" size="icon" className="h-10 w-10 bg-slate-900 border border-slate-800 hover:border-premium-accent text-slate-400 hover:text-white cursor-pointer active:scale-95 shadow-md">
+                              <Download className="w-4 h-4" />
+                            </Button>
+                          </a>
                         </div>
-                        <Button variant="outline" size="icon" className="h-10 w-10 bg-slate-900 border border-slate-800 hover:border-premium-accent text-slate-400 hover:text-white cursor-pointer active:scale-95 shadow-md">
-                          <Download className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    ))}
+                      ))
+                    )}
                   </motion.div>
                 )}
 
@@ -1097,73 +1214,83 @@ const CourseWatch = () => {
                   <div className="flex items-center justify-between">
                     <h3 className="font-black text-xs uppercase tracking-widest text-white">Course Syllabus</h3>
                     <span className="text-[9px] font-mono font-black text-premium-accent bg-premium-accent/10 border border-premium-accent/20 px-2 py-0.5 rounded">
-                      Syllabus progress: 62%
+                      Syllabus progress: {courseProgress}%
                     </span>
                   </div>
                   <div className="h-2 w-full bg-slate-900 border border-slate-800 rounded-full overflow-hidden shadow-inner">
-                    <div className="h-full bg-gradient-to-r from-blue-600 to-premium-accent shadow-[0_0_8px_rgba(37,99,235,0.4)]" style={{ width: '62%' }}></div>
+                    <div 
+                      className="h-full bg-gradient-to-r from-blue-600 to-premium-accent shadow-[0_0_8px_rgba(37,99,235,0.4)]" 
+                      style={{ width: `${courseProgress}%` }}
+                    ></div>
                   </div>
                 </div>
                 
                 {/* Syllabus Chapters */}
                 <div className="flex-1 overflow-y-auto custom-scrollbar text-left scrollbar-thin">
-                  <div className="p-4 bg-slate-900/30 border-b border-slate-950">
-                    <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest font-mono">MODULE 1: ACQUISITION DEEP DIVE</span>
-                  </div>
-                  {activeCourse.lectures.map((lecture, i) => {
-                    const isActive = activeLecture.id === lecture.id;
-                    
-                    return (
-                      <div 
-                        key={lecture.id}
-                        onClick={() => {
-                          if (!lecture.locked) {
-                            setActiveLecture(lecture);
-                            if (isMobile) setSidebarOpen(false);
-                          }
-                        }}
-                        className={`p-5 border-b border-slate-900/60 cursor-pointer transition-all duration-300 ${
-                          isActive 
-                            ? 'bg-[#0f1625]/60 border-l-2 border-l-premium-accent shadow-inner' 
-                            : 'hover:bg-slate-900/40'
-                        } ${lecture.locked ? 'opacity-35 grayscale pointer-events-none' : ''}`}
-                      >
-                        <div className="flex gap-4">
-                          {/* Checkbox state */}
-                          <div className="shrink-0 mt-0.5">
-                            {lecture.completed ? (
-                              <div className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center shadow-md">
-                                <CheckCircle className="w-3 h-3 text-white" />
+                  {course.modules?.map((mod, modIdx) => (
+                    <div key={mod.id || modIdx}>
+                      <div className="p-4 bg-slate-900/30 border-b border-slate-950 flex items-center justify-between">
+                        <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest font-mono">
+                          MODULE {modIdx + 1}: {mod.title}
+                        </span>
+                      </div>
+                      
+                      {mod.lectures?.map((lecture, i) => {
+                        const isActive = activeLecture?.id === lecture.id;
+                        
+                        return (
+                          <div 
+                            key={lecture.id}
+                            onClick={() => {
+                              if (!lecture.locked) {
+                                setActiveLecture(lecture);
+                                if (isMobile) setSidebarOpen(false);
+                              }
+                            }}
+                            className={`p-5 border-b border-slate-900/60 cursor-pointer transition-all duration-300 ${
+                              isActive 
+                                ? 'bg-[#0f1625]/60 border-l-2 border-l-premium-accent shadow-inner' 
+                                : 'hover:bg-slate-900/40'
+                            } ${lecture.locked ? 'opacity-35 grayscale pointer-events-none' : ''}`}
+                          >
+                            <div className="flex gap-4">
+                              {/* Checkbox state */}
+                              <div className="shrink-0 mt-0.5">
+                                {lecture.completed ? (
+                                  <div className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center shadow-md">
+                                    <CheckCircle className="w-3 h-3 text-white" />
+                                  </div>
+                                ) : lecture.locked ? (
+                                  <Lock className="w-3.5 h-3.5 text-slate-500" />
+                                ) : (
+                                  <div className={`w-4 h-4 rounded-full border-2 ${
+                                    isActive ? 'border-premium-accent shadow-[0_0_6px_rgba(37,99,235,0.4)]' : 'border-slate-700'
+                                  }`}></div>
+                                )}
                               </div>
-                            ) : lecture.locked ? (
-                              <Lock className="w-3.5 h-3.5 text-slate-500" />
-                            ) : (
-                              <div className={`w-4 h-4 rounded-full border-2 ${
-                                isActive ? 'border-premium-accent shadow-[0_0_6px_rgba(37,99,235,0.4)]' : 'border-slate-700'
-                              }`}></div>
-                            )}
-                          </div>
 
-                          {/* Class name & Duration */}
-                          <div className="flex-1 min-w-0 text-left">
-                            <p className={`font-black text-xs truncate leading-snug ${
-                              isActive ? 'text-white font-black' : 'text-slate-300'
-                            }`}>
-                              Lecture {i + 1}: {lecture.title}
-                            </p>
-                            <div className="flex items-center gap-2.5 text-[9px] text-slate-500 font-mono uppercase mt-1.5">
-                              <span>{lecture.duration} mins</span>
-                              {lecture.locked && (
-                                <span className="text-[8px] font-black text-amber-500 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded tracking-widest font-mono">
-                                  Elite Locked
-                                </span>
-                              )}
+                              {/* Class name & Duration */}
+                              <div className="flex-1 min-w-0 text-left">
+                                <p className={`font-black text-xs truncate leading-snug ${
+                                  isActive ? 'text-white font-black' : 'text-slate-300'
+                                }`}>
+                                  Lecture {lecture.sort_order || i + 1}: {lecture.title}
+                                </p>
+                                <div className="flex items-center gap-2.5 text-[9px] text-slate-500 font-mono uppercase mt-1.5">
+                                  <span>{lecture.duration || '15'} mins</span>
+                                  {lecture.locked && (
+                                    <span className="text-[8px] font-black text-amber-500 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded tracking-widest font-mono">
+                                      Elite Locked
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </div>
-                    );
-                  })}
+                        );
+                      })}
+                    </div>
+                  ))}
                 </div>
 
                 {/* Secure Active Footprint logs */}
@@ -1185,11 +1312,11 @@ const CourseWatch = () => {
                       <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></span>
                       ● SSL ENCRYPTED CONNECTION
                     </p>
-                    <p>Client footprint: 192.168.1.104</p>
+                    <p>Client footprint: {user?.email || "student@bjrealty.com"}</p>
                     <p>Terminal: Chrome Desktop / Linux</p>
                   </div>
                   <button 
-                    onClick={() => alert("Credentials Audited. Encryption Signature: BJ-SEC-2983848-OK")}
+                    onClick={() => alert(`Credentials Audited. Encryption Signature: BJ-SEC-${(user?.id || 99) * 23848}-OK`)}
                     className="w-full text-[9px] uppercase font-black tracking-widest h-10 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-slate-300 transition-all duration-300 cursor-pointer shadow-md active:scale-95"
                   >
                     Verify Encryption Key

@@ -8,6 +8,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { AdminTable, AdminModal } from '../../components/admin/AdminComponents';
 import { Button, Badge, GlassCard } from '../../components/UI';
+import { useAuth } from '../../context/AuthContext';
 
 // Modern preset Unsplash images for webinars
 const PRESET_BANNERS = [
@@ -105,8 +106,75 @@ const initialPerformance = [
 ];
 
 export default function AdminLiveClasses() {
-  const [webinars, setWebinars] = useState(initialWebinars);
+  const { token, API_BASE_URL } = useAuth();
+  const [webinars, setWebinars] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [performance, setPerformance] = useState(initialPerformance);
+
+  const addHoursToTime = (timeStr, hours) => {
+    if (!timeStr) return '';
+    const [h, m] = timeStr.split(':').map(Number);
+    const date = new Date();
+    date.setHours(h);
+    date.setMinutes(m);
+    date.setTime(date.getTime() + hours * 60 * 60 * 1000);
+    return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+  };
+
+  const fetchWebinars = async () => {
+    if (!token) return;
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/webinars`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      if (data.status === 'success' && Array.isArray(data.data)) {
+        const mapped = data.data.map(w => {
+          const dtParts = (w.date_time || '').split(' ');
+          const date = dtParts[0] || '';
+          const time = dtParts[1] ? dtParts[1].substring(0, 5) : '';
+          
+          let status = 'Upcoming';
+          if (w.is_live) {
+            status = 'Live';
+          } else if (w.recording_url) {
+            status = 'Completed';
+          } else {
+            const targetTime = new Date((w.date_time || '').replace(' ', 'T'));
+            if (targetTime < new Date()) {
+              status = 'Completed';
+            } else {
+              status = 'Upcoming';
+            }
+          }
+          
+          return {
+            id: w.id,
+            topic: w.title,
+            instructor: w.mentor_name || 'Sarah Jenkins',
+            date: date,
+            time: time,
+            endTime: time ? addHoursToTime(time, 1.5) : '',
+            link: w.stream_link || '',
+            students: 120,
+            status: status,
+            duration: "90 Mins",
+            banner: w.recording_url ? PRESET_BANNERS[2].url : PRESET_BANNERS[w.id % PRESET_BANNERS.length].url,
+            description: w.recording_url ? `Recorded session replay: ${w.recording_url}` : "Interactive masterclass."
+          };
+        });
+        setWebinars(mapped);
+      }
+    } catch (err) {
+      console.error("Failed to fetch webinars:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchWebinars();
+  }, [token]);
   const [modalOpen, setModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
@@ -201,46 +269,58 @@ export default function AdminLiveClasses() {
   };
 
   // Handle Create / Edit Webinar
-  const handleSaveWebinar = (e) => {
+  const handleSaveWebinar = async (e) => {
     e.preventDefault();
-    const duration = calculateDurationMinutes(formState.time, formState.endTime);
+    const dateTimeStr = `${formState.date} ${formState.time}`;
     
     if (isEditing) {
-      setWebinars(prev => prev.map(w => {
-        if (w.id === editId) {
-          return {
-            ...w,
-            topic: formState.topic,
-            instructor: formState.instructor,
-            date: formState.date,
-            time: formState.time,
-            endTime: formState.endTime,
-            link: formState.link,
-            description: formState.description,
-            banner: formState.banner,
-            duration: duration
-          };
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/webinars/${editId}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            title: formState.topic,
+            mentor_name: formState.instructor,
+            date_time: dateTimeStr,
+            stream_link: formState.link,
+            is_live: webinars.find(w => w.id === editId)?.status === 'Live' ? 1 : 0
+          })
+        });
+        const resData = await response.json();
+        if (resData.status === 'success') {
+          fetchWebinars();
         }
-        return w;
-      }));
+      } catch (err) {
+        console.error("Failed to update webinar:", err);
+      }
       setIsEditing(false);
       setEditId(null);
     } else {
-      const newWebinar = {
-        id: Date.now(),
-        topic: formState.topic,
-        instructor: formState.instructor,
-        date: formState.date,
-        time: formState.time,
-        endTime: formState.endTime,
-        link: formState.link,
-        students: 0,
-        status: "Upcoming",
-        duration: duration,
-        banner: formState.banner,
-        description: formState.description || "Interactive masterclass."
-      };
-      setWebinars([newWebinar, ...webinars]);
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/webinars`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            title: formState.topic,
+            mentor_name: formState.instructor,
+            date_time: dateTimeStr,
+            stream_link: formState.link,
+            is_live: 1
+          })
+        });
+        const resData = await response.json();
+        if (resData.status === 'success' || response.status === 201) {
+          fetchWebinars();
+        }
+      } catch (err) {
+        console.error("Failed to create webinar:", err);
+      }
     }
     
     setModalOpen(false);
@@ -288,60 +368,92 @@ export default function AdminLiveClasses() {
   };
 
   // Broadcast activation/completion simulation
-  const handleStartStream = (id) => {
-    setWebinars(prev => prev.map(w => {
-      if (w.id === id) {
-        // Initialize dynamic viewers
+  const handleStartStream = async (id) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/webinars/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          is_live: 1
+        })
+      });
+      const data = await response.json();
+      if (data.status === 'success') {
         setLiveViewers(prevL => ({ ...prevL, [id]: 45 }));
-        return { ...w, status: "Live" };
+        fetchWebinars();
       }
-      return w;
-    }));
+    } catch (err) {
+      console.error("Failed to start stream:", err);
+    }
   };
 
-  const handleCompleteStream = (id) => {
+  const handleCompleteStream = async (id) => {
     const webinar = webinars.find(w => w.id === id);
     if (!webinar) return;
 
-    setWebinars(prev => prev.map(w => {
-      if (w.id === id) {
-        return { ...w, status: "Completed" };
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/webinars/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          is_live: 0,
+          recording_url: 'https://www.w3schools.com/html/mov_bbb.mp4'
+        })
+      });
+      const data = await response.json();
+      if (data.status === 'success') {
+        const viewersPeak = liveViewers[id] || Math.floor(webinar.students * 0.8) || 50;
+        const regCount = webinar.students || 60;
+        const newPerf = {
+          id: Date.now(),
+          topic: webinar.topic,
+          date: webinar.date,
+          instructor: webinar.instructor,
+          peakViewers: viewersPeak,
+          registered: regCount,
+          engagement: Math.floor(Math.random() * 15) + 75,
+          rating: Number((4.5 + Math.random() * 0.5).toFixed(1))
+        };
+        setPerformance(prev => [newPerf, ...prev]);
+
+        setLiveViewers(prev => {
+          const next = { ...prev };
+          delete next[id];
+          return next;
+        });
+        
+        fetchWebinars();
       }
-      return w;
-    }));
-
-    // Add to performance log
-    const viewersPeak = liveViewers[id] || Math.floor(webinar.students * 0.8) || 50;
-    const regCount = webinar.students || 60;
-    const newPerf = {
-      id: Date.now(),
-      topic: webinar.topic,
-      date: webinar.date,
-      instructor: webinar.instructor,
-      peakViewers: viewersPeak,
-      registered: regCount,
-      engagement: Math.floor(Math.random() * 15) + 75, // 75-90%
-      rating: Number((4.5 + Math.random() * 0.5).toFixed(1))
-    };
-    setPerformance([newPerf, ...performance]);
-
-    // Cleanup live state
-    setLiveViewers(prev => {
-      const next = { ...prev };
-      delete next[id];
-      return next;
-    });
+    } catch (err) {
+      console.error("Failed to complete stream:", err);
+    }
   };
 
-  const handleDeleteWebinar = (id) => {
+  const handleDeleteWebinar = async (id) => {
     if (confirm("Are you sure you want to delete and cancel this webinar broadcast? Enrolled students will be notified.")) {
-      setWebinars(prev => prev.filter(w => w.id !== id));
-      // Cleanup live if any
-      setLiveViewers(prev => {
-        const next = { ...prev };
-        delete next[id];
-        return next;
-      });
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/webinars/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        if (data.status === 'success') {
+          setLiveViewers(prev => {
+            const next = { ...prev };
+            delete next[id];
+            return next;
+          });
+          fetchWebinars();
+        }
+      } catch (err) {
+        console.error("Failed to delete webinar:", err);
+      }
     }
   };
 

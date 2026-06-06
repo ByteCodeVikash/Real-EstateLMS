@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ClipboardList, FileText, CheckCircle, Clock, AlertTriangle, MessageSquare, Send } from 'lucide-react';
 import { AdminTable, AdminDrawer } from '../../components/admin/AdminComponents';
 import { Button } from '../../components/UI';
+import { useAuth } from '../../context/AuthContext';
 
 const initialSubmissions = [
   { id: 1, student: "Robert Fox", course: "Luxury Flipping Masterclass", topic: "Off-Market Deal Sourcing Assignment", submitted: "2026-05-22", score: "88/100", status: "Graded", feedback: "Excellent deal finding report. Solid comps!" },
@@ -12,27 +13,89 @@ const initialSubmissions = [
 ];
 
 export default function AdminAssignments() {
-  const [submissions, setSubmissions] = useState(initialSubmissions);
+  const { token, API_BASE_URL } = useAuth();
+  const [submissions, setSubmissions] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedSub, setSelectedSub] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [gradeInput, setGradeInput] = useState('80');
   const [feedbackInput, setFeedbackInput] = useState('');
   const [statusInput, setStatusInput] = useState('Graded');
 
-  const handleGradeSubmit = (e) => {
-    e.preventDefault();
-    setSubmissions(prev => prev.map(s => {
-      if (s.id === selectedSub.id) {
-        alert(`Graded submission for "${s.student}"! Score: ${gradeInput}/100.`);
-        return {
-          ...s,
-          score: `${gradeInput}/100`,
-          status: statusInput,
-          feedback: feedbackInput
-        };
+  const fetchSubmissions = async () => {
+    if (!token) return;
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/submissions`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      if (data.status === 'success' && Array.isArray(data.data)) {
+        const mapped = data.data.map(s => {
+          let scoreStr = "—";
+          if (s.marks !== null) {
+            scoreStr = `${s.marks}/${s.max_marks || 100}`;
+          }
+          
+          let uiStatus = "Pending";
+          if (s.status === "Graded") uiStatus = "Graded";
+          if (s.status === "Revision Requested" || s.status === "Needs Revision") uiStatus = "Needs Revision";
+          
+          return {
+            id: s.id,
+            student: s.student_name || "Unknown Student",
+            course: s.course_title || "LMS Course",
+            topic: s.assignment_title || "Assignment Task",
+            submitted: s.submitted_at ? s.submitted_at.substring(0, 10) : "",
+            score: scoreStr,
+            status: uiStatus,
+            feedback: s.feedback || "",
+            file_path: s.file_path || ""
+          };
+        });
+        setSubmissions(mapped);
       }
-      return s;
-    }));
+    } catch (err) {
+      console.error("Failed to fetch submissions:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSubmissions();
+  }, [token]);
+
+  const handleGradeSubmit = async (e) => {
+    e.preventDefault();
+    
+    let apiStatus = "Graded";
+    if (statusInput === "Needs Revision") apiStatus = "Revision Requested";
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/submissions/${selectedSub.id}/grade`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          marks: Number(gradeInput),
+          feedback: feedbackInput,
+          status: apiStatus
+        })
+      });
+      const resData = await response.json();
+      if (resData.status === 'success') {
+        alert("Submission graded successfully!");
+        fetchSubmissions();
+      } else {
+        alert("Failed to save grade: " + (resData.message || "Unknown error"));
+      }
+    } catch (err) {
+      console.error("Failed to submit grade:", err);
+      alert("Error grading submission.");
+    }
+    
     setDrawerOpen(false);
     setSelectedSub(null);
   };
@@ -184,9 +247,19 @@ export default function AdminAssignments() {
               <p className="text-sm font-black text-white text-white mt-1">{selectedSub.topic}</p>
               <p className="text-[11px] font-semibold text-slate-450 text-slate-400 mt-0.5">By {selectedSub.student} on {selectedSub.submitted}</p>
               <div className="mt-3.5 flex items-center gap-2">
-                <Button variant="outline" size="sm" type="button" className="py-2 px-3 text-[11px] h-auto">
-                  <FileText className="w-3.5 h-3.5 mr-1.5 text-slate-450" /> Download PDF/Asset
-                </Button>
+                {selectedSub.file_path ? (
+                  <a 
+                    href={selectedSub.file_path.startsWith('http') ? selectedSub.file_path : `${API_BASE_URL}/${selectedSub.file_path}`} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    <Button variant="outline" size="sm" type="button" className="py-2 px-3 text-[11px] h-auto cursor-pointer">
+                      <FileText className="w-3.5 h-3.5 mr-1.5 text-slate-400" /> View/Download Uploaded File
+                    </Button>
+                  </a>
+                ) : (
+                  <span className="text-xs text-slate-500 font-semibold italic">No file uploaded</span>
+                )}
               </div>
             </div>
 

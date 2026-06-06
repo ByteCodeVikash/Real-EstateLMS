@@ -28,7 +28,7 @@ const BGLogo = ({ className = "w-12 h-12" }) => (
 const IC = "w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 focus:border-[#0A66C2]/60 focus:ring-1 focus:ring-[#0A66C2]/30 outline-none transition-all placeholder:text-white/20 rounded-xl text-white font-medium text-sm";
 
 const AdminLogin = () => {
-  const { login } = useAuth();
+  const { login, logout } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -44,15 +44,20 @@ const AdminLogin = () => {
     const result = await login(email, password, false);
     setLoading(false);
     if (result.success) {
-      navigate('/admin/dashboard', { replace: true });
+      if (result.user.role === 'admin' || result.user.role === 'super_admin') {
+        navigate('/admin/dashboard', { replace: true });
+      } else {
+        await logout();
+        setError('Access Denied. You do not have administrative permissions.');
+      }
     } else {
       setError(result.message || 'Authentication failed. Verify your credentials.');
     }
   };
 
   const fillCredentials = (role) => {
-    if (role === 'super') { setEmail('superadmin@bgrealtyacademy.com'); setPassword('password123'); }
-    else if (role === 'admin') { setEmail('admin@bgrealtyacademy.com'); setPassword('password123'); }
+    if (role === 'super') { setEmail('superadmin@bjreality.com'); setPassword('password123'); }
+    else if (role === 'admin') { setEmail('admin@bjreality.com'); setPassword('password123'); }
   };
 
   return (

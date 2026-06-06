@@ -53,6 +53,28 @@ const Login = () => {
   const from = location.state?.from?.pathname || '/dashboard';
 
   useEffect(() => {
+    const handleMessage = async (event) => {
+      if (event.origin !== window.location.origin) return;
+      if (event.data?.type === 'GOOGLE_AUTH_SUCCESS') {
+        setLoading(true);
+        setError('');
+        const idToken = event.data.idToken;
+        const result = await loginWithGoogle(idToken, remember);
+        setLoading(false);
+        if (result.success) {
+          const redirectPath = (result.user?.role === 'admin' || result.user?.role === 'super_admin') && from === '/dashboard'
+            ? '/admin/dashboard' : from;
+          navigate(redirectPath, { replace: true });
+        } else {
+          setError(result.message);
+        }
+      } else if (event.data?.type === 'GOOGLE_AUTH_FAILURE') {
+        setError(event.data.message || 'Google authentication failed.');
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+
     const hash = window.location.hash.substring(1);
     const search = window.location.search.substring(1);
     const params = new URLSearchParams(hash || search);
@@ -78,6 +100,8 @@ const Login = () => {
       window.history.replaceState(null, null, window.location.pathname);
       setError(authError || 'Google authentication failed.');
     }
+
+    return () => window.removeEventListener('message', handleMessage);
   }, [navigate, from, loginWithGoogle, remember]);
 
   const handleSubmit = async (e) => {
@@ -113,10 +137,18 @@ const Login = () => {
       return;
     }
     const clientId = '476678466295-8pj5ao3k65gc35grt1o31m7uk60rqvnn.apps.googleusercontent.com';
-    const redirectUri = window.location.origin + '/login';
+    const redirectUri = window.location.origin + '/google-callback.html';
     const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=id_token&scope=openid%20email%20profile&state=google_login&nonce=nonce-${Math.random().toString(36).substring(2)}`;
-    setLoading(true);
-    window.location.href = googleUrl;
+    
+    const width = 500;
+    const height = 600;
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+    window.open(
+      googleUrl,
+      'GoogleLoginPopup',
+      `width=${width},height=${height},left=${left},top=${top},status=no,resizable=yes,scrollbars=yes`
+    );
   };
 
   return (
@@ -269,7 +301,7 @@ const Login = () => {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@bgrealtyacademy.com"
+                    placeholder="you@bjreality.com"
                     className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 focus:border-[#D4AF37]/60 focus:ring-1 focus:ring-[#D4AF37]/30 outline-none transition-all placeholder:text-white/20 rounded-xl text-white font-medium text-sm"
                   />
                 </div>
