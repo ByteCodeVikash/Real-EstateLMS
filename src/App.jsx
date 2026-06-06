@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import LandingPage from './pages/LandingPage';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import MyCourses from './pages/MyCourses';
 import CourseWatch from './pages/CourseWatch';
@@ -9,10 +11,12 @@ import Assignments from './pages/Assignments';
 import LiveClasses from './pages/LiveClasses';
 import ProfileSecurity from './pages/ProfileSecurity';
 import Notifications from './pages/Notifications';
+import AccessDenied from './pages/AccessDenied';
 import { Sidebar, Navbar } from './components/Layout';
 
 // Admin imports
 import { AdminLayout } from './components/admin/AdminLayout';
+import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminStudents from './pages/admin/AdminStudents';
 import AdminCourses from './pages/admin/AdminCourses';
@@ -58,6 +62,12 @@ function App() {
         {/* Landing Page */}
         <Route path="/" element={<LandingPage />} />
 
+        {/* Auth Pages (Standalone) */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/access-denied" element={<AccessDenied />} />
+
         {/* Course Watch Page (Standalone Layout) */}
         <Route path="/watch/:id" element={<CourseWatch />} />
 
@@ -84,7 +94,7 @@ function App() {
         <Route path="/admin/security" element={<AdminDashboardLayout><AdminSecurity /></AdminDashboardLayout>} />
         <Route path="/admin/settings" element={<AdminDashboardLayout><AdminSettings /></AdminDashboardLayout>} />
 
-        {/* Redirects */}
+        {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AnimatePresence>

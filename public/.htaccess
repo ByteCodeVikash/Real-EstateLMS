@@ -1,0 +1,14 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  
+  # Exclude the backend directory from React Router fallback
+  RewriteCond %{REQUEST_URI} ^/backend [NC]
+  RewriteRule ^ - [L]
+  
+  # Fallback all other non-file requests to index.html
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>

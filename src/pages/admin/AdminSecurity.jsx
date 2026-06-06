@@ -4,9 +4,9 @@ import { AdminTable, AdminDrawer } from '../../components/admin/AdminComponents'
 import { Button } from '../../components/UI';
 
 const initialStaff = [
-  { id: 1, name: "Vikash Sharma", email: "vikash@bjreality.com", role: "Super Admin", lastActive: "2026-05-23 13:45", keys: 2 },
-  { id: 2, name: "Sarah Jenkins", email: "sarah.j@bjreality.com", role: "Instructor Manager", lastActive: "2026-05-23 11:20", keys: 1 },
-  { id: 3, name: "Alex Mercer", email: "alex.mercer@bjreality.com", role: "Grader Advisor", lastActive: "2026-05-22 17:40", keys: 1 },
+  { id: 1, name: "Vikash Sharma", email: "vikash@bgrealtyacademy.com", role: "Super Admin", lastActive: "2026-05-23 13:45", keys: 2 },
+  { id: 2, name: "Sarah Jenkins", email: "sarah.j@bgrealtyacademy.com", role: "Instructor Manager", lastActive: "2026-05-23 11:20", keys: 1 },
+  { id: 3, name: "Alex Mercer", email: "alex.mercer@bgrealtyacademy.com", role: "Grader Advisor", lastActive: "2026-05-22 17:40", keys: 1 },
 ];
 
 const initialAuditLogs = [
@@ -56,7 +56,7 @@ export default function AdminSecurity() {
       accessor: "name",
       render: (row) => (
         <div>
-          <p className="font-bold text-premium-heading dark:text-white leading-none">{row.name}</p>
+          <p className="font-bold text-white text-white leading-none">{row.name}</p>
           <span className="text-[10px] text-slate-400 font-semibold">{row.email}</span>
         </div>
       )
@@ -67,8 +67,8 @@ export default function AdminSecurity() {
       render: (row) => (
         <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${
           row.role === "Super Admin"
-            ? "bg-red-50 text-red-650 border-red-100 dark:bg-red-950/20 dark:text-red-400 dark:border-red-900"
-            : "bg-blue-50 text-blue-650 border-blue-100 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-900"
+            ? "bg-red-500/10 text-red-650 border-red-500/20 dark:bg-red-950/20 dark:text-red-400 dark:border-red-900"
+            : "bg-[#0A66C2]/10 text-blue-650 border-[#0A66C2]/20 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-900"
         }`}>
           {row.role}
         </span>
@@ -94,14 +94,14 @@ export default function AdminSecurity() {
     {
       header: "Log Code",
       accessor: "id",
-      cellClassName: "font-mono font-bold text-premium-heading dark:text-white"
+      cellClassName: "font-mono font-bold text-white text-white"
     },
     {
       header: "Action Category",
       accessor: "action",
       render: (row) => (
         <div>
-          <p className="font-bold text-premium-heading dark:text-white leading-none">{row.action}</p>
+          <p className="font-bold text-white text-white leading-none">{row.action}</p>
           <span className="text-[10px] text-slate-400 font-semibold">{row.details}</span>
         </div>
       )
@@ -129,8 +129,8 @@ export default function AdminSecurity() {
       {/* Title */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-premium-heading dark:text-white tracking-tight uppercase">Security & Audit Logs</h1>
-          <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 mt-1">Audit administrative operations, manage dashboard access roles, configure secure keys, and trace operational audits.</p>
+          <h1 className="text-2xl font-black text-white text-white tracking-tight uppercase">Security & Audit Logs</h1>
+          <p className="text-xs font-semibold text-slate-400 text-slate-500 mt-1">Audit administrative operations, manage dashboard access roles, configure secure keys, and trace operational audits.</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={() => alert("Rotating encryption keys...")}>
@@ -175,7 +175,7 @@ export default function AdminSecurity() {
               placeholder="e.g. Johnathan Admin"
               value={formState.name}
               onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+              className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none"
             />
           </div>
 
@@ -184,10 +184,10 @@ export default function AdminSecurity() {
             <input
               type="email"
               required
-              placeholder="john@bjreality.com"
+              placeholder="john@bgrealtyacademy.com"
               value={formState.email}
               onChange={(e) => setFormState({ ...formState, email: e.target.value })}
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+              className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none"
             />
           </div>
 
@@ -196,7 +196,7 @@ export default function AdminSecurity() {
             <select
               value={formState.role}
               onChange={(e) => setFormState({ ...formState, role: e.target.value })}
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+              className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none"
             >
               <option value="Grader Advisor">Grader Advisor (Grade assignments & submit reviews)</option>
               <option value="Instructor Manager">Instructor Manager (Manage masterclasses & live web streams)</option>
@@ -204,7 +204,7 @@ export default function AdminSecurity() {
             </select>
           </div>
 
-          <div className="pt-4 border-t border-slate-100 dark:border-slate-850 flex items-center justify-end gap-2.5">
+          <div className="pt-4 border-t border-[#1a1a1c] dark:border-slate-850 flex items-center justify-end gap-2.5">
             <Button variant="outline" size="sm" type="button" onClick={() => setDrawerOpen(false)}>
               Cancel
             </Button>

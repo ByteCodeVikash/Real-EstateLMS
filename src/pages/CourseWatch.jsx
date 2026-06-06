@@ -534,7 +534,7 @@ const CourseWatch = () => {
             <div className="flex items-center gap-2.5">
               <ShieldAlert className="text-red-500 w-4 h-4 animate-pulse shrink-0" />
               <p className="text-[10px] md:text-xs font-bold text-red-400 tracking-wide">
-                BJ ACADEMY PROTECTED SOURCE CODE: External capture tools, screen mirroring, or unauthorized recording triggers immediate session termination.
+                BG REALTY TRAINING ACADEMY PROTECTED SOURCE CODE: External capture tools, screen mirroring, or unauthorized recording triggers immediate session termination.
               </p>
             </div>
             <Badge variant="danger" className="text-[8px] tracking-widest font-black uppercase shrink-0 py-0.5 px-2.5 bg-red-950/60 text-red-400 border border-red-800/40">
@@ -660,7 +660,7 @@ const CourseWatch = () => {
               transition={{ duration: 1.5, ease: "easeInOut" }}
               className="absolute pointer-events-none text-slate-500/10 text-[9px] font-mono z-30 select-none whitespace-nowrap leading-relaxed tracking-wider border border-white/5 bg-slate-900/[0.05] p-3.5 rounded-xl backdrop-blur-[0.5px]"
             >
-              <p className="font-black">STUDENT ID: john.doe@bjreality.academy</p>
+              <p className="font-black">STUDENT ID: john.doe@bgrealtyacademy.com</p>
               <p>SECURE TERMINAL: 192.168.1.104</p>
               <p>ENCRYPTION AUTH KEY: BJ-SEC-2983848</p>
               <p>TIMESTAMP: {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</p>
@@ -691,7 +691,7 @@ const CourseWatch = () => {
                   style={{ width: `${videoProgress}%` }}
                 ></div>
                 <div 
-                  className="absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 bg-white rounded-full opacity-0 group-hover/timeline:opacity-100 transition-opacity shadow-lg"
+                  className="absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 bg-[#0b0b0d] rounded-full opacity-0 group-hover/timeline:opacity-100 transition-opacity shadow-lg"
                   style={{ left: `calc(${videoProgress}% - 7px)` }}
                 ></div>
               </div>

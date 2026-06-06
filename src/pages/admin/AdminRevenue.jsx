@@ -136,18 +136,18 @@ export default function AdminRevenue() {
     {
       header: "Transaction ID",
       accessor: "id",
-      cellClassName: "font-mono font-bold text-premium-heading dark:text-white"
+      cellClassName: "font-mono font-bold text-white text-white"
     },
     {
       header: "Purchaser Details",
       accessor: "student",
       render: (row) => (
         <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-black text-xs text-premium-accent shrink-0 uppercase">
+          <div className="h-8 w-8 rounded-full bg-[#111114] bg-[#111114] flex items-center justify-center font-black text-xs text-premium-accent shrink-0 uppercase">
             {row.student.split(' ').map(n=>n[0]).join('')}
           </div>
           <div>
-            <p className="font-bold text-premium-heading dark:text-white leading-none">{row.student}</p>
+            <p className="font-bold text-white text-white leading-none">{row.student}</p>
             <span className="text-[10px] text-slate-400 font-semibold">{row.email}</span>
           </div>
         </div>
@@ -158,8 +158,8 @@ export default function AdminRevenue() {
       accessor: "plan",
       render: (row) => (
         <div className="flex flex-col text-left">
-          <span className="font-bold text-slate-700 dark:text-slate-300">{row.plan}</span>
-          <span className="text-[9px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider mt-0.5">{row.type}</span>
+          <span className="font-bold text-slate-700 text-slate-300">{row.plan}</span>
+          <span className="text-[9px] text-slate-400 text-slate-500 font-bold uppercase tracking-wider mt-0.5">{row.type}</span>
         </div>
       )
     },
@@ -171,7 +171,7 @@ export default function AdminRevenue() {
           {row.coupon === "NONE" ? (
             <span className="text-[10px] text-slate-400 font-semibold uppercase">None</span>
           ) : (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-violet-50 text-premium-violet border border-violet-100 text-[10px] font-black uppercase">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-violet-500/10 text-premium-violet border border-violet-500/20 text-[10px] font-black uppercase">
               <Tag className="w-2.5 h-2.5" /> {row.coupon}
             </span>
           )}
@@ -182,7 +182,7 @@ export default function AdminRevenue() {
       header: "Price Net",
       accessor: "amount",
       render: (row) => (
-        <span className="font-black text-premium-heading dark:text-white">
+        <span className="font-black text-white text-white">
           ${row.amount.toLocaleString()}
         </span>
       )
@@ -190,17 +190,17 @@ export default function AdminRevenue() {
     {
       header: "Gateway",
       accessor: "gateway",
-      cellClassName: "text-slate-500 dark:text-slate-400"
+      cellClassName: "text-slate-500 text-slate-400"
     },
     {
       header: "Payment Status",
       accessor: "status",
       render: (row) => {
         const styles = {
-          Completed: "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900",
-          Refunded: "bg-red-50 text-red-600 border-red-100 dark:bg-red-950/20 dark:text-red-400 dark:border-red-900",
-          Pending: "bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900",
-          Failed: "bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700"
+          Completed: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900",
+          Refunded: "bg-red-500/10 text-red-400 border-red-500/20 dark:bg-red-950/20 dark:text-red-400 dark:border-red-900",
+          Pending: "bg-amber-500/10 text-amber-600 border-amber-500/20 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900",
+          Failed: "bg-[#111114] text-slate-500 border-[#1e1e22] bg-[#111114] text-slate-400 border-[#1e1e22]"
         };
         return (
           <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${styles[row.status] || ''}`}>
@@ -216,7 +216,7 @@ export default function AdminRevenue() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => handleDownloadInvoice(row)}
-            className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-premium-accent dark:hover:text-premium-accent hover:border-premium-accent/30 dark:hover:border-premium-accent/30 transition-all cursor-pointer active:scale-95 shrink-0"
+            className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] text-slate-500 text-slate-400 hover:text-premium-accent dark:hover:text-premium-accent hover:border-premium-accent/30 dark:hover:border-premium-accent/30 transition-all cursor-pointer active:scale-95 shrink-0"
             title="Download PDF Invoice"
           >
             <Download className="w-3.5 h-3.5" />
@@ -228,7 +228,7 @@ export default function AdminRevenue() {
                   alert(`Transaction ${row.id} credited. Gateway refund request dispatched.`);
                 }
               }}
-              className="flex h-8 px-2 items-center justify-center rounded-lg bg-red-50/50 dark:bg-red-950/10 border border-red-100/60 dark:border-red-950 text-red-500 hover:bg-red-50 hover:text-red-600 text-[10px] font-black uppercase tracking-wide cursor-pointer active:scale-95 shrink-0"
+              className="flex h-8 px-2 items-center justify-center rounded-lg bg-red-500/10/50 dark:bg-red-950/10 border border-red-500/20/60 dark:border-red-950 text-red-500 hover:bg-red-500/100/10 hover:text-red-400 text-[10px] font-black uppercase tracking-wide cursor-pointer active:scale-95 shrink-0"
               title="Process Refund"
             >
               Refund
@@ -243,16 +243,16 @@ export default function AdminRevenue() {
     <div className="space-y-8 animate-in text-left">
       
       {/* Header Block with controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-premium-border/60 dark:border-slate-800/80 pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#1a1a1c] border-[#1a1a1c]/80 pb-6">
         <div>
           <div className="flex items-center gap-2 text-premium-accent font-black text-xs uppercase tracking-wider mb-1">
             <DollarSign className="w-4 h-4 text-emerald-500" />
             <span>Revenue Control Console</span>
           </div>
-          <h1 className="text-3xl font-black text-premium-heading dark:text-white tracking-tight uppercase">
+          <h1 className="text-3xl font-black text-white text-white tracking-tight uppercase">
             Revenue & Invoicing
           </h1>
-          <p className="text-sm font-semibold text-slate-400 dark:text-slate-500 mt-1">
+          <p className="text-sm font-semibold text-slate-400 text-slate-500 mt-1">
             Track subscription income streams, audit ledger accounts, process refunds, and sync payment gateways.
           </p>
         </div>
@@ -263,7 +263,7 @@ export default function AdminRevenue() {
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className="appearance-none bg-white dark:bg-slate-900 border border-premium-border dark:border-slate-800 rounded-xl py-2.5 pl-4 pr-10 text-xs font-black text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/25 cursor-pointer shadow-sm"
+              className="appearance-none bg-[#0b0b0d] bg-[#0b0b0d] border border-premium-border border-[#1a1a1c] rounded-xl py-2.5 pl-4 pr-10 text-xs font-black text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/25 cursor-pointer shadow-sm"
             >
               <option value="7days">Last 7 Days</option>
               <option value="30days">Last 30 Days</option>
@@ -282,60 +282,60 @@ export default function AdminRevenue() {
 
       {/* KPI Stats widgets grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <GlassCard className="bg-white dark:bg-slate-900 border-premium-border dark:border-slate-800 p-5 rounded-2xl flex flex-col justify-between">
+        <GlassCard className="bg-[#0b0b0d] bg-[#0b0b0d] border-premium-border border-[#1a1a1c] p-5 rounded-2xl flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider">Gross Income</span>
-            <div className="h-9 w-9 rounded-lg bg-blue-50 dark:bg-blue-950/20 text-premium-accent flex items-center justify-center border border-blue-100 dark:border-blue-900 shrink-0">
+            <span className="text-[10px] font-black text-slate-400 text-slate-500 uppercase tracking-wider">Gross Income</span>
+            <div className="h-9 w-9 rounded-lg bg-[#0A66C2]/10 dark:bg-blue-950/20 text-premium-accent flex items-center justify-center border border-[#0A66C2]/20 dark:border-blue-900 shrink-0">
               <DollarSign className="w-4.5 h-4.5" />
             </div>
           </div>
           <div className="mt-4">
-            <h3 className="text-2xl font-black text-premium-heading dark:text-white tracking-tight leading-none">{currentDataset.kpi.gross}</h3>
+            <h3 className="text-2xl font-black text-white text-white tracking-tight leading-none">{currentDataset.kpi.gross}</h3>
             <span className="text-[10px] text-emerald-500 font-extrabold mt-2 flex items-center gap-1">
               <ArrowUpRight className="w-3.5 h-3.5" /> {currentDataset.kpi.grossTrend} Gross volume
             </span>
           </div>
         </GlassCard>
 
-        <GlassCard className="bg-white dark:bg-slate-900 border-premium-border dark:border-slate-800 p-5 rounded-2xl flex flex-col justify-between">
+        <GlassCard className="bg-[#0b0b0d] bg-[#0b0b0d] border-premium-border border-[#1a1a1c] p-5 rounded-2xl flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider">Net Growth</span>
-            <div className="h-9 w-9 rounded-lg bg-emerald-50 dark:bg-emerald-950/20 text-emerald-500 flex items-center justify-center border border-emerald-100 dark:border-emerald-900 shrink-0">
+            <span className="text-[10px] font-black text-slate-400 text-slate-500 uppercase tracking-wider">Net Growth</span>
+            <div className="h-9 w-9 rounded-lg bg-emerald-500/10 dark:bg-emerald-950/20 text-emerald-500 flex items-center justify-center border border-emerald-500/20 dark:border-emerald-900 shrink-0">
               <TrendingUp className="w-4.5 h-4.5" />
             </div>
           </div>
           <div className="mt-4">
-            <h3 className="text-2xl font-black text-premium-heading dark:text-white tracking-tight leading-none">{currentDataset.kpi.netGrowth}</h3>
+            <h3 className="text-2xl font-black text-white text-white tracking-tight leading-none">{currentDataset.kpi.netGrowth}</h3>
             <span className="text-[10px] text-emerald-500 font-extrabold mt-2 flex items-center gap-1">
               <ArrowUpRight className="w-3.5 h-3.5" /> {currentDataset.kpi.netTrend} Net profit sales
             </span>
           </div>
         </GlassCard>
 
-        <GlassCard className="bg-white dark:bg-slate-900 border-premium-border dark:border-slate-800 p-5 rounded-2xl flex flex-col justify-between">
+        <GlassCard className="bg-[#0b0b0d] bg-[#0b0b0d] border-premium-border border-[#1a1a1c] p-5 rounded-2xl flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider">Average Cart Size</span>
-            <div className="h-9 w-9 rounded-lg bg-violet-50 dark:bg-violet-950/20 text-premium-violet flex items-center justify-center border border-violet-100 dark:border-violet-900 shrink-0">
+            <span className="text-[10px] font-black text-slate-400 text-slate-500 uppercase tracking-wider">Average Cart Size</span>
+            <div className="h-9 w-9 rounded-lg bg-violet-500/10 dark:bg-violet-950/20 text-premium-violet flex items-center justify-center border border-violet-500/20 dark:border-violet-900 shrink-0">
               <CreditCard className="w-4.5 h-4.5" />
             </div>
           </div>
           <div className="mt-4">
-            <h3 className="text-2xl font-black text-premium-heading dark:text-white tracking-tight leading-none">{currentDataset.kpi.cartSize}</h3>
+            <h3 className="text-2xl font-black text-white text-white tracking-tight leading-none">{currentDataset.kpi.cartSize}</h3>
             <span className="text-[10px] text-emerald-500 font-extrabold mt-2 flex items-center gap-1">
               <ArrowUpRight className="w-3.5 h-3.5" /> {currentDataset.kpi.cartTrend} Sales ticket size
             </span>
           </div>
         </GlassCard>
 
-        <GlassCard className="bg-white dark:bg-slate-900 border-premium-border dark:border-slate-800 p-5 rounded-2xl flex flex-col justify-between">
+        <GlassCard className="bg-[#0b0b0d] bg-[#0b0b0d] border-premium-border border-[#1a1a1c] p-5 rounded-2xl flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider">Refund Rate</span>
-            <div className="h-9 w-9 rounded-lg bg-red-50 dark:bg-red-950/20 text-red-500 flex items-center justify-center border border-red-100 dark:border-red-900 shrink-0">
+            <span className="text-[10px] font-black text-slate-400 text-slate-500 uppercase tracking-wider">Refund Rate</span>
+            <div className="h-9 w-9 rounded-lg bg-red-500/10 dark:bg-red-950/20 text-red-500 flex items-center justify-center border border-red-500/20 dark:border-red-900 shrink-0">
               <RefreshCw className="w-4.5 h-4.5" />
             </div>
           </div>
           <div className="mt-4">
-            <h3 className="text-2xl font-black text-premium-heading dark:text-white tracking-tight leading-none">{currentDataset.kpi.refundRate}</h3>
+            <h3 className="text-2xl font-black text-white text-white tracking-tight leading-none">{currentDataset.kpi.refundRate}</h3>
             <span className="text-[10px] text-emerald-500 font-extrabold mt-2 flex items-center gap-1">
               <ArrowDownRight className="w-3.5 h-3.5 text-emerald-500" /> {currentDataset.kpi.refundTrend} Chargeback drops
             </span>
@@ -347,15 +347,15 @@ export default function AdminRevenue() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Sales area/line composed chart - Left Panel */}
-        <div className="lg:col-span-8 rounded-2xl border border-premium-border/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] text-left">
+        <div className="lg:col-span-8 rounded-2xl border border-[#1a1a1c] border-[#1a1a1c] bg-[#0b0b0d] bg-[#0b0b0d] p-6 shadow-dark-card text-left">
           <div className="mb-6 flex justify-between items-center">
             <div>
-              <h3 className="text-base font-black text-premium-heading dark:text-white tracking-tight uppercase">Monthly Gross & Net Revenue</h3>
-              <p className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">Earnings trends including gateway fees and refund deductions</p>
+              <h3 className="text-base font-black text-white text-white tracking-tight uppercase">Monthly Gross & Net Revenue</h3>
+              <p className="text-[11px] font-semibold text-slate-400 text-slate-500 mt-0.5">Earnings trends including gateway fees and refund deductions</p>
             </div>
             <div className="flex gap-4 text-[10px] font-black uppercase text-slate-400">
-              <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-blue-500"></span> Gross</span>
-              <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-violet-500"></span> Net Profit</span>
+              <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-[#0A66C2]/100"></span> Gross</span>
+              <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-violet-500/100"></span> Net Profit</span>
             </div>
           </div>
 
@@ -372,7 +372,7 @@ export default function AdminRevenue() {
                     <stop offset="95%" stopColor="#7c3aed" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-800" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="stroke-[#1a1a1c]" vertical={false} />
                 <XAxis dataKey="month" stroke="#94a3b8" fontSize={10} fontWeight="bold" />
                 <YAxis stroke="#94a3b8" fontSize={10} fontWeight="bold" />
                 <Tooltip 
@@ -392,10 +392,10 @@ export default function AdminRevenue() {
         </div>
 
         {/* Top selling courses pie/donut chart - Right Panel */}
-        <div className="lg:col-span-4 rounded-2xl border border-premium-border/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] text-left flex flex-col justify-between">
+        <div className="lg:col-span-4 rounded-2xl border border-[#1a1a1c] border-[#1a1a1c] bg-[#0b0b0d] bg-[#0b0b0d] p-6 shadow-dark-card text-left flex flex-col justify-between">
           <div>
-            <h3 className="text-base font-black text-premium-heading dark:text-white tracking-tight uppercase">Top-Selling Courses</h3>
-            <p className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">Sales distribution shares across platform modules</p>
+            <h3 className="text-base font-black text-white text-white tracking-tight uppercase">Top-Selling Courses</h3>
+            <p className="text-[11px] font-semibold text-slate-400 text-slate-500 mt-0.5">Sales distribution shares across platform modules</p>
           </div>
 
           <div className="h-44 flex items-center justify-center my-3 relative">
@@ -421,7 +421,7 @@ export default function AdminRevenue() {
             {/* Center label */}
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none mt-1">
               <span className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-none">Net Sales</span>
-              <span className="text-lg font-black text-premium-heading dark:text-white mt-1">$415K</span>
+              <span className="text-lg font-black text-white text-white mt-1">$415K</span>
             </div>
           </div>
 
@@ -446,7 +446,7 @@ export default function AdminRevenue() {
       {/* Row 2: Transactions Registry Ledger Table */}
       <div className="space-y-4">
         <div className="flex items-center justify-between border-b border-premium-border/40 dark:border-slate-850 pb-2">
-          <h2 className="text-lg font-black uppercase tracking-tight text-slate-800 dark:text-white flex items-center gap-2">
+          <h2 className="text-lg font-black uppercase tracking-tight text-slate-200 text-white flex items-center gap-2">
             <CreditCard className="w-5 h-5 text-premium-accent" /> Payment Registry Ledger
           </h2>
         </div>

@@ -4,7 +4,7 @@ import { Button } from '../../components/UI';
 
 export default function AdminSettings() {
   const [activeTab, setActiveTab] = useState('general');
-  const [generalForm, setGeneralForm] = useState({ siteName: 'BJ Reality Training Courses', supportEmail: 'support@bjreality.com', platformFee: '0.00', currency: 'USD' });
+  const [generalForm, setGeneralForm] = useState({ siteName: 'BG Realty Training Academy', supportEmail: 'support@bgrealtyacademy.com', platformFee: '0.00', currency: 'USD' });
   const [brandingForm, setBrandingForm] = useState({ primaryColor: '#2563eb', fontStyle: 'Plus Jakarta Sans', darkModeDefault: true });
   const [paymentForm, setPaymentForm] = useState({ stripePublicKey: 'pk_test_51Nx...', stripeSecretKey: 'sk_test_51Nx...', sandboxMode: true });
   const [smtpForm, setSmtpForm] = useState({ smtpHost: 'smtp.sendgrid.net', smtpPort: '587', smtpUser: 'apikey', encryption: 'TLS' });
@@ -26,8 +26,8 @@ export default function AdminSettings() {
       
       {/* Title */}
       <div>
-        <h1 className="text-2xl font-black text-premium-heading dark:text-white tracking-tight uppercase">Platform Settings</h1>
-        <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 mt-1">Configure global variables, currency overrides, transaction fees, custom branding tokens, and gateway APIs.</p>
+        <h1 className="text-2xl font-black text-white text-white tracking-tight uppercase">Platform Settings</h1>
+        <p className="text-xs font-semibold text-slate-400 text-slate-500 mt-1">Configure global variables, currency overrides, transaction fees, custom branding tokens, and gateway APIs.</p>
       </div>
 
       {/* Tabs Layout */}
@@ -42,7 +42,7 @@ export default function AdminSettings() {
               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-bold text-xs uppercase tracking-wider text-left border ${
                 activeTab === t.id
                   ? 'bg-gradient-to-r from-premium-accent/15 to-violet-500/5 border-premium-accent/25 text-premium-accent'
-                  : 'bg-white dark:bg-slate-900 border-premium-border/80 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-850'
+                  : 'bg-[#0b0b0d] bg-[#0b0b0d] border-[#1a1a1c] border-[#1a1a1c] text-slate-500 text-slate-400 hover:bg-[#0f0f12] dark:hover:bg-slate-850'
               }`}
             >
               <t.icon className="w-4.5 h-4.5" />
@@ -52,12 +52,12 @@ export default function AdminSettings() {
         </div>
 
         {/* Right Hand Form Content */}
-        <div className="lg:col-span-3 rounded-2xl border border-premium-border/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+        <div className="lg:col-span-3 rounded-2xl border border-[#1a1a1c] border-[#1a1a1c] bg-[#0b0b0d] bg-[#0b0b0d] p-6 shadow-dark-card">
           <form onSubmit={handleSave} className="space-y-6">
             
             {activeTab === 'general' && (
               <div className="space-y-4">
-                <h3 className="text-sm font-black text-premium-heading dark:text-white tracking-tight uppercase border-b border-slate-100 dark:border-slate-855 pb-2">General Platform Config</h3>
+                <h3 className="text-sm font-black text-white text-white tracking-tight uppercase border-b border-[#1a1a1c] dark:border-slate-855 pb-2">General Platform Config</h3>
                 
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Site Brand Name</label>
@@ -66,7 +66,7 @@ export default function AdminSettings() {
                     required
                     value={generalForm.siteName}
                     onChange={(e) => setGeneralForm({ ...generalForm, siteName: e.target.value })}
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+                    className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none"
                   />
                 </div>
 
@@ -78,7 +78,7 @@ export default function AdminSettings() {
                       required
                       value={generalForm.supportEmail}
                       onChange={(e) => setGeneralForm({ ...generalForm, supportEmail: e.target.value })}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+                      className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none"
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -88,7 +88,7 @@ export default function AdminSettings() {
                       required
                       value={generalForm.platformFee}
                       onChange={(e) => setGeneralForm({ ...generalForm, platformFee: e.target.value })}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+                      className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none"
                     />
                   </div>
                 </div>
@@ -97,7 +97,7 @@ export default function AdminSettings() {
 
             {activeTab === 'branding' && (
               <div className="space-y-4">
-                <h3 className="text-sm font-black text-premium-heading dark:text-white tracking-tight uppercase border-b border-slate-100 dark:border-slate-855 pb-2">Custom Branding & Styles</h3>
+                <h3 className="text-sm font-black text-white text-white tracking-tight uppercase border-b border-[#1a1a1c] dark:border-slate-855 pb-2">Custom Branding & Styles</h3>
                 
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Primary Theme Hex</label>
@@ -106,7 +106,7 @@ export default function AdminSettings() {
                     required
                     value={brandingForm.primaryColor}
                     onChange={(e) => setBrandingForm({ ...brandingForm, primaryColor: e.target.value })}
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+                    className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none"
                   />
                 </div>
 
@@ -116,7 +116,7 @@ export default function AdminSettings() {
                     <select
                       value={brandingForm.fontStyle}
                       onChange={(e) => setBrandingForm({ ...brandingForm, fontStyle: e.target.value })}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+                      className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none"
                     >
                       <option value="Plus Jakarta Sans">Plus Jakarta Sans</option>
                       <option value="Outfit">Outfit</option>
@@ -131,7 +131,7 @@ export default function AdminSettings() {
                           type="checkbox"
                           checked={brandingForm.darkModeDefault}
                           onChange={(e) => setBrandingForm({ ...brandingForm, darkModeDefault: e.target.checked })}
-                          className="rounded text-premium-accent border-premium-border dark:border-slate-700 w-4 h-4 cursor-pointer"
+                          className="rounded text-premium-accent border-premium-border border-[#1e1e22] w-4 h-4 cursor-pointer"
                         />
                         Default dark theme mode on first visit
                       </label>
@@ -143,7 +143,7 @@ export default function AdminSettings() {
 
             {activeTab === 'payment' && (
               <div className="space-y-4">
-                <h3 className="text-sm font-black text-premium-heading dark:text-white tracking-tight uppercase border-b border-slate-100 dark:border-slate-855 pb-2">Stripe Payment Gateway</h3>
+                <h3 className="text-sm font-black text-white text-white tracking-tight uppercase border-b border-[#1a1a1c] dark:border-slate-855 pb-2">Stripe Payment Gateway</h3>
                 
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Stripe Public API Key</label>
@@ -152,7 +152,7 @@ export default function AdminSettings() {
                     required
                     value={paymentForm.stripePublicKey}
                     onChange={(e) => setPaymentForm({ ...paymentForm, stripePublicKey: e.target.value })}
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white font-mono focus:outline-none"
+                    className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white font-mono focus:outline-none"
                   />
                 </div>
 
@@ -164,7 +164,7 @@ export default function AdminSettings() {
                       required
                       value={paymentForm.stripeSecretKey}
                       onChange={(e) => setPaymentForm({ ...paymentForm, stripeSecretKey: e.target.value })}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white font-mono focus:outline-none"
+                      className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white font-mono focus:outline-none"
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -175,7 +175,7 @@ export default function AdminSettings() {
                           type="checkbox"
                           checked={paymentForm.sandboxMode}
                           onChange={(e) => setPaymentForm({ ...paymentForm, sandboxMode: e.target.checked })}
-                          className="rounded text-premium-accent border-premium-border dark:border-slate-700 w-4 h-4 cursor-pointer"
+                          className="rounded text-premium-accent border-premium-border border-[#1e1e22] w-4 h-4 cursor-pointer"
                         />
                         Sandbox Mode enabled (No real charges)
                       </label>
@@ -187,7 +187,7 @@ export default function AdminSettings() {
 
             {activeTab === 'smtp' && (
               <div className="space-y-4">
-                <h3 className="text-sm font-black text-premium-heading dark:text-white tracking-tight uppercase border-b border-slate-100 dark:border-slate-855 pb-2">SMTP Mail Configuration</h3>
+                <h3 className="text-sm font-black text-white text-white tracking-tight uppercase border-b border-[#1a1a1c] dark:border-slate-855 pb-2">SMTP Mail Configuration</h3>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
@@ -197,7 +197,7 @@ export default function AdminSettings() {
                       required
                       value={smtpForm.smtpHost}
                       onChange={(e) => setSmtpForm({ ...smtpForm, smtpHost: e.target.value })}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+                      className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none"
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -207,7 +207,7 @@ export default function AdminSettings() {
                       required
                       value={smtpForm.smtpPort}
                       onChange={(e) => setSmtpForm({ ...smtpForm, smtpPort: e.target.value })}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+                      className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none"
                     />
                   </div>
                 </div>
@@ -220,7 +220,7 @@ export default function AdminSettings() {
                       required
                       value={smtpForm.smtpUser}
                       onChange={(e) => setSmtpForm({ ...smtpForm, smtpUser: e.target.value })}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+                      className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none"
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -228,7 +228,7 @@ export default function AdminSettings() {
                     <select
                       value={smtpForm.encryption}
                       onChange={(e) => setSmtpForm({ ...smtpForm, encryption: e.target.value })}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+                      className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none"
                     >
                       <option value="TLS">TLS Secure Port (Recommended)</option>
                       <option value="SSL">SSL Port</option>
@@ -239,7 +239,7 @@ export default function AdminSettings() {
               </div>
             )}
 
-            <div className="pt-4 border-t border-slate-100 dark:border-slate-850 flex justify-end">
+            <div className="pt-4 border-t border-[#1a1a1c] dark:border-slate-850 flex justify-end">
               <Button variant="primary" size="sm" type="submit">
                 <Save className="w-4 h-4 mr-2" /> Save Settings Config
               </Button>

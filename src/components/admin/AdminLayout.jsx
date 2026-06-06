@@ -7,7 +7,7 @@ import {
   Settings, Search, Menu, X, ChevronDown, Moon, Sun, 
   Zap, LogOut, ArrowRight, UserCheck, ShieldAlert
 } from 'lucide-react';
-import { BJLogo } from '../Layout';
+import { BGLogo } from '../Layout';
 import { cn } from '../UI';
 
 const adminMenuItems = [
@@ -36,15 +36,15 @@ export const AdminSidebarContent = ({ onItemClick, isDarkMode, toggleDarkMode })
   return (
     <>
       {/* Admin Logo Section */}
-      <div className="p-6 border-b border-slate-900 shrink-0">
+      <div className="p-6 border-b border-slate-900/60 shrink-0">
         <Link to="/admin/dashboard" onClick={onItemClick} className="flex items-center gap-3 group">
-          <BJLogo className="w-10 h-10 group-hover:scale-105 transition-transform duration-300" />
+          <BGLogo className="w-10 h-10 group-hover:scale-105 transition-transform duration-300" />
           <div className="flex flex-col text-left">
             <span className="text-base font-black tracking-tight leading-none text-white group-hover:text-premium-accent transition-colors">
-              BJ ADMIN
+              BG ADMIN
             </span>
-            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">
-              Reality Console
+            <span className="text-[9px] font-bold text-premium-accent uppercase tracking-widest mt-1">
+              Realty Console
             </span>
           </div>
         </Link>
@@ -149,7 +149,7 @@ export const AdminLayout = ({ children }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-400 font-sans transition-colors duration-300">
+    <div className="min-h-screen bg-premium-bg text-premium-text font-sans transition-colors duration-300">
       
       {/* Desktop Sidebar (Fixed) */}
       <aside className="fixed left-0 top-0 h-screen w-64 bg-premium-dark border-r border-slate-900 hidden lg:flex flex-col z-50 shadow-xl text-slate-400">
@@ -193,38 +193,38 @@ export const AdminLayout = ({ children }) => {
       </AnimatePresence>
 
       {/* Top Navbar */}
-      <header className="h-20 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 fixed top-0 right-0 left-0 lg:left-64 z-40 px-6 sm:px-8 flex items-center justify-between shadow-sm transition-colors duration-300">
+      <header className="h-20 bg-premium-card/90 backdrop-blur-md border-b border-premium-border/80 fixed top-0 right-0 left-0 lg:left-64 z-40 px-6 sm:px-8 flex items-center justify-between shadow-lg transition-colors duration-300">
         {/* Left Section: Mobile Menu Trigger & System Indicator */}
         <div className="flex items-center gap-4">
           <button 
             onClick={() => setMobileSidebarOpen(true)}
-            className="lg:hidden h-10 w-10 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-premium-accent hover:border-premium-accent/30 transition-all cursor-pointer"
+            className="lg:hidden h-10 w-10 flex items-center justify-center rounded-xl bg-slate-900 border border-premium-border/60 text-slate-400 hover:text-premium-accent hover:border-premium-accent/30 transition-all cursor-pointer"
           >
             <Menu className="w-5 h-5" />
           </button>
 
           {/* System Status Indicators */}
-          <div className="hidden sm:flex items-center gap-4 text-xs font-bold bg-slate-50 dark:bg-slate-850 px-3.5 py-1.5 rounded-xl border border-slate-200/65 dark:border-slate-800/80">
+          <div className="hidden sm:flex items-center gap-4 text-xs font-bold bg-[#08080a] px-3.5 py-1.5 rounded-xl border border-premium-border/60">
             <span className="flex items-center gap-1.5 text-emerald-500">
               <Zap className="w-3.5 h-3.5 fill-current" />
               <span>{systemStatus.status}</span>
             </span>
-            <span className="h-3 w-px bg-slate-200 dark:bg-slate-800"></span>
-            <span className="text-slate-400 dark:text-slate-500">DB Ping: <span className="text-premium-heading dark:text-white">{systemStatus.latency}</span></span>
-            <span className="h-3 w-px bg-slate-200 dark:bg-slate-800"></span>
-            <span className="text-slate-400 dark:text-slate-500">CPU: <span className="text-premium-heading dark:text-white">{systemStatus.cpu}</span></span>
+            <span className="h-3 w-px bg-slate-800"></span>
+            <span className="text-slate-500">DB Ping: <span className="text-white">{systemStatus.latency}</span></span>
+            <span className="h-3 w-px bg-slate-800"></span>
+            <span className="text-slate-500">CPU: <span className="text-white">{systemStatus.cpu}</span></span>
           </div>
         </div>
 
         {/* Global Search Bar */}
         <div className="hidden md:block flex-1 max-w-sm mx-8">
           <div className="relative group text-left">
-            <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-400 dark:text-slate-500 group-focus-within:text-premium-accent transition-colors" />
+            <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-500 group-focus-within:text-premium-accent transition-colors" />
             <input
               type="text"
               value={globalSearchTerm}
               onChange={(e) => setGlobalSearchTerm(e.target.value)}
-              className="w-full bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-800 rounded-xl py-2 pl-11 pr-4 text-xs font-bold text-premium-heading dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-premium-accent/20 focus:border-premium-accent transition-all"
+              className="w-full bg-[#08080a] border border-premium-border/60 rounded-xl py-2 pl-11 pr-4 text-xs font-bold text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-premium-accent/20 focus:border-premium-accent transition-all"
               placeholder="Search console, audit logs, invoices..."
             />
           </div>
@@ -236,10 +236,10 @@ export const AdminLayout = ({ children }) => {
           {/* Dark Mode Toggle */}
           <button 
             onClick={toggleDarkMode}
-            className="h-10 w-10 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-850 text-slate-500 dark:text-slate-400 hover:text-premium-accent dark:hover:text-premium-accent hover:border-premium-accent/20 transition-all cursor-pointer"
+            className="h-10 w-10 flex items-center justify-center rounded-xl bg-slate-900 border border-premium-border/60 text-slate-400 hover:text-premium-accent hover:border-premium-accent/20 transition-all cursor-pointer"
             title="Toggle theme mode"
           >
-            {isDarkMode ? <Sun className="w-4.5 h-4.5 text-amber-500 fill-amber-500/20" /> : <Moon className="w-4.5 h-4.5 text-indigo-600 fill-indigo-500/10" />}
+            {isDarkMode ? <Sun className="w-4.5 h-4.5 text-amber-500 fill-amber-500/20" /> : <Moon className="w-4.5 h-4.5 text-indigo-400 fill-indigo-500/10" />}
           </button>
 
           {/* Notifications Dropdown */}
@@ -247,29 +247,29 @@ export const AdminLayout = ({ children }) => {
             <button 
               onClick={() => setNotificationsOpen(!notificationsOpen)}
               onBlur={() => setTimeout(() => setNotificationsOpen(false), 200)}
-              className="h-10 w-10 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-850 text-slate-500 dark:text-slate-400 hover:text-premium-heading dark:hover:text-white transition-all cursor-pointer relative"
+              className="h-10 w-10 flex items-center justify-center rounded-xl bg-slate-900 border border-premium-border/60 text-slate-400 hover:text-white transition-all cursor-pointer relative"
             >
               <Bell className="w-4.5 h-4.5" />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-premium-accent rounded-full border border-white dark:border-slate-900 animate-pulse"></span>
+              <span className="absolute top-2 right-2 w-2 h-2 bg-premium-accent rounded-full border border-black animate-pulse"></span>
             </button>
 
             {/* Notifications Menu */}
             {notificationsOpen && (
-              <div className="absolute right-0 top-12 w-80 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl p-3 z-50 text-left">
-                <div className="flex items-center justify-between px-3 py-1.5 border-b border-slate-100 dark:border-slate-800 pb-2 mb-2">
-                  <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">System Alerts</span>
+              <div className="absolute right-0 top-12 w-80 bg-[#0b0b0d] border border-premium-border/80 rounded-2xl shadow-xl p-3 z-50 text-left text-slate-400">
+                <div className="flex items-center justify-between px-3 py-1.5 border-b border-slate-800 pb-2 mb-2">
+                  <span className="text-[10px] font-black uppercase text-slate-500 tracking-wider">System Alerts</span>
                   <span className="text-[9px] font-bold text-premium-accent cursor-pointer hover:underline">Mark all read</span>
                 </div>
                 <div className="space-y-1">
                   {recentNotifications.map(n => (
-                    <div key={n.id} className="p-2.5 hover:bg-slate-50 dark:hover:bg-slate-850 rounded-xl transition-all cursor-pointer flex gap-3.5">
+                    <div key={n.id} className="p-2.5 hover:bg-slate-900/60 rounded-xl transition-all cursor-pointer flex gap-3.5">
                       <span className={cn(
                         "h-2 w-2 rounded-full mt-1.5 shrink-0",
                         n.type === "success" ? "bg-emerald-500" : n.type === "warning" ? "bg-amber-500" : "bg-blue-500"
                       )}></span>
                       <div>
-                        <p className="text-[11px] font-bold text-slate-600 dark:text-slate-300 leading-normal">{n.text}</p>
-                        <span className="text-[9px] text-slate-400 mt-1 block">{n.time}</span>
+                        <p className="text-[11px] font-bold text-slate-350 leading-normal">{n.text}</p>
+                        <span className="text-[9px] text-slate-500 mt-1 block">{n.time}</span>
                       </div>
                     </div>
                   ))}
@@ -283,41 +283,41 @@ export const AdminLayout = ({ children }) => {
             <button 
               onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
               onBlur={() => setTimeout(() => setProfileDropdownOpen(false), 200)}
-              className="flex items-center gap-2 pl-3 border-l border-slate-200 dark:border-slate-800 cursor-pointer focus:outline-none"
+              className="flex items-center gap-2 pl-3 border-l border-premium-border/60 cursor-pointer focus:outline-none"
             >
-              <div className="w-10 h-10 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm hover:border-premium-accent/40 dark:hover:border-premium-accent/40 transition-all shrink-0">
+              <div className="w-10 h-10 rounded-xl border border-premium-border/60 overflow-hidden shadow-sm hover:border-premium-accent/40 transition-all shrink-0">
                 <img
                   src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100"
                   alt="Admin Avatar"
                   className="w-full h-full object-cover"
                 />
               </div>
-              <ChevronDown className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
+              <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
             </button>
 
             {/* Profile Dropdown Items */}
             {profileDropdownOpen && (
-              <div className="absolute right-0 top-12 w-56 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl p-2.5 z-50 text-left">
-                <div className="px-3.5 py-2.5 border-b border-slate-100 dark:border-slate-800 pb-3 mb-2">
-                  <p className="text-xs font-black text-premium-heading dark:text-white">Vikash Sharma</p>
+              <div className="absolute right-0 top-12 w-56 bg-[#0b0b0d] border border-premium-border/80 rounded-2xl shadow-xl p-2.5 z-50 text-left text-slate-400">
+                <div className="px-3.5 py-2.5 border-b border-slate-800 pb-3 mb-2">
+                  <p className="text-xs font-black text-white">Vikash Sharma</p>
                   <p className="text-[9px] text-premium-accent uppercase font-black tracking-widest mt-0.5">Platform Owner</p>
                 </div>
                 <Link 
                   to="/admin/security" 
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-850 hover:text-premium-accent transition-all"
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-900/60 hover:text-white transition-all"
                 >
-                  <ShieldAlert className="w-4 h-4 text-slate-400" /> Role & Credentials
+                  <ShieldAlert className="w-4 h-4 text-slate-500" /> Role & Credentials
                 </Link>
                 <Link 
                   to="/admin/settings" 
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-850 hover:text-premium-accent transition-all"
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-900/60 hover:text-white transition-all"
                 >
-                  <Settings className="w-4 h-4 text-slate-400" /> System Settings
+                  <Settings className="w-4 h-4 text-slate-500" /> System Settings
                 </Link>
-                <div className="h-px bg-slate-100 dark:bg-slate-800 my-1.5"></div>
+                <div className="h-px bg-slate-800 my-1.5"></div>
                 <Link 
                   to="/" 
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 hover:text-red-600 dark:hover:text-red-400 transition-all"
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-red-500 hover:bg-red-950/20 hover:text-red-400 transition-all"
                 >
                   <LogOut className="w-4 h-4" /> Exit Console
                 </Link>

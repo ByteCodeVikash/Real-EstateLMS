@@ -165,54 +165,54 @@ const MyCourses = () => {
     return (
       <div className="space-y-8 text-left animate-pulse">
         {/* Top bar skeleton */}
-        <div className="bg-white rounded-3xl p-8 border border-premium-border shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div className="bg-[#0b0b0d] rounded-3xl p-8 border border-premium-border shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div className="space-y-3 flex-1 w-full">
-            <div className="h-9 bg-slate-200/80 rounded-xl w-64"></div>
-            <div className="h-4 bg-slate-200/60 rounded-lg w-96 max-w-full"></div>
+            <div className="h-9 bg-[#16161a]/80 rounded-xl w-64"></div>
+            <div className="h-4 bg-[#16161a]/60 rounded-lg w-96 max-w-full"></div>
           </div>
           <div className="flex flex-wrap gap-4 w-full md:w-auto">
-            <div className="h-11 bg-slate-200/80 rounded-xl w-48"></div>
-            <div className="h-11 bg-slate-200/80 rounded-xl w-36"></div>
+            <div className="h-11 bg-[#16161a]/80 rounded-xl w-48"></div>
+            <div className="h-11 bg-[#16161a]/80 rounded-xl w-36"></div>
           </div>
         </div>
 
         {/* Categories skeleton */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2">
           {[1, 2, 3, 4, 5, 6].map(i => (
-            <div key={i} className="h-10 bg-slate-200/80 rounded-xl w-24 shrink-0"></div>
+            <div key={i} className="h-10 bg-[#16161a]/80 rounded-xl w-24 shrink-0"></div>
           ))}
         </div>
 
         {/* Cards skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[1, 2, 3].map(i => (
-            <div key={i} className="bg-white border border-premium-border rounded-3xl overflow-hidden h-[480px] flex flex-col">
-              <div className="h-48 bg-slate-200/80 w-full relative">
-                <div className="absolute top-4 right-4 w-8 h-8 bg-slate-100 rounded-lg"></div>
+            <div key={i} className="bg-[#0b0b0d] border border-premium-border rounded-3xl overflow-hidden h-[480px] flex flex-col">
+              <div className="h-48 bg-[#16161a]/80 w-full relative">
+                <div className="absolute top-4 right-4 w-8 h-8 bg-[#111114] rounded-lg"></div>
               </div>
               <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                 <div className="space-y-3">
-                  <div className="h-4 bg-slate-200/80 rounded-md w-20"></div>
-                  <div className="h-6 bg-slate-200/90 rounded-md w-5/6"></div>
-                  <div className="h-4 bg-slate-200/60 rounded-md w-full"></div>
+                  <div className="h-4 bg-[#16161a]/80 rounded-md w-20"></div>
+                  <div className="h-6 bg-[#16161a]/90 rounded-md w-5/6"></div>
+                  <div className="h-4 bg-[#16161a]/60 rounded-md w-full"></div>
                   <div className="flex items-center gap-2.5 pt-2">
-                    <div className="w-8 h-8 rounded-full bg-slate-200/80"></div>
-                    <div className="h-4 bg-slate-200/70 rounded-md w-32"></div>
+                    <div className="w-8 h-8 rounded-full bg-[#16161a]/80"></div>
+                    <div className="h-4 bg-[#16161a]/70 rounded-md w-32"></div>
                   </div>
                 </div>
-                <div className="space-y-4 pt-4 border-t border-slate-100">
+                <div className="space-y-4 pt-4 border-t border-[#1a1a1c]">
                   <div className="flex justify-between">
-                    <div className="h-4 bg-slate-200/60 rounded-md w-16"></div>
-                    <div className="h-4 bg-slate-200/60 rounded-md w-20"></div>
+                    <div className="h-4 bg-[#16161a]/60 rounded-md w-16"></div>
+                    <div className="h-4 bg-[#16161a]/60 rounded-md w-20"></div>
                   </div>
                   <div className="space-y-1.5">
                     <div className="flex justify-between">
-                      <div className="h-3 bg-slate-200/60 rounded-md w-24"></div>
-                      <div className="h-3 bg-slate-200/60 rounded-md w-8"></div>
+                      <div className="h-3 bg-[#16161a]/60 rounded-md w-24"></div>
+                      <div className="h-3 bg-[#16161a]/60 rounded-md w-8"></div>
                     </div>
-                    <div className="h-2 w-full bg-slate-100 rounded-full"></div>
+                    <div className="h-2 w-full bg-[#111114] rounded-full"></div>
                   </div>
-                  <div className="h-11 bg-slate-200/80 rounded-xl w-full"></div>
+                  <div className="h-11 bg-[#16161a]/80 rounded-xl w-full"></div>
                 </div>
               </div>
             </div>
@@ -226,18 +226,18 @@ const MyCourses = () => {
     <div className="space-y-8 text-left relative min-h-screen pb-12">
       
       {/* Top Filter Control Panel */}
-      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 bg-white p-8 rounded-3xl border border-premium-border shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-shadow duration-300">
+      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 bg-[#0b0b0d] p-8 rounded-3xl border border-premium-border shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-shadow duration-300">
         <div className="space-y-1.5">
           <div className="flex items-center gap-2">
             <span className="bg-premium-accent/10 text-premium-accent text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md border border-premium-accent/15">
               Academy Portal
             </span>
-            <span className="flex items-center gap-1 text-[10px] text-amber-500 font-bold bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-md">
+            <span className="flex items-center gap-1 text-[10px] text-amber-500 font-bold bg-amber-500/100/10 border border-amber-500/20 px-2 py-0.5 rounded-md">
               <Trophy className="w-3 h-3 text-amber-500 fill-current" />
               Elite Access
             </span>
           </div>
-          <h1 className="text-3xl font-black text-premium-heading leading-tight tracking-tight mt-1">BJ Reality Training Courses</h1>
+          <h1 className="text-3xl font-black text-white leading-tight tracking-tight mt-1">BG Realty Training Academy</h1>
           <p className="text-xs text-slate-400 font-bold tracking-wide">
             Manage your credentials, underwriting syllabus blueprints, and elite closing strategies
           </p>
@@ -253,7 +253,7 @@ const MyCourses = () => {
               placeholder="Search by course name, mentor, tags..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-slate-50/70 border border-premium-border rounded-xl py-3 pl-11 pr-4 text-xs text-premium-heading placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-premium-accent/10 focus:bg-white w-full transition-all font-semibold hover:border-slate-300"
+              className="bg-[#0f0f12]/70 border border-premium-border rounded-xl py-3 pl-11 pr-4 text-xs text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-premium-accent/10 focus:bg-[#0b0b0d] w-full transition-all font-semibold hover:border-slate-300"
             />
           </div>
 
@@ -263,7 +263,7 @@ const MyCourses = () => {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-slate-50 border border-premium-border rounded-xl py-3 pl-10 pr-9 text-xs font-bold text-slate-600 focus:outline-none focus:ring-2 focus:ring-premium-accent/10 hover:bg-slate-100/50 cursor-pointer appearance-none transition-all"
+              className="bg-[#0f0f12] border border-premium-border rounded-xl py-3 pl-10 pr-9 text-xs font-bold text-slate-600 focus:outline-none focus:ring-2 focus:ring-premium-accent/10 hover:bg-[#111114]/50 cursor-pointer appearance-none transition-all"
             >
               <option value="highest-progress">Sort: Highest Progress</option>
               <option value="lowest-progress">Sort: Lowest Progress</option>
@@ -278,7 +278,7 @@ const MyCourses = () => {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="bg-slate-50 border border-premium-border rounded-xl py-3 pl-10 pr-9 text-xs font-bold text-slate-600 focus:outline-none focus:ring-2 focus:ring-premium-accent/10 hover:bg-slate-100/50 cursor-pointer appearance-none transition-all"
+              className="bg-[#0f0f12] border border-premium-border rounded-xl py-3 pl-10 pr-9 text-xs font-bold text-slate-600 focus:outline-none focus:ring-2 focus:ring-premium-accent/10 hover:bg-[#111114]/50 cursor-pointer appearance-none transition-all"
             >
               <option value="All">All Licenses</option>
               <option value="Active Only">Active Syllabus</option>
@@ -298,7 +298,7 @@ const MyCourses = () => {
             className={`px-5 py-2.5 rounded-xl text-xs font-black transition-all duration-300 shrink-0 uppercase tracking-wider border cursor-pointer ${
               filter === cat 
                 ? 'bg-gradient-premium border-premium-accent/20 text-white shadow-lg shadow-blue-500/15' 
-                : 'bg-white border-premium-border text-premium-text hover:bg-slate-50 hover:text-premium-heading hover:border-slate-300'
+                : 'bg-[#0b0b0d] border-premium-border text-premium-text hover:bg-[#0f0f12] hover:text-white hover:border-slate-300'
             }`}
           >
             {cat}
@@ -325,10 +325,10 @@ const MyCourses = () => {
                 exit={{ opacity: 0, scale: 0.95 }}
                 className="group relative"
               >
-                <GlassCard className="p-0 overflow-hidden flex flex-col h-full bg-white border border-premium-border shadow-[0_4px_25px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(37,99,235,0.08)] hover:border-premium-accent/30 hover:-translate-y-2 transition-all duration-300 relative rounded-3xl">
+                <GlassCard className="p-0 overflow-hidden flex flex-col h-full bg-[#0b0b0d] border border-premium-border shadow-[0_4px_25px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(37,99,235,0.08)] hover:border-premium-accent/30 hover:-translate-y-2 transition-all duration-300 relative rounded-3xl">
                   
                   {/* Card Thumbnail Area */}
-                  <div className="relative h-52 overflow-hidden bg-slate-100 shrink-0 border-b border-premium-border/80">
+                  <div className="relative h-52 overflow-hidden bg-[#111114] shrink-0 border-b border-[#1a1a1c]">
                     <img 
                       src={course.image} 
                       className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ${
@@ -386,7 +386,7 @@ const MyCourses = () => {
                         <span className="text-[9px] font-black text-premium-accent uppercase tracking-widest">
                           {course.category}
                         </span>
-                        <h3 className="font-black text-lg text-premium-heading leading-snug group-hover:text-premium-accent transition-colors line-clamp-1">
+                        <h3 className="font-black text-lg text-white leading-snug group-hover:text-premium-accent transition-colors line-clamp-1">
                           {course.title}
                         </h3>
                         <p className="text-xs text-premium-text/95 font-medium leading-relaxed line-clamp-2">
@@ -395,8 +395,8 @@ const MyCourses = () => {
                       </div>
 
                       {/* Instructor Avatar Card Block */}
-                      <div className="flex items-center gap-3 bg-slate-50/50 p-2.5 rounded-xl border border-slate-100">
-                        <div className="w-9 h-9 rounded-full border border-premium-border/60 overflow-hidden shadow-sm shrink-0">
+                      <div className="flex items-center gap-3 bg-[#0f0f12]/50 p-2.5 rounded-xl border border-[#1a1a1c]">
+                        <div className="w-9 h-9 rounded-full border border-[#1a1a1c] overflow-hidden shadow-sm shrink-0">
                           <img 
                             src={course.instructorAvatar} 
                             alt={course.instructor}
@@ -404,14 +404,14 @@ const MyCourses = () => {
                           />
                         </div>
                         <div className="text-left">
-                          <p className="text-xs font-black text-premium-heading">{course.instructor}</p>
+                          <p className="text-xs font-black text-white">{course.instructor}</p>
                           <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">{course.instructorRole}</p>
                         </div>
                       </div>
                     </div>
 
                     {/* Progress details and CTAs */}
-                    <div className="space-y-4 pt-4 border-t border-slate-100/80">
+                    <div className="space-y-4 pt-4 border-t border-[#1a1a1c]/80">
                       
                       {/* Meta information tags */}
                       <div className="flex items-center justify-between text-xs text-premium-text font-bold">
@@ -433,7 +433,7 @@ const MyCourses = () => {
                             {course.progress}%
                           </span>
                         </div>
-                        <div className="h-2 w-full bg-slate-50 border border-slate-200/50 rounded-full overflow-hidden relative shadow-inner">
+                        <div className="h-2 w-full bg-[#0f0f12] border border-[#1e1e22]/50 rounded-full overflow-hidden relative shadow-inner">
                           <motion.div 
                             initial={{ width: 0 }}
                             animate={{ width: `${course.progress}%` }}
@@ -452,7 +452,7 @@ const MyCourses = () => {
                         <Button 
                           variant="outline" 
                           onClick={() => handleUnlockClick(course)}
-                          className="w-full text-xs uppercase tracking-widest font-black border-amber-200/60 bg-amber-50/10 hover:bg-amber-50 hover:border-amber-400 hover:text-amber-700 h-12 rounded-xl flex items-center justify-center gap-2 shadow-none cursor-pointer"
+                          className="w-full text-xs uppercase tracking-widest font-black border-amber-200/60 bg-amber-500/100/8 hover:bg-amber-500/10 hover:border-amber-400 hover:text-amber-400 h-12 rounded-xl flex items-center justify-center gap-2 shadow-none cursor-pointer"
                         >
                           <Lock className="w-4 h-4 text-amber-500" />
                           Unlock Course
@@ -483,18 +483,18 @@ const MyCourses = () => {
         <motion.div 
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          className="py-24 flex flex-col items-center justify-center text-center bg-white rounded-3xl border border-premium-border shadow-[0_4px_20px_rgba(0,0,0,0.01)]"
+          className="py-24 flex flex-col items-center justify-center text-center bg-[#0b0b0d] rounded-3xl border border-premium-border shadow-[0_4px_20px_rgba(0,0,0,0.01)]"
         >
-          <div className="w-16 h-16 bg-slate-50 border border-premium-border rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+          <div className="w-16 h-16 bg-[#0f0f12] border border-premium-border rounded-2xl flex items-center justify-center mb-6 shadow-sm">
             <Search className="w-7 h-7 text-slate-400" />
           </div>
-          <h3 className="text-xl font-black text-premium-heading mb-1.5">No Matching Academy Blueprints</h3>
+          <h3 className="text-xl font-black text-white mb-1.5">No Matching Academy Blueprints</h3>
           <p className="text-xs text-premium-text max-w-sm leading-relaxed font-bold">
             We couldn't locate any credentials matching your exact search text or active filter options.
           </p>
           <Button 
             variant="outline" 
-            className="mt-6 text-[10px] uppercase font-black tracking-wider bg-white h-11 px-5 rounded-xl border-premium-accent/20 hover:border-premium-accent text-premium-accent"
+            className="mt-6 text-[10px] uppercase font-black tracking-wider bg-[#0b0b0d] h-11 px-5 rounded-xl border-premium-accent/20 hover:border-premium-accent text-premium-accent"
             onClick={() => { setFilter('All'); setSearchQuery(''); setStatusFilter('All'); }}
           >
             Reset Active Filters
@@ -515,7 +515,7 @@ const MyCourses = () => {
               initial={{ scale: 0.95, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
-              className="bg-white border border-premium-border/80 rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl p-8 relative"
+              className="bg-[#0b0b0d] border border-[#1a1a1c] rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl p-8 relative"
             >
               {/* Premium Glow effect */}
               <div className="absolute -top-12 -left-12 w-32 h-32 bg-premium-accent/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -530,31 +530,31 @@ const MyCourses = () => {
               </button>
 
               <div className="text-center space-y-6">
-                <div className="w-14 h-14 bg-amber-50 border border-amber-200/50 rounded-2xl flex items-center justify-center mx-auto shadow-md">
+                <div className="w-14 h-14 bg-amber-500/10 border border-amber-200/50 rounded-2xl flex items-center justify-center mx-auto shadow-md">
                   <Sparkles className="w-7 h-7 text-amber-500 fill-current animate-pulse" />
                 </div>
 
                 <div className="space-y-2">
-                  <span className="text-[10px] uppercase font-black tracking-widest text-premium-accent">BJ Reality Premium Syllabus</span>
-                  <h2 className="text-2xl font-black text-premium-heading">{selectedLockedCourse.title}</h2>
+                  <span className="text-[10px] uppercase font-black tracking-widest text-premium-accent">BG Realty Premium Syllabus</span>
+                  <h2 className="text-2xl font-black text-white">{selectedLockedCourse.title}</h2>
                   <p className="text-xs text-premium-text/90 leading-relaxed font-bold px-4">
                     Upgrade to our Elite Credentials Tier to unlock high-yield multi-family underwriting models, off-market HNW leads list, and private CRE coaching modules.
                   </p>
                 </div>
 
                 {/* Offer value bullet points */}
-                <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-left space-y-3">
+                <div className="bg-[#0f0f12] border border-[#1a1a1c] rounded-2xl p-4 text-left space-y-3">
                   <div className="flex items-start gap-3">
                     <ShieldCheck className="w-4 h-4 text-premium-emerald mt-0.5 shrink-0" />
                     <div>
-                      <p className="text-xs font-black text-premium-heading">Access Private Resource Kits</p>
+                      <p className="text-xs font-black text-white">Access Private Resource Kits</p>
                       <p className="text-[10px] text-slate-400 font-bold">Download customized deal waterfalls and off-market pitch decks.</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <ShieldCheck className="w-4 h-4 text-premium-emerald mt-0.5 shrink-0" />
                     <div>
-                      <p className="text-xs font-black text-premium-heading">Weekly Live Mentorship Sessions</p>
+                      <p className="text-xs font-black text-white">Weekly Live Mentorship Sessions</p>
                       <p className="text-[10px] text-slate-400 font-bold">1-on-1 Q&A deal board reviews with Robert Sterling & Elena Rodriguez.</p>
                     </div>
                   </div>
@@ -583,7 +583,7 @@ const MyCourses = () => {
 
                 <p className="text-[10px] text-slate-400 font-bold flex items-center justify-center gap-1">
                   <HelpCircle className="w-3.5 h-3.5" />
-                  Need immediate support? Contact billing@bjreality.academy
+                  Need immediate support? Contact billing@bgrealtyacademy.com
                 </p>
               </div>
             </motion.div>

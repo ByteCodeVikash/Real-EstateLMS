@@ -62,11 +62,11 @@ const LiveClasses = () => {
     <div className="space-y-8 animate-in text-left">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-black text-premium-heading mb-2">Live Broadcasts &amp; Webinars</h1>
+          <h1 className="text-3xl font-black text-white mb-2">Live Broadcasts &amp; Webinars</h1>
           <p className="text-sm text-slate-400 font-bold">Participate in live real-estate deal audits, legal code reviews, and closer strategies.</p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="h-10 text-xs font-black uppercase tracking-widest bg-white border border-premium-border text-slate-500 shadow-sm">Past Broadcasts</Button>
+          <Button variant="outline" className="h-10 text-xs font-black uppercase tracking-widest bg-[#0b0b0d] border border-premium-border text-slate-500 shadow-sm">Past Broadcasts</Button>
           <Button variant="primary" className="h-10 text-xs font-black uppercase tracking-widest shadow-sm">My Academy Schedule</Button>
         </div>
       </div>
@@ -85,15 +85,15 @@ const LiveClasses = () => {
         <div className="relative z-10 p-8 md:p-12 max-w-2xl space-y-6">
           {heroPhase.phase === 'live' ? (
             <Badge variant="danger" className={`px-4 py-1.5 text-xs font-black rounded-lg tracking-widest border ${
-              heroTone === 'critical' ? 'bg-red-500/15 text-red-300 border-red-500/30 animate-pulse' : 'bg-red-500/10 text-red-400 border-red-500/20'
+              heroTone === 'critical' ? 'bg-red-500/100/15 text-red-300 border-red-500/30 animate-pulse' : 'bg-red-500/100/10 text-red-400 border-red-500/20'
             }`}>
               <span className="flex items-center gap-2">
-                <span className={`w-2 h-2 rounded-full ${heroTone === 'critical' ? 'bg-red-400 animate-ping' : 'bg-red-500 animate-pulse'}`}></span>
+                <span className={`w-2 h-2 rounded-full ${heroTone === 'critical' ? 'bg-red-400 animate-ping' : 'bg-red-500/100 animate-pulse'}`}></span>
                 LIVE NOW • Ends in {formatCountdownParts(heroRemainingMs)}
               </span>
             </Badge>
           ) : (
-            <Badge variant="premium" className="px-4 py-1.5 text-xs font-black rounded-lg tracking-widest bg-violet-500/10 text-violet-300 border border-violet-500/20">
+            <Badge variant="premium" className="px-4 py-1.5 text-xs font-black rounded-lg tracking-widest bg-violet-500/100/10 text-violet-300 border border-violet-500/20">
               <span className="flex items-center gap-2">
                 <span className="w-2 h-2 bg-violet-400 rounded-full animate-pulse"></span>
                 {formatRelativeStart({ nowMs, startAt: heroEvent.startAt })}
@@ -137,7 +137,7 @@ const LiveClasses = () => {
       {/* Upcoming Schedule */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
-          <h3 className="text-xl font-black text-premium-heading">Upcoming Webinar Schedule</h3>
+          <h3 className="text-xl font-black text-white">Upcoming Webinar Schedule</h3>
           {schedule.slice(1).map((item, i) => {
             const phase = getTimerPhase({ nowMs, startAt: item.startAt, endAt: item.endAt });
             const startMs = new Date(item.startAt).getTime();
@@ -147,34 +147,34 @@ const LiveClasses = () => {
 
             const pill = (() => {
               if (phase.phase === 'invalid') {
-                return { text: 'Schedule TBD', cls: 'bg-slate-900/5 text-slate-500 border-slate-200' };
+                return { text: 'Schedule TBD', cls: 'bg-slate-900/5 text-slate-500 border-[#1e1e22]' };
               }
               if (phase.phase === 'ended') {
-                return { text: 'Ended', cls: 'bg-slate-900/5 text-slate-500 border-slate-200' };
+                return { text: 'Ended', cls: 'bg-slate-900/5 text-slate-500 border-[#1e1e22]' };
               }
               if (phase.phase === 'live') {
                 return {
                   text: `LIVE • ${formatCountdownParts(remainingMs)} left`,
                   cls: tone === 'critical'
-                    ? 'bg-red-50 text-red-600 border-red-100 animate-pulse'
-                    : 'bg-red-50 text-red-500 border-red-100',
+                    ? 'bg-red-500/10 text-red-400 border-red-500/20 animate-pulse'
+                    : 'bg-red-500/10 text-red-500 border-red-500/20',
                 };
               }
               // upcoming
               return {
                 text: `${formatCountdownParts(remainingMs)}`,
                 cls: tone === 'critical'
-                  ? 'bg-amber-50 text-amber-700 border-amber-100 animate-pulse'
+                  ? 'bg-amber-500/10 text-amber-400 border-amber-500/20 animate-pulse'
                   : tone === 'warning'
-                    ? 'bg-amber-50 text-amber-700 border-amber-100'
-                    : 'bg-slate-50 text-premium-accent border-slate-100',
+                    ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                    : 'bg-[#0f0f12] text-premium-accent border-[#1a1a1c]',
               };
             })();
 
             return (
-            <GlassCard key={i} className="group hover:bg-slate-50/80 bg-white border border-premium-border p-6 shadow-sm duration-300">
+            <GlassCard key={i} className="group hover:bg-[#0f0f12]/80 bg-[#0b0b0d] border border-premium-border p-6 shadow-sm duration-300">
               <div className="flex flex-col md:flex-row items-center gap-8">
-                <div className="shrink-0 text-center md:border-r md:border-slate-100 md:pr-8">
+                <div className="shrink-0 text-center md:border-r md:border-[#1a1a1c] md:pr-8">
                   <p className="text-3xl font-black text-premium-accent">
                     {new Intl.DateTimeFormat(undefined, { day: '2-digit' }).format(new Date(item.startAt))}
                   </p>
@@ -186,7 +186,7 @@ const LiveClasses = () => {
                   </p>
                 </div>
                 <div className="flex-1 text-center md:text-left space-y-2">
-                  <h4 className="text-lg font-bold text-premium-heading group-hover:text-premium-accent transition-colors leading-snug">
+                  <h4 className="text-lg font-bold text-white group-hover:text-premium-accent transition-colors leading-snug">
                     {item.title}
                   </h4>
                   <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
@@ -196,14 +196,14 @@ const LiveClasses = () => {
                     <span className="flex items-center gap-1.5 text-xs text-slate-400 font-bold">
                       <Clock className="w-4 h-4 text-premium-accent" /> {item.lengthMinutes} Minutes
                     </span>
-                    <Badge variant="premium" className="text-[8px] py-0.5 px-2 bg-violet-50 text-violet-600 border border-violet-100 font-black">Accredited Hour</Badge>
+                    <Badge variant="premium" className="text-[8px] py-0.5 px-2 bg-violet-500/100/10 text-violet-400 border border-violet-500/20 font-black">Accredited Hour</Badge>
                     <span className={`text-[9px] font-mono font-black px-2 py-0.5 rounded border ${pill.cls}`}>
                       {pill.text}
                     </span>
                   </div>
                 </div>
                 <div className="shrink-0">
-                  <Button variant="outline" className="text-xs font-black uppercase tracking-widest h-10 bg-white border border-premium-border text-slate-500 hover:bg-slate-50 shadow-sm">Notify Me</Button>
+                  <Button variant="outline" className="text-xs font-black uppercase tracking-widest h-10 bg-[#0b0b0d] border border-premium-border text-slate-500 hover:bg-[#0f0f12] shadow-sm">Notify Me</Button>
                 </div>
               </div>
             </GlassCard>
@@ -213,14 +213,14 @@ const LiveClasses = () => {
 
         {/* Top Mentors */}
         <div className="space-y-6">
-          <h3 className="text-xl font-black text-premium-heading">Live Session Mentors</h3>
+          <h3 className="text-xl font-black text-white">Live Session Mentors</h3>
           <div className="space-y-4">
             {[
               { name: "Robert Sterling", role: "CRE Underwriting", rating: "4.9", rev: "1.2k", avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=100" },
               { name: "Elena Rodriguez", role: "Luxury Listings", rating: "4.8", rev: "980", avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=100" },
               { name: "Marcus Thorne", role: "Property Flipping", rating: "4.9", rev: "840", avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=100" }
             ].map((mentor, i) => (
-              <GlassCard key={i} className="p-4 flex items-center gap-4 group cursor-pointer border border-premium-border bg-white shadow-sm hover:shadow-[0_12px_45px_rgba(15,23,42,0.06)] duration-300">
+              <GlassCard key={i} className="p-4 flex items-center gap-4 group cursor-pointer border border-premium-border bg-[#0b0b0d] shadow-sm hover:shadow-[0_12px_45px_rgba(15,23,42,0.06)] duration-300">
                 <div className="relative shrink-0">
                    <img src={mentor.avatar} className="w-14 h-14 rounded-xl object-cover border border-premium-border" alt={mentor.name} />
                    <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-premium-accent rounded-lg border-2 border-white flex items-center justify-center">
@@ -228,11 +228,11 @@ const LiveClasses = () => {
                    </div>
                 </div>
                 <div className="flex-1 min-w-0 text-left">
-                  <p className="font-bold text-premium-heading group-hover:text-premium-accent transition-colors leading-none truncate">{mentor.name}</p>
+                  <p className="font-bold text-white group-hover:text-premium-accent transition-colors leading-none truncate">{mentor.name}</p>
                   <p className="text-xs text-slate-400 font-bold mt-1.5 truncate">{mentor.role}</p>
                   <div className="flex items-center gap-1 mt-1.5 font-bold">
                     <Star className="w-3 h-3 text-premium-accent fill-current" />
-                    <span className="text-[10px] font-black text-premium-heading">{mentor.rating}</span>
+                    <span className="text-[10px] font-black text-white">{mentor.rating}</span>
                     <span className="text-[9px] text-slate-400 ml-1">({mentor.rev} reviews)</span>
                   </div>
                 </div>

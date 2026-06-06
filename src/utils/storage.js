@@ -1,5 +1,5 @@
 /**
- * BJ Reality Academy — localStorage Persistence Utilities
+ * BG Realty Training Academy — localStorage Persistence Utilities
  * Provides safe read/write/clear operations for demo-mode persistence.
  * All operations are wrapped in try/catch to silently handle corrupted
  * or unavailable storage without crashing the application.
@@ -8,15 +8,15 @@
 // ─── Organized Storage Key Constants ──────────────────────────────────────────
 export const STORAGE_KEYS = {
   // CourseWatch: per-course note lists
-  courseNotes: (courseId) => `bjlms_notes_${courseId}`,
+  courseNotes: (courseId) => `bglms_notes_${courseId}`,
   // CourseWatch: per-course student chat messages
-  courseChat:  (courseId) => `bjlms_chat_${courseId}`,
+  courseChat:  (courseId) => `bglms_chat_${courseId}`,
   // Notifications: dismissed notification IDs
-  notifDismissed: 'bjlms_notifications_dismissed',
+  notifDismissed: 'bglms_notifications_dismissed',
   // Notifications: read notification IDs
-  notifRead: 'bjlms_notifications_read',
+  notifRead: 'bglms_notifications_read',
   // Assignments: full assignments state array
-  assignments: 'bjlms_assignments',
+  assignments: 'bglms_assignments',
 };
 
 // ─── saveToStorage ────────────────────────────────────────────────────────────
@@ -70,12 +70,12 @@ export function clearStorage(key) {
 
 // ─── clearAllAppStorage ───────────────────────────────────────────────────────
 /**
- * Remove ALL bjlms_* keys from localStorage (full demo reset).
+ * Remove ALL bglms_* and bjlms_* keys from localStorage (full demo reset).
  */
 export function clearAllAppStorage() {
   try {
     Object.keys(localStorage)
-      .filter((k) => k.startsWith('bjlms_'))
+      .filter((k) => k.startsWith('bglms_'))
       .forEach((k) => localStorage.removeItem(k));
   } catch (err) {
     console.warn('[Storage] Could not clear all app storage:', err);

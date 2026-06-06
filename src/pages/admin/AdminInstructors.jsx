@@ -4,10 +4,10 @@ import { AdminTable, AdminDrawer } from '../../components/admin/AdminComponents'
 import { Button } from '../../components/UI';
 
 const initialInstructors = [
-  { id: 1, name: "Sarah Jenkins", email: "sarah.j@bjreality.com", phone: "+1 (555) 019-2834", courses: 3, students: 720, rating: 4.9, status: "Active", bio: "Former principal broker at Vanguard Equities with 18+ years in luxury syndicates." },
-  { id: 2, name: "Alex Mercer", email: "alex.mercer@bjreality.com", phone: "+1 (555) 014-9821", courses: 2, students: 320, rating: 4.8, status: "Active", bio: "Leading financial underwriter specializing in REIT spreadsheets and spreadsheet models." },
-  { id: 3, name: "Michael Chang", email: "m.chang@bjreality.com", phone: "+1 (555) 018-8832", courses: 1, students: 110, rating: 4.6, status: "Active", bio: "Real estate transaction lawyer with expertise in commercial zoning laws and contracts." },
-  { id: 4, name: "Elena Rostova", email: "elena.r@bjreality.com", phone: "+1 (555) 017-7612", courses: 0, students: 0, rating: 0.0, status: "Inactive", bio: "International luxury property scout with premium deals brokerage experience." }
+  { id: 1, name: "Sarah Jenkins", email: "sarah.j@bgrealtyacademy.com", phone: "+1 (555) 019-2834", courses: 3, students: 720, rating: 4.9, status: "Active", bio: "Former principal broker at Vanguard Equities with 18+ years in luxury syndicates." },
+  { id: 2, name: "Alex Mercer", email: "alex.mercer@bgrealtyacademy.com", phone: "+1 (555) 014-9821", courses: 2, students: 320, rating: 4.8, status: "Active", bio: "Leading financial underwriter specializing in REIT spreadsheets and spreadsheet models." },
+  { id: 3, name: "Michael Chang", email: "m.chang@bgrealtyacademy.com", phone: "+1 (555) 018-8832", courses: 1, students: 110, rating: 4.6, status: "Active", bio: "Real estate transaction lawyer with expertise in commercial zoning laws and contracts." },
+  { id: 4, name: "Elena Rostova", email: "elena.r@bgrealtyacademy.com", phone: "+1 (555) 017-7612", courses: 0, students: 0, rating: 0.0, status: "Inactive", bio: "International luxury property scout with premium deals brokerage experience." }
 ];
 
 export default function AdminInstructors() {
@@ -69,7 +69,7 @@ export default function AdminInstructors() {
             {row.name.split(' ').map(n=>n[0]).join('')}
           </div>
           <div>
-            <p className="font-bold text-premium-heading dark:text-white leading-none">{row.name}</p>
+            <p className="font-bold text-white text-white leading-none">{row.name}</p>
             <span className="text-[10px] text-slate-400 font-semibold">{row.email}</span>
           </div>
         </div>
@@ -95,7 +95,7 @@ export default function AdminInstructors() {
       render: (row) => (
         <div className="flex items-center gap-1">
           <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
-          <span className="font-black text-slate-700 dark:text-slate-300 text-xs">
+          <span className="font-black text-slate-700 text-slate-300 text-xs">
             {row.rating === 0 ? "N/A" : row.rating.toFixed(1)}
           </span>
         </div>
@@ -107,8 +107,8 @@ export default function AdminInstructors() {
       render: (row) => (
         <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${
           row.status === "Active"
-            ? "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900"
-            : "bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-750"
+            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900"
+            : "bg-[#111114] text-slate-500 border-[#1e1e22] bg-[#111114] text-slate-400 dark:border-slate-750"
         }`}>
           {row.status}
         </span>
@@ -150,8 +150,8 @@ export default function AdminInstructors() {
       {/* Upper Panel Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-premium-heading dark:text-white tracking-tight uppercase">Instructor Registry</h1>
-          <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 mt-1">Manage broker licenses, mentor rating scores, profiles, and classroom access credentials.</p>
+          <h1 className="text-2xl font-black text-white text-white tracking-tight uppercase">Instructor Registry</h1>
+          <p className="text-xs font-semibold text-slate-400 text-slate-500 mt-1">Manage broker licenses, mentor rating scores, profiles, and classroom access credentials.</p>
         </div>
         <Button variant="primary" size="sm" onClick={() => { setSelectedInstructor(null); setDrawerOpen(true); }}>
           <UserPlus className="w-4 h-4 mr-2" /> Onboard Mentor
@@ -160,23 +160,23 @@ export default function AdminInstructors() {
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <div className="rounded-2xl border border-premium-border/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 flex items-center gap-4">
-          <div className="h-12 w-12 rounded-xl bg-violet-500/10 flex items-center justify-center text-premium-violet">
+        <div className="rounded-2xl border border-[#1a1a1c] border-[#1a1a1c] bg-[#0b0b0d] bg-[#0b0b0d] p-5 flex items-center gap-4">
+          <div className="h-12 w-12 rounded-xl bg-violet-500/100/10 flex items-center justify-center text-premium-violet">
             <GraduationCap className="w-6 h-6" />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Active Faculty</span>
-            <p className="text-xl font-black text-premium-heading dark:text-white mt-0.5">{instructors.filter(i=>i.status === "Active").length} Members</p>
+            <span className="text-[10px] font-bold text-slate-400 text-slate-500 uppercase tracking-wider">Active Faculty</span>
+            <p className="text-xl font-black text-white text-white mt-0.5">{instructors.filter(i=>i.status === "Active").length} Members</p>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-premium-border/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 flex items-center gap-4">
-          <div className="h-12 w-12 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500">
+        <div className="rounded-2xl border border-[#1a1a1c] border-[#1a1a1c] bg-[#0b0b0d] bg-[#0b0b0d] p-5 flex items-center gap-4">
+          <div className="h-12 w-12 rounded-xl bg-amber-500/100/10 flex items-center justify-center text-amber-500">
             <Star className="w-6 h-6 fill-current" />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Average Rating</span>
-            <p className="text-xl font-black text-premium-heading dark:text-white mt-0.5">4.8 / 5.0 Star</p>
+            <span className="text-[10px] font-bold text-slate-400 text-slate-500 uppercase tracking-wider">Average Rating</span>
+            <p className="text-xl font-black text-white text-white mt-0.5">4.8 / 5.0 Star</p>
           </div>
         </div>
       </div>
@@ -213,7 +213,7 @@ export default function AdminInstructors() {
               placeholder="e.g. Johnathan Doe"
               value={formState.name}
               onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+              className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none"
             />
           </div>
 
@@ -223,10 +223,10 @@ export default function AdminInstructors() {
               <input
                 type="email"
                 required
-                placeholder="mentor@bjreality.com"
+                placeholder="mentor@bgrealtyacademy.com"
                 value={formState.email}
                 onChange={(e) => setFormState({ ...formState, email: e.target.value })}
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+                className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none"
               />
             </div>
             <div className="space-y-1.5">
@@ -236,7 +236,7 @@ export default function AdminInstructors() {
                 placeholder="+1 (555) 000-0000"
                 value={formState.phone}
                 onChange={(e) => setFormState({ ...formState, phone: e.target.value })}
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+                className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none"
               />
             </div>
           </div>
@@ -248,7 +248,7 @@ export default function AdminInstructors() {
               placeholder="Provide summary of real estate investments, licensing, or commercial accomplishments..."
               value={formState.bio}
               onChange={(e) => setFormState({ ...formState, bio: e.target.value })}
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none scrollbar-thin"
+              className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none scrollbar-thin"
             />
           </div>
 
@@ -257,14 +257,14 @@ export default function AdminInstructors() {
             <select
               value={formState.status}
               onChange={(e) => setFormState({ ...formState, status: e.target.value })}
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+              className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none"
             >
               <option value="Active">Active (Permitted)</option>
               <option value="Inactive">Inactive (Suspended)</option>
             </select>
           </div>
 
-          <div className="pt-4 border-t border-slate-100 dark:border-slate-850 flex items-center justify-end gap-2.5">
+          <div className="pt-4 border-t border-[#1a1a1c] dark:border-slate-850 flex items-center justify-end gap-2.5">
             <Button variant="outline" size="sm" type="button" onClick={() => setDrawerOpen(false)}>
               Cancel
             </Button>

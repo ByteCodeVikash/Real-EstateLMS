@@ -8,31 +8,37 @@ import {
 } from 'lucide-react';
 import { cn } from './UI';
 
-export const BJLogo = ({ className = "w-10 h-10" }) => (
+export const BGLogo = ({ className = "w-10 h-10" }) => (
   <svg className={className} viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <linearGradient id="logo-blue" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#2563eb" />
-        <stop offset="100%" stopColor="#7c3aed" />
+      <linearGradient id="bg-logo-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#CFAE5D" />
+        <stop offset="50%" stopColor="#D4AF37" />
+        <stop offset="100%" stopColor="#E5C76B" />
       </linearGradient>
-      <linearGradient id="logo-gold" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#fbbf24" />
-        <stop offset="100%" stopColor="#d97706" />
+      <linearGradient id="bg-logo-blue" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#0A66C2" />
+        <stop offset="100%" stopColor="#1E88E5" />
       </linearGradient>
     </defs>
-    {/* Cap Diamond top representing education */}
-    <path d="M64 12L116 36L64 60L12 36L64 12Z" fill="url(#logo-blue)" />
-    {/* Cap tassel hanging down in premium gold */}
-    <path d="M116 36V70C116 74 112 78 108 78" stroke="url(#logo-gold)" strokeWidth="3" strokeLinecap="round" />
-    <circle cx="108" cy="78" r="4" fill="url(#logo-gold)" />
+    {/* Skyline silhouette roof */}
+    <path d="M15 90V55L40 40V90H15Z" fill="url(#bg-logo-gold)" />
+    <path d="M45 90V25L70 12V90H45Z" fill="url(#bg-logo-gold)" opacity="0.95" />
+    <path d="M75 90V48L95 36V90H75Z" fill="url(#bg-logo-gold)" opacity="0.85" />
+    <path d="M100 90V65L115 55V90H100Z" fill="url(#bg-logo-gold)" opacity="0.75" />
     
-    {/* Building Pillars forming 'B' and 'J' initials */}
-    <rect x="36" y="58" width="12" height="52" rx="3.5" fill="url(#logo-blue)" />
-    <path d="M48 58H68C75.5 58 79.5 62 79.5 67.5C79.5 73 75.5 77 68 77H48V58Z" fill="url(#logo-blue)" opacity="0.9" />
-    <path d="M48 77H71C79 77 83 81.5 83 87.5C83 93.5 79 98 71 98H42C38.5 98 36 95.5 36 92" fill="url(#logo-blue)" />
-    <path d="M96 58V90C96 98 90 104 82 104C74 104 68 98 68 90" stroke="url(#logo-gold)" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" />
+    {/* Windows */}
+    <path d="M52 32H63V38H52V32ZM52 46H63V52H52V46ZM52 60H63V66H52V60ZM52 74H63V80H52V74Z" fill="#08080a" opacity="0.75" />
+    <path d="M22 62H33V68H22V62ZM22 74H33V80H22V74Z" fill="#08080a" opacity="0.75" />
+    <path d="M81 54H90V60H81V54ZM81 66H90V72H81V66ZM81 78H90V84H81V78Z" fill="#08080a" opacity="0.75" />
+
+    {/* Blue Swoosh Underline */}
+    <path d="M8 98C36 94 92 94 120 98C94 106 34 106 8 98Z" fill="url(#bg-logo-blue)" />
+    <path d="M12 102C42 99 86 99 116 102C90 109 38 109 12 102Z" fill="url(#bg-logo-blue)" opacity="0.6" />
   </svg>
 );
+
+export const BJLogo = BGLogo;
 
 const menuItems = [
   { icon: LayoutIcon, label: 'Dashboard', path: '/dashboard' },
@@ -65,15 +71,15 @@ export const SidebarContent = ({ onItemClick }) => {
 
   return (
     <>
-    <div className="p-6 border-b border-slate-900 shrink-0">
+    <div className="p-6 border-b border-slate-900/60 shrink-0">
       <Link to="/" onClick={onItemClick} className="flex items-center gap-3 group">
-        <BJLogo className="w-10 h-10 group-hover:scale-105 transition-transform duration-300" />
+        <BGLogo className="w-10 h-10 group-hover:scale-105 transition-transform duration-300" />
         <div className="flex flex-col text-left">
           <span className="text-base font-black tracking-tight leading-none text-white group-hover:text-premium-accent transition-colors">
-            BJ REALITY
+            BG REALTY
           </span>
-          <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">
-            Training Courses
+          <span className="text-[9px] font-bold text-premium-accent uppercase tracking-widest mt-1">
+            TRAINING ACADEMY
           </span>
         </div>
       </Link>
@@ -178,11 +184,11 @@ export const Navbar = ({ onMenuOpen }) => {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
   return (
-    <header className="h-20 bg-white/95 backdrop-blur-md border-b border-premium-border fixed top-0 right-0 left-0 lg:left-64 z-40 px-6 sm:px-8 flex items-center justify-between shadow-sm">
+    <header className="h-20 bg-premium-card/90 backdrop-blur-md border-b border-premium-border/80 fixed top-0 right-0 left-0 lg:left-64 z-40 px-6 sm:px-8 flex items-center justify-between shadow-lg">
       {/* Mobile Hamburger menu */}
       <button 
         onClick={onMenuOpen}
-        className="lg:hidden h-10 w-10 flex items-center justify-center rounded-xl bg-slate-50 border border-premium-border text-slate-500 hover:text-premium-accent hover:border-premium-accent/30 transition-all mr-4 cursor-pointer active:scale-95 shrink-0"
+        className="lg:hidden h-10 w-10 flex items-center justify-center rounded-xl bg-slate-900 border border-premium-border/60 text-slate-400 hover:text-premium-accent hover:border-premium-accent/30 transition-all mr-4 cursor-pointer active:scale-95 shrink-0"
       >
         <Menu className="w-5 h-5" />
       </button>
@@ -190,12 +196,12 @@ export const Navbar = ({ onMenuOpen }) => {
       {/* Search Bar */}
       <div className="hidden md:block flex-1 max-w-lg">
         <div className="relative group text-left">
-          <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-premium-accent transition-colors">
+          <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-slate-500 group-focus-within:text-premium-accent transition-colors">
             <Search className="w-4 h-4" />
           </div>
           <input
             type="text"
-            className="w-full bg-slate-50 border border-premium-border rounded-xl py-2.5 pl-11 pr-4 text-xs text-premium-heading placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-premium-accent/20 focus:border-premium-accent transition-all font-semibold"
+            className="w-full bg-[#08080a] border border-premium-border/60 rounded-xl py-2.5 pl-11 pr-4 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-premium-accent/20 focus:border-premium-accent transition-all font-semibold"
             placeholder="Search deals, underwriting templates, legal codes..."
           />
         </div>
@@ -204,60 +210,60 @@ export const Navbar = ({ onMenuOpen }) => {
       {/* Right Controls */}
       <div className="flex items-center gap-3 sm:gap-6 ml-4 shrink-0">
         {/* Learning Streak Badge */}
-        <div className="bg-amber-50 border border-amber-100 px-2.5 sm:px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 shadow-sm shrink-0">
+        <div className="bg-amber-500/10 border border-amber-500/20 px-2.5 sm:px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 shadow-sm shrink-0 text-amber-500">
           <Flame className="w-4 h-4 text-amber-500 fill-current animate-pulse" />
-          <span className="text-[10px] text-amber-700 font-black uppercase tracking-wider hidden xs:inline">7 Day Streak</span>
-          <span className="text-[10px] text-amber-700 font-black uppercase tracking-wider xs:hidden">7d</span>
+          <span className="text-[10px] font-black uppercase tracking-wider hidden xs:inline">7 Day Streak</span>
+          <span className="text-[10px] font-black uppercase tracking-wider xs:hidden">7d</span>
         </div>
 
         {/* Notifications Icon */}
-        <Link to="/notifications" className="relative p-2 text-slate-400 hover:text-premium-heading transition-colors group shrink-0">
+        <Link to="/notifications" className="relative p-2 text-slate-400 hover:text-white transition-colors group shrink-0">
           <Bell className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-          <span className="absolute top-2 right-2 w-2 h-2 bg-premium-accent rounded-full border border-white"></span>
+          <span className="absolute top-2 right-2 w-2 h-2 bg-premium-accent rounded-full border border-black"></span>
         </Link>
 
         {/* User Profile Dropdown Menu */}
         <div className="relative shrink-0">
           <button 
             onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-            className="flex items-center gap-2 sm:gap-3 pl-3 sm:pl-6 border-l border-premium-border cursor-pointer group focus:outline-none"
+            className="flex items-center gap-2 sm:gap-3 pl-3 sm:pl-6 border-l border-premium-border/60 cursor-pointer group focus:outline-none"
           >
             <div className="text-right hidden md:block">
-              <p className="text-xs font-black text-premium-heading group-hover:text-premium-accent transition-colors">Johnathan Doe</p>
+              <p className="text-xs font-black text-white group-hover:text-premium-accent transition-colors">Johnathan Doe</p>
               <p className="text-[9px] text-premium-accent uppercase font-black tracking-widest mt-0.5">Premium Student</p>
             </div>
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-premium-border group-hover:border-premium-accent transition-all overflow-hidden shadow-sm shrink-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-premium-border/60 group-hover:border-premium-accent transition-all overflow-hidden shadow-sm shrink-0">
               <img
                 src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100"
                 alt="Avatar"
                 className="w-full h-full object-cover"
               />
             </div>
-            <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-hover:text-premium-heading transition-colors shrink-0" />
+            <ChevronDown className="w-3.5 h-3.5 text-slate-500 group-hover:text-white transition-colors shrink-0" />
           </button>
 
           {/* Profile Dropdown Items */}
           {profileDropdownOpen && (
-            <div className="absolute right-0 top-12 w-52 bg-white border border-premium-border rounded-xl shadow-xl p-2 z-50 text-left">
+            <div className="absolute right-0 top-12 w-52 bg-[#0b0b0d] border border-premium-border/80 rounded-xl shadow-xl p-2 z-50 text-left text-slate-400">
               <Link 
                 to="/security" 
                 onClick={() => setProfileDropdownOpen(false)}
-                className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-50 hover:text-premium-accent transition-all"
+                className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold text-slate-400 hover:bg-slate-900/60 hover:text-white transition-all"
               >
                 <User className="w-4 h-4" /> Account Details
               </Link>
               <Link 
                 to="/security" 
                 onClick={() => setProfileDropdownOpen(false)}
-                className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-50 hover:text-premium-accent transition-all"
+                className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold text-slate-400 hover:bg-slate-900/60 hover:text-white transition-all"
               >
                 <Settings className="w-4 h-4" /> Security Settings
               </Link>
-              <div className="h-px bg-slate-100 my-1"></div>
+              <div className="h-px bg-slate-800/80 my-1"></div>
               <Link 
                 to="/" 
                 onClick={() => setProfileDropdownOpen(false)}
-                className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold text-red-500 hover:bg-red-50 hover:text-red-600 transition-all"
+                className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold text-red-500 hover:bg-red-950/20 hover:text-red-400 transition-all"
               >
                 <LogOut className="w-4 h-4" /> Exit Academy
               </Link>

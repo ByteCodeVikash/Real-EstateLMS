@@ -45,14 +45,14 @@ export default function AdminCertificates() {
     {
       header: "Credential ID",
       accessor: "serial",
-      cellClassName: "font-mono font-black text-premium-heading dark:text-white"
+      cellClassName: "font-mono font-black text-white text-white"
     },
     {
       header: "Awarded To",
       accessor: "student",
       render: (row) => (
         <div>
-          <p className="font-bold text-premium-heading dark:text-white leading-none">{row.student}</p>
+          <p className="font-bold text-white text-white leading-none">{row.student}</p>
         </div>
       )
     },
@@ -72,8 +72,8 @@ export default function AdminCertificates() {
       render: (row) => (
         <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${
           row.status === "Verified"
-            ? "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900"
-            : "bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900"
+            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900"
+            : "bg-amber-500/10 text-amber-600 border-amber-500/20 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900"
         }`}>
           {row.status}
         </span>
@@ -113,8 +113,8 @@ export default function AdminCertificates() {
       {/* Title */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-premium-heading dark:text-white tracking-tight uppercase">Certificates Designer</h1>
-          <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 mt-1">Design academic credentials, approve completions, configure certificate template styles, and check verifications.</p>
+          <h1 className="text-2xl font-black text-white text-white tracking-tight uppercase">Certificates Designer</h1>
+          <p className="text-xs font-semibold text-slate-400 text-slate-500 mt-1">Design academic credentials, approve completions, configure certificate template styles, and check verifications.</p>
         </div>
         <Button variant="primary" size="sm" onClick={() => setDrawerOpen(true)}>
           <Plus className="w-4 h-4 mr-2" /> Issue Certificate
@@ -125,16 +125,16 @@ export default function AdminCertificates() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Template Controls */}
-        <div className="rounded-2xl border border-premium-border/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
-          <h3 className="text-base font-black text-premium-heading dark:text-white tracking-tight uppercase mb-4">Template Designer</h3>
+        <div className="rounded-2xl border border-[#1a1a1c] border-[#1a1a1c] bg-[#0b0b0d] bg-[#0b0b0d] p-6 shadow-dark-card">
+          <h3 className="text-base font-black text-white text-white tracking-tight uppercase mb-4">Template Designer</h3>
           
-          <div className="space-y-4 text-xs font-semibold text-slate-500 dark:text-slate-400">
+          <div className="space-y-4 text-xs font-semibold text-slate-500 text-slate-400">
             <div className="space-y-1.5">
               <label className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Visual Preset Style</label>
               <select
                 value={selectedTemplate}
                 onChange={(e) => setSelectedTemplate(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+                className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-2.5 text-xs font-bold text-white text-white focus:outline-none"
               >
                 <option value="classic">Classic Academy Gold</option>
                 <option value="modern">Modern Professional Blue</option>
@@ -161,41 +161,41 @@ export default function AdminCertificates() {
               </div>
             </div>
 
-            <div className="pt-4 border-t border-slate-100 dark:border-slate-850 flex items-center justify-between">
+            <div className="pt-4 border-t border-[#1a1a1c] dark:border-slate-850 flex items-center justify-between">
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Signature Verification</span>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-50 text-emerald-600 font-bold border border-emerald-100">Active</span>
+              <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">Active</span>
             </div>
           </div>
         </div>
 
         {/* Certificate Preview Frame */}
-        <div className="lg:col-span-2 rounded-2xl border border-premium-border/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 flex flex-col items-center justify-center shadow-[0_8px_30px_rgb(0,0,0,0.02)] min-h-[300px]">
+        <div className="lg:col-span-2 rounded-2xl border border-[#1a1a1c] border-[#1a1a1c] bg-[#0b0b0d] bg-[#0b0b0d] p-6 flex flex-col items-center justify-center shadow-dark-card min-h-[300px]">
           <div 
-            className="w-full max-w-lg aspect-[1.414/1] bg-slate-50 dark:bg-slate-850 p-6 rounded-xl border-8 relative flex flex-col items-center justify-between text-center transition-all duration-300"
+            className="w-full max-w-lg aspect-[1.414/1] bg-[#0f0f12] bg-[#0f0f12] p-6 rounded-xl border-8 relative flex flex-col items-center justify-between text-center transition-all duration-300"
             style={{ borderColor: borderColor }}
           >
             {/* Template layout render */}
             <div className="flex flex-col items-center gap-2 mt-4">
               <Award className="w-10 h-10 text-amber-500 animate-pulse" />
-              <h4 className="text-base font-black text-premium-heading dark:text-white tracking-wide uppercase mt-1">Certificate of Completion</h4>
-              <p className="text-[9px] text-slate-400 font-bold tracking-wider uppercase">BJ REALITY TRAINING ACADEMY</p>
+              <h4 className="text-base font-black text-white text-white tracking-wide uppercase mt-1">Certificate of Completion</h4>
+              <p className="text-[9px] text-slate-400 font-bold tracking-wider uppercase">BG REALTY TRAINING ACADEMY</p>
             </div>
 
             <div className="my-3">
               <p className="text-[10px] text-slate-400 font-semibold italic">This credential certifies that</p>
-              <h3 className="text-lg font-black text-premium-heading dark:text-white mt-1 uppercase tracking-tight">Johnathan Student</h3>
+              <h3 className="text-lg font-black text-white text-white mt-1 uppercase tracking-tight">Johnathan Student</h3>
               <p className="text-[10px] text-slate-400 font-semibold max-w-xs mx-auto mt-2">has successfully finished and passed all required grading modules for the premium syllabus program</p>
               <h5 className="text-xs font-black text-premium-accent mt-1.5 uppercase">Luxury Flipping Masterclass</h5>
             </div>
 
-            <div className="w-full flex items-center justify-between border-t border-slate-200 dark:border-slate-800 pt-3 text-[9px] font-bold text-slate-400">
+            <div className="w-full flex items-center justify-between border-t border-[#1e1e22] border-[#1a1a1c] pt-3 text-[9px] font-bold text-slate-400">
               <div className="text-left">
                 <p>Issued: <span className="text-slate-650 dark:text-slate-350">May 23, 2026</span></p>
                 <p>Serial: <span className="text-slate-650 dark:text-slate-350 font-mono">CERT-PREVIEW-BJ</span></p>
               </div>
               <div className="text-right">
-                <span className="italic font-serif text-premium-heading dark:text-white text-xs">Sarah Jenkins</span>
-                <p className="border-t border-slate-300 dark:border-slate-700 pt-0.5">Authorized Principal Mentor</p>
+                <span className="italic font-serif text-white text-white text-xs">Sarah Jenkins</span>
+                <p className="border-t border-slate-300 border-[#1e1e22] pt-0.5">Authorized Principal Mentor</p>
               </div>
             </div>
           </div>
@@ -227,7 +227,7 @@ export default function AdminCertificates() {
               placeholder="e.g. Johnathan Doe"
               value={formState.student}
               onChange={(e) => setFormState({ ...formState, student: e.target.value })}
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+              className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none"
             />
           </div>
 
@@ -236,7 +236,7 @@ export default function AdminCertificates() {
             <select
               value={formState.course}
               onChange={(e) => setFormState({ ...formState, course: e.target.value })}
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+              className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none"
             >
               <option value="Luxury Flipping Masterclass">Luxury Flipping Masterclass</option>
               <option value="Commercial Underwriting & Modeling">Commercial Underwriting & Modeling</option>
@@ -251,11 +251,11 @@ export default function AdminCertificates() {
               required
               readOnly
               value={formState.serial}
-              className="w-full bg-slate-100 dark:bg-slate-850 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-slate-450 focus:outline-none"
+              className="w-full bg-[#111114] bg-[#0f0f12] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-slate-450 focus:outline-none"
             />
           </div>
 
-          <div className="pt-4 border-t border-slate-100 dark:border-slate-850 flex items-center justify-end gap-2.5">
+          <div className="pt-4 border-t border-[#1a1a1c] dark:border-slate-850 flex items-center justify-end gap-2.5">
             <Button variant="outline" size="sm" type="button" onClick={() => setDrawerOpen(false)}>
               Cancel
             </Button>

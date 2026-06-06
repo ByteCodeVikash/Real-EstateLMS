@@ -488,14 +488,14 @@ export default function AdminCourses() {
     <div className="space-y-8 animate-in text-left">
       
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#1e1e22] border-[#1a1a1c] pb-5">
         <div>
           <div className="flex items-center gap-2">
             <span className="h-2.5 w-2.5 rounded-full bg-premium-violet animate-pulse"></span>
             <span className="text-[10px] font-black text-premium-violet uppercase tracking-widest">Masterclass Catalog</span>
           </div>
-          <h1 className="text-2xl font-black text-premium-heading dark:text-white tracking-tight uppercase mt-1">LMS Course Management</h1>
-          <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 mt-0.5">Author curriculums, organize modules, configure dynamic pricing tags, and toggle live availability doors.</p>
+          <h1 className="text-2xl font-black text-white text-white tracking-tight uppercase mt-1">LMS Course Management</h1>
+          <p className="text-xs font-semibold text-slate-400 text-slate-500 mt-0.5">Author curriculums, organize modules, configure dynamic pricing tags, and toggle live availability doors.</p>
         </div>
         
         <div className="flex items-center gap-3">
@@ -566,12 +566,12 @@ export default function AdminCourses() {
 
             {/* Recharts Analytics Panel */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 rounded-2xl border border-premium-border/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
-                <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest block mb-4">Masterclass Financial Revenue Contribution</span>
+              <div className="lg:col-span-2 rounded-2xl border border-[#1a1a1c] border-[#1a1a1c] bg-[#0b0b0d] bg-[#0b0b0d] p-6 shadow-dark-card">
+                <span className="text-[10px] font-black text-slate-400 text-slate-500 uppercase tracking-widest block mb-4">Masterclass Financial Revenue Contribution</span>
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={revenueChartData} margin={{ top: 10, right: 10, left: -10, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-800" vertical={false} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="stroke-[#1a1a1c]" vertical={false} />
                       <XAxis dataKey="name" stroke="#94a3b8" fontSize={9} fontWeight="bold" tickFormatter={(t) => t.length > 15 ? `${t.slice(0, 15)}...` : t} />
                       <YAxis stroke="#94a3b8" fontSize={10} fontWeight="bold" />
                       <Tooltip content={<CustomTooltip />} />
@@ -581,9 +581,9 @@ export default function AdminCourses() {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-premium-border/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] flex flex-col justify-between">
+              <div className="rounded-2xl border border-[#1a1a1c] border-[#1a1a1c] bg-[#0b0b0d] bg-[#0b0b0d] p-6 shadow-dark-card flex flex-col justify-between">
                 <div>
-                  <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest block mb-4">Syllabus Completion Efficiency</span>
+                  <span className="text-[10px] font-black text-slate-400 text-slate-500 uppercase tracking-widest block mb-4">Syllabus Completion Efficiency</span>
                   <div className="h-48">
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart data={completionChartData} margin={{ top: 10, right: 10, left: -25, bottom: 5 }}>
@@ -593,7 +593,7 @@ export default function AdminCourses() {
                             <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
                           </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-800" vertical={false} />
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="stroke-[#1a1a1c]" vertical={false} />
                         <XAxis dataKey="name" stroke="#94a3b8" fontSize={9} fontWeight="bold" tickFormatter={(t) => t.slice(0, 8)} />
                         <YAxis stroke="#94a3b8" fontSize={10} fontWeight="bold" />
                         <Tooltip content={<CustomTooltip />} />
@@ -602,7 +602,7 @@ export default function AdminCourses() {
                     </ResponsiveContainer>
                   </div>
                 </div>
-                <div className="pt-4 border-t border-slate-100 dark:border-slate-850 flex items-center justify-between text-xs text-slate-400 font-bold">
+                <div className="pt-4 border-t border-[#1a1a1c] dark:border-slate-850 flex items-center justify-between text-xs text-slate-400 font-bold">
                   <span>Student Target completion: 75%</span>
                   <span className="text-emerald-500 font-black">Optimal Status</span>
                 </div>
@@ -613,19 +613,19 @@ export default function AdminCourses() {
       </AnimatePresence>
 
       {/* Filtering Toolbar */}
-      <div className="rounded-2xl border border-premium-border/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="rounded-2xl border border-[#1a1a1c] border-[#1a1a1c] bg-[#0b0b0d]/70 bg-[#0b0b0d]/70 backdrop-blur-md p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
         
         {/* Left Filters */}
         <div className="flex items-center gap-3 flex-wrap flex-1">
           {/* Search */}
           <div className="relative w-full md:w-64">
-            <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-400 dark:text-slate-500" />
+            <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-400 text-slate-500" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by title, tag, mentor..."
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl py-2 pl-10 pr-4 text-xs font-bold text-premium-heading dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-premium-accent/20 transition-all"
+              className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl py-2 pl-10 pr-4 text-xs font-bold text-white text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-premium-accent/20 transition-all"
             />
           </div>
 
@@ -634,7 +634,7 @@ export default function AdminCourses() {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="appearance-none bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl py-2 pl-4 pr-10 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 transition-all cursor-pointer"
+              className="appearance-none bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl py-2 pl-4 pr-10 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 transition-all cursor-pointer"
             >
               {categories.map((cat, idx) => (
                 <option key={idx} value={cat}>{cat === 'All' ? 'All Categories' : cat}</option>
@@ -650,7 +650,7 @@ export default function AdminCourses() {
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="appearance-none bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl py-2 pl-4 pr-10 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 transition-all cursor-pointer"
+              className="appearance-none bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl py-2 pl-4 pr-10 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 transition-all cursor-pointer"
             >
               <option value="All">All Statuses</option>
               <option value="Published">Published</option>
@@ -667,7 +667,7 @@ export default function AdminCourses() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="appearance-none bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl py-2 pl-4 pr-10 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 transition-all cursor-pointer"
+              className="appearance-none bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl py-2 pl-4 pr-10 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 transition-all cursor-pointer"
             >
               <option value="title">Sort: Title</option>
               <option value="students">Sort: Students</option>
@@ -681,17 +681,17 @@ export default function AdminCourses() {
         </div>
 
         {/* Right Toggle */}
-        <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200/50 dark:border-slate-750 self-end md:self-auto shrink-0">
+        <div className="flex items-center gap-1.5 bg-[#111114] bg-[#111114] p-1 rounded-xl border border-[#1e1e22]/50 dark:border-slate-750 self-end md:self-auto shrink-0">
           <button
             onClick={() => setViewMode('grid')}
-            className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-slate-700 text-premium-accent shadow-sm' : 'text-slate-400 hover:text-slate-600 dark:hover:text-white'}`}
+            className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-[#0b0b0d] dark:bg-slate-700 text-premium-accent shadow-sm' : 'text-slate-400 hover:text-slate-600 hover:text-white'}`}
             title="Grid View"
           >
             <LayoutGrid className="w-4 h-4" />
           </button>
           <button
             onClick={() => setViewMode('table')}
-            className={`p-2 rounded-lg transition-all ${viewMode === 'table' ? 'bg-white dark:bg-slate-700 text-premium-accent shadow-sm' : 'text-slate-400 hover:text-slate-600 dark:hover:text-white'}`}
+            className={`p-2 rounded-lg transition-all ${viewMode === 'table' ? 'bg-[#0b0b0d] dark:bg-slate-700 text-premium-accent shadow-sm' : 'text-slate-400 hover:text-slate-600 hover:text-white'}`}
             title="Table View"
           >
             <List className="w-4 h-4" />
@@ -710,21 +710,21 @@ export default function AdminCourses() {
                 layout
                 whileHover={{ y: -5, scale: 1.01 }}
                 transition={{ type: "spring", stiffness: 350, damping: 22 }}
-                className="group relative overflow-hidden rounded-2xl border border-premium-border/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-[0_6px_20px_rgba(0,0,0,0.01)] flex flex-col"
+                className="group relative overflow-hidden rounded-2xl border border-[#1a1a1c] border-[#1a1a1c] bg-[#0b0b0d] bg-[#0b0b0d] shadow-[0_6px_20px_rgba(0,0,0,0.01)] flex flex-col"
               >
                 {/* Visual Thumbnail */}
                 <div className={`h-40 w-full flex flex-col justify-between p-4 relative ${getThumbnailClass(course.thumbnailPreset)}`}>
                   {/* Glass Top Badges */}
                   <div className="flex justify-between items-start z-10 w-full">
-                    <span className="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-white/20 backdrop-blur-md border border-white/10 text-white">
+                    <span className="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-[#0b0b0d]/20 backdrop-blur-md border border-white/10 text-white">
                       {course.category}
                     </span>
                     <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider border backdrop-blur-md ${
                       course.status === 'Published' 
-                        ? 'bg-emerald-500/20 text-emerald-100 border-emerald-500/30' 
+                        ? 'bg-emerald-500/100/20 text-emerald-100 border-emerald-500/30' 
                         : course.status === 'Draft' 
-                          ? 'bg-amber-500/20 text-amber-100 border-amber-500/30' 
-                          : 'bg-slate-500/20 text-slate-200 border-slate-500/30'
+                          ? 'bg-amber-500/100/20 text-amber-100 border-amber-500/30' 
+                          : 'bg-[#0f0f12]0/20 text-slate-200 border-slate-500/30'
                     }`}>
                       {course.status}
                     </span>
@@ -737,7 +737,7 @@ export default function AdminCourses() {
 
                   {/* Pricing Tag */}
                   <div className="self-end z-10">
-                    <span className="px-3 py-1.5 rounded-xl text-xs font-black bg-white/10 dark:bg-slate-900/40 backdrop-blur-md border border-white/20 text-white shadow-sm">
+                    <span className="px-3 py-1.5 rounded-xl text-xs font-black bg-[#0b0b0d]/10 bg-[#0b0b0d]/40 backdrop-blur-md border border-white/20 text-white shadow-sm">
                       ${course.price.toLocaleString()}
                     </span>
                   </div>
@@ -746,22 +746,22 @@ export default function AdminCourses() {
                 {/* Course Metadata Content */}
                 <div className="p-5 flex-1 flex flex-col justify-between text-left">
                   <div className="space-y-2">
-                    <h3 className="text-base font-black text-premium-heading dark:text-white leading-tight line-clamp-1 group-hover:text-premium-accent transition-colors">
+                    <h3 className="text-base font-black text-white text-white leading-tight line-clamp-1 group-hover:text-premium-accent transition-colors">
                       {course.title}
                     </h3>
-                    <p className="text-xs text-slate-400 dark:text-slate-500 font-semibold flex items-center gap-1.5">
-                      <span className="h-6 w-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-premium-violet border border-slate-200 dark:border-slate-700">
+                    <p className="text-xs text-slate-400 text-slate-500 font-semibold flex items-center gap-1.5">
+                      <span className="h-6 w-6 rounded-full bg-[#111114] bg-[#111114] flex items-center justify-center text-[10px] font-bold text-premium-violet border border-[#1e1e22] border-[#1e1e22]">
                         {course.instructor.split(' ').map(n=>n[0]).join('')}
                       </span>
                       <span>Mentor: {course.instructor}</span>
                     </p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mt-2 leading-relaxed">
+                    <p className="text-xs text-slate-500 text-slate-400 line-clamp-2 mt-2 leading-relaxed">
                       {course.description}
                     </p>
                   </div>
 
                   {/* Core Metrics grid */}
-                  <div className="grid grid-cols-2 gap-4 py-4 my-3 border-y border-slate-100 dark:border-slate-850 text-[11px] font-bold text-slate-500 dark:text-slate-400">
+                  <div className="grid grid-cols-2 gap-4 py-4 my-3 border-y border-[#1a1a1c] dark:border-slate-850 text-[11px] font-bold text-slate-500 text-slate-400">
                     <div className="flex items-center gap-1.5">
                       <Clock className="w-3.5 h-3.5 text-slate-400" />
                       <span>{course.duration}</span>
@@ -776,14 +776,14 @@ export default function AdminCourses() {
                     </div>
                     <div className="flex items-center gap-1.5">
                       <DollarSign className="w-3.5 h-3.5 text-slate-400" />
-                      <span className="text-premium-heading dark:text-white font-black">${course.revenue.toLocaleString()} Rev</span>
+                      <span className="text-white text-white font-black">${course.revenue.toLocaleString()} Rev</span>
                     </div>
                   </div>
 
                   {/* Tags list */}
                   <div className="flex items-center gap-1.5 flex-wrap mb-4">
                     {course.tags.slice(0, 3).map((tag, idx) => (
-                      <span key={idx} className="px-2 py-0.5 bg-slate-50 dark:bg-slate-850 border border-slate-200/50 dark:border-slate-800 rounded text-[9px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-wide">
+                      <span key={idx} className="px-2 py-0.5 bg-[#0f0f12] bg-[#0f0f12] border border-[#1e1e22]/50 border-[#1a1a1c] rounded text-[9px] font-black uppercase text-slate-400 text-slate-500 tracking-wide">
                         {tag}
                       </span>
                     ))}
@@ -793,7 +793,7 @@ export default function AdminCourses() {
                   <div className="flex items-center gap-2 pt-2">
                     <button
                       onClick={() => openEditModal(course)}
-                      className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-black uppercase bg-slate-50 dark:bg-slate-850 hover:bg-slate-100 dark:hover:bg-slate-800 border border-premium-border/60 dark:border-slate-800 text-slate-600 dark:text-slate-350 transition-all cursor-pointer active:scale-95"
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-black uppercase bg-[#0f0f12] bg-[#0f0f12] hover:bg-[#111114] hover:bg-[#111114] border border-[#1a1a1c] border-[#1a1a1c] text-slate-600 dark:text-slate-350 transition-all cursor-pointer active:scale-95"
                     >
                       <Edit className="w-3.5 h-3.5" />
                       <span>Configure</span>
@@ -801,7 +801,7 @@ export default function AdminCourses() {
                     
                     <button
                       onClick={() => openPreview(course)}
-                      className="p-2 rounded-xl bg-slate-50 dark:bg-slate-850 hover:bg-premium-accent/10 hover:text-premium-accent border border-premium-border/60 dark:border-slate-800 text-slate-400 transition-all cursor-pointer active:scale-95"
+                      className="p-2 rounded-xl bg-[#0f0f12] bg-[#0f0f12] hover:bg-premium-accent/10 hover:text-premium-accent border border-[#1a1a1c] border-[#1a1a1c] text-slate-400 transition-all cursor-pointer active:scale-95"
                       title="Preview Course Curriculum"
                     >
                       <Eye className="w-4 h-4" />
@@ -811,8 +811,8 @@ export default function AdminCourses() {
                       onClick={() => handleToggleStatus(course.id, course.status)}
                       className={`px-3 py-2 rounded-xl text-xs font-black uppercase border transition-all cursor-pointer active:scale-95 ${
                         course.status === 'Published'
-                          ? 'bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-emerald-100'
-                          : 'bg-amber-50 text-amber-600 border-amber-100 hover:bg-amber-100'
+                          ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-100'
+                          : 'bg-amber-500/10 text-amber-600 border-amber-500/20 hover:bg-amber-100'
                       }`}
                       title={course.status === 'Published' ? "Unpublish Course" : "Publish Course"}
                     >
@@ -821,7 +821,7 @@ export default function AdminCourses() {
 
                     <button
                       onClick={() => handleDeleteCourse(course.id)}
-                      className="p-2 rounded-xl bg-red-50 hover:bg-red-100 border border-red-100/60 text-red-500 transition-all cursor-pointer active:scale-95"
+                      className="p-2 rounded-xl bg-red-500/10 hover:bg-red-100 border border-red-500/20/60 text-red-500 transition-all cursor-pointer active:scale-95"
                       title="Delete Course"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -833,28 +833,28 @@ export default function AdminCourses() {
           </div>
         ) : (
           /* TABLE VIEW */
-          <div className="rounded-2xl border border-premium-border/80 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.02)] dark:bg-slate-900 dark:border-slate-800 overflow-hidden text-left">
+          <div className="rounded-2xl border border-[#1a1a1c] bg-[#0b0b0d] shadow-dark-card bg-[#0b0b0d] border-[#1a1a1c] overflow-hidden text-left">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-slate-50 dark:bg-slate-900/60 border-b border-premium-border/80 dark:border-slate-800">
-                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Course</th>
-                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Category</th>
-                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Lead Mentor</th>
-                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Tuition Price</th>
-                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Duration</th>
-                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Enrolled</th>
-                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Completion</th>
-                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Gross Rev</th>
-                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Status</th>
-                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 text-right">Actions</th>
+                  <tr className="bg-[#0f0f12] bg-[#0b0b0d]/60 border-b border-[#1a1a1c] border-[#1a1a1c]">
+                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-slate-400 text-slate-500">Course</th>
+                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-slate-400 text-slate-500">Category</th>
+                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-slate-400 text-slate-500">Lead Mentor</th>
+                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-slate-400 text-slate-500">Tuition Price</th>
+                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-slate-400 text-slate-500">Duration</th>
+                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-slate-400 text-slate-500">Enrolled</th>
+                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-slate-400 text-slate-500">Completion</th>
+                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-slate-400 text-slate-500">Gross Rev</th>
+                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-slate-400 text-slate-500">Status</th>
+                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-slate-400 text-slate-500 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-premium-border/40 dark:divide-slate-800">
                   {filteredCourses.map((course) => (
-                    <tr key={course.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors">
+                    <tr key={course.id} className="hover:bg-[#0f0f12]/50 hover:bg-[#111114]/20 transition-colors">
                       {/* Name + thumbnail preset */}
-                      <td className="px-6 py-4 font-bold text-premium-heading dark:text-white max-w-[240px]">
+                      <td className="px-6 py-4 font-bold text-white text-white max-w-[240px]">
                         <div className="flex items-center gap-3">
                           <div className={`h-8 w-12 rounded-lg ${getThumbnailClass(course.thumbnailPreset)} shrink-0 flex items-center justify-center text-[10px] font-black`}>
                             LMS
@@ -867,8 +867,8 @@ export default function AdminCourses() {
                       </td>
 
                       {/* Category */}
-                      <td className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400">
-                        <span className="px-2 py-0.5 bg-slate-50 dark:bg-slate-850 rounded-full border border-slate-200/50 dark:border-slate-800">
+                      <td className="px-6 py-4 text-xs font-bold text-slate-500 text-slate-400">
+                        <span className="px-2 py-0.5 bg-[#0f0f12] bg-[#0f0f12] rounded-full border border-[#1e1e22]/50 border-[#1a1a1c]">
                           {course.category}
                         </span>
                       </td>
@@ -876,7 +876,7 @@ export default function AdminCourses() {
                       {/* Mentor */}
                       <td className="px-6 py-4 text-xs font-bold text-slate-650 dark:text-slate-350">
                         <div className="flex items-center gap-2">
-                          <span className="h-5 w-5 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[8px] font-black text-premium-accent border border-slate-200 dark:border-slate-700">
+                          <span className="h-5 w-5 rounded-full bg-[#111114] bg-[#111114] flex items-center justify-center text-[8px] font-black text-premium-accent border border-[#1e1e22] border-[#1e1e22]">
                             {course.instructor.split(' ').map(n=>n[0]).join('')}
                           </span>
                           <span>{course.instructor}</span>
@@ -884,32 +884,32 @@ export default function AdminCourses() {
                       </td>
 
                       {/* Price */}
-                      <td className="px-6 py-4 text-xs font-black text-premium-heading dark:text-white">
+                      <td className="px-6 py-4 text-xs font-black text-white text-white">
                         ${course.price.toLocaleString()}
                       </td>
 
                       {/* Duration */}
-                      <td className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400">
+                      <td className="px-6 py-4 text-xs font-bold text-slate-500 text-slate-400">
                         {course.duration}
                       </td>
 
                       {/* Enrolled */}
-                      <td className="px-6 py-4 text-xs font-black text-slate-600 dark:text-slate-300">
+                      <td className="px-6 py-4 text-xs font-black text-slate-600 text-slate-300">
                         {course.students}
                       </td>
 
                       {/* Completion */}
                       <td className="px-6 py-4 text-xs font-extrabold">
                         <div className="flex items-center gap-2">
-                          <div className="w-12 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden shrink-0">
-                            <div className="h-full bg-emerald-500" style={{ width: `${course.completionRate}%` }}></div>
+                          <div className="w-12 h-1.5 bg-[#111114] bg-[#111114] rounded-full overflow-hidden shrink-0">
+                            <div className="h-full bg-emerald-500/100" style={{ width: `${course.completionRate}%` }}></div>
                           </div>
-                          <span className="text-slate-600 dark:text-slate-400 text-[10px]">{course.completionRate}%</span>
+                          <span className="text-slate-600 text-slate-400 text-[10px]">{course.completionRate}%</span>
                         </div>
                       </td>
 
                       {/* Gross revenue */}
-                      <td className="px-6 py-4 text-xs font-black text-premium-heading dark:text-white">
+                      <td className="px-6 py-4 text-xs font-black text-white text-white">
                         ${course.revenue.toLocaleString()}
                       </td>
 
@@ -917,8 +917,8 @@ export default function AdminCourses() {
                       <td className="px-6 py-4 text-xs font-black">
                         <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider border ${
                           course.status === 'Published' 
-                            ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900' 
-                            : 'bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900'
+                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900' 
+                            : 'bg-amber-500/10 text-amber-600 border-amber-500/20 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900'
                         }`}>
                           {course.status}
                         </span>
@@ -929,27 +929,27 @@ export default function AdminCourses() {
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => openEditModal(course)}
-                            className="p-1.5 rounded-lg bg-slate-50 dark:bg-slate-850 hover:bg-slate-100 dark:hover:bg-slate-800 border border-premium-border/60 dark:border-slate-800 text-slate-500 hover:text-premium-heading dark:hover:text-white transition-all cursor-pointer"
+                            className="p-1.5 rounded-lg bg-[#0f0f12] bg-[#0f0f12] hover:bg-[#111114] hover:bg-[#111114] border border-[#1a1a1c] border-[#1a1a1c] text-slate-500 hover:text-white hover:text-white transition-all cursor-pointer"
                             title="Edit Course"
                           >
                             <Edit className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={() => openPreview(course)}
-                            className="p-1.5 rounded-lg bg-slate-50 dark:bg-slate-850 hover:bg-premium-accent/10 hover:text-premium-accent border border-premium-border/60 dark:border-slate-800 text-slate-500 transition-all cursor-pointer"
+                            className="p-1.5 rounded-lg bg-[#0f0f12] bg-[#0f0f12] hover:bg-premium-accent/10 hover:text-premium-accent border border-[#1a1a1c] border-[#1a1a1c] text-slate-500 transition-all cursor-pointer"
                             title="Preview Student Experience"
                           >
                             <Eye className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={() => handleToggleStatus(course.id, course.status)}
-                            className="px-2 py-1 rounded-lg text-[9px] font-black uppercase border bg-slate-50 dark:bg-slate-850 border-premium-border/60 dark:border-slate-800 hover:border-premium-accent/30 text-slate-500 hover:text-premium-accent transition-all cursor-pointer"
+                            className="px-2 py-1 rounded-lg text-[9px] font-black uppercase border bg-[#0f0f12] bg-[#0f0f12] border-[#1a1a1c] border-[#1a1a1c] hover:border-premium-accent/30 text-slate-500 hover:text-premium-accent transition-all cursor-pointer"
                           >
                             {course.status === 'Published' ? 'Unpublish' : 'Publish'}
                           </button>
                           <button
                             onClick={() => handleDeleteCourse(course.id)}
-                            className="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 border border-red-100/60 text-red-500 transition-all cursor-pointer"
+                            className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-100 border border-red-500/20/60 text-red-500 transition-all cursor-pointer"
                             title="Delete"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -965,12 +965,12 @@ export default function AdminCourses() {
         )
       ) : (
         /* Empty State */
-        <div className="rounded-2xl border border-premium-border/80 bg-white dark:bg-slate-900 p-12 text-center text-slate-400">
+        <div className="rounded-2xl border border-[#1a1a1c] bg-[#0b0b0d] bg-[#0b0b0d] p-12 text-center text-slate-400">
           <div className="flex flex-col items-center justify-center gap-3">
-            <div className="h-12 w-12 rounded-full bg-slate-100 dark:bg-slate-850 flex items-center justify-center text-slate-500">
+            <div className="h-12 w-12 rounded-full bg-[#111114] bg-[#0f0f12] flex items-center justify-center text-slate-500">
               <BookOpen className="w-6 h-6" />
             </div>
-            <p className="font-black text-sm text-premium-heading dark:text-white">No courses match your filter settings</p>
+            <p className="font-black text-sm text-white text-white">No courses match your filter settings</p>
             <p className="text-xs text-slate-400 max-w-sm mt-0.5">Try clearing search inputs or adjusting the categories select boxes.</p>
             <Button variant="outline" size="sm" onClick={() => { setSearchQuery(''); setSelectedCategory('All'); setSelectedStatus('All'); }} className="mt-2">
               Reset Filters
@@ -1000,12 +1000,12 @@ export default function AdminCourses() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", damping: 26, stiffness: 220 }}
-              className="relative w-full max-w-4xl max-h-[90vh] bg-white dark:bg-slate-900 rounded-2xl border border-premium-border dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col text-left z-10"
+              className="relative w-full max-w-4xl max-h-[90vh] bg-[#0b0b0d] bg-[#0b0b0d] rounded-2xl border border-premium-border border-[#1a1a1c] shadow-2xl overflow-hidden flex flex-col text-left z-10"
             >
               {/* Modal Header */}
-              <div className="p-6 border-b border-premium-border/60 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/60">
+              <div className="p-6 border-b border-[#1a1a1c] border-[#1a1a1c] flex items-center justify-between bg-[#0f0f12]/50 bg-[#0b0b0d]/60">
                 <div>
-                  <h3 className="text-base font-black text-premium-heading dark:text-white tracking-tight uppercase">
+                  <h3 className="text-base font-black text-white text-white tracking-tight uppercase">
                     {selectedCourse ? "Modify Masterclass Configuration" : "Author New Masterclass Portal"}
                   </h3>
                   <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mt-0.5">
@@ -1014,20 +1014,20 @@ export default function AdminCourses() {
                 </div>
                 <button
                   onClick={() => setModalOpen(false)}
-                  className="h-8 w-8 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-white transition-all cursor-pointer"
+                  className="h-8 w-8 flex items-center justify-center rounded-lg bg-[#111114] bg-[#111114] hover:bg-[#16161a] dark:hover:bg-slate-700 text-slate-400 hover:text-slate-600 hover:text-white transition-all cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
               {/* Tabs Switcher */}
-              <div className="flex border-b border-premium-border/60 dark:border-slate-800 bg-slate-50/20">
+              <div className="flex border-b border-[#1a1a1c] border-[#1a1a1c] bg-[#0f0f12]/20">
                 <button
                   onClick={() => setModalTab('details')}
                   className={`px-6 py-3.5 text-xs font-black uppercase tracking-wider border-b-2 transition-all cursor-pointer ${
                     modalTab === 'details'
-                      ? 'border-premium-accent text-premium-accent bg-white dark:bg-slate-900'
-                      : 'border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-white'
+                      ? 'border-premium-accent text-premium-accent bg-[#0b0b0d] bg-[#0b0b0d]'
+                      : 'border-transparent text-slate-400 hover:text-slate-600 hover:text-white'
                   }`}
                 >
                   1. General Details
@@ -1036,8 +1036,8 @@ export default function AdminCourses() {
                   onClick={() => setModalTab('curriculum')}
                   className={`px-6 py-3.5 text-xs font-black uppercase tracking-wider border-b-2 transition-all cursor-pointer ${
                     modalTab === 'curriculum'
-                      ? 'border-premium-accent text-premium-accent bg-white dark:bg-slate-900'
-                      : 'border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-white'
+                      ? 'border-premium-accent text-premium-accent bg-[#0b0b0d] bg-[#0b0b0d]'
+                      : 'border-transparent text-slate-400 hover:text-slate-600 hover:text-white'
                   }`}
                 >
                   2. Syllabus & Curriculum Builder ({formState.modules.reduce((sum,m)=>sum + m.lectures.length, 0)} Lectures)
@@ -1060,7 +1060,7 @@ export default function AdminCourses() {
                           value={formState.title}
                           onChange={(e) => setFormState({ ...formState, title: e.target.value })}
                           placeholder="e.g. Commercial Syndication Secrets"
-                          className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
+                          className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
                         />
                       </div>
 
@@ -1071,7 +1071,7 @@ export default function AdminCourses() {
                           value={formState.description}
                           onChange={(e) => setFormState({ ...formState, description: e.target.value })}
                           placeholder="Provide a comprehensive marketing overview of the course goals and student target skills..."
-                          className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 resize-none"
+                          className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 resize-none"
                         />
                       </div>
 
@@ -1081,7 +1081,7 @@ export default function AdminCourses() {
                           <select
                             value={formState.instructor}
                             onChange={(e) => setFormState({ ...formState, instructor: e.target.value })}
-                            className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
+                            className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
                           >
                             {MOCK_MENTORS.map((m, idx) => (
                               <option key={idx} value={m.name}>{m.name} ({m.role})</option>
@@ -1094,7 +1094,7 @@ export default function AdminCourses() {
                           <select
                             value={formState.category}
                             onChange={(e) => setFormState({ ...formState, category: e.target.value })}
-                            className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
+                            className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
                           >
                             <option value="Luxury Brokerage">Luxury Brokerage</option>
                             <option value="Underwriting">Underwriting</option>
@@ -1115,7 +1115,7 @@ export default function AdminCourses() {
                             value={formState.duration}
                             onChange={(e) => setFormState({ ...formState, duration: e.target.value })}
                             placeholder="e.g. 10 Weeks"
-                            className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
+                            className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
                           />
                         </div>
 
@@ -1128,7 +1128,7 @@ export default function AdminCourses() {
                             value={formState.price}
                             onChange={(e) => setFormState({ ...formState, price: e.target.value })}
                             placeholder="1499"
-                            className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
+                            className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
                           />
                         </div>
                       </div>
@@ -1140,7 +1140,7 @@ export default function AdminCourses() {
                           value={formState.tags}
                           onChange={(e) => setFormState({ ...formState, tags: e.target.value })}
                           placeholder="e.g. High Ticket, Excel Modeling, Multifamily"
-                          className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
+                          className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
                         />
                       </div>
                     </div>
@@ -1151,7 +1151,7 @@ export default function AdminCourses() {
                         <label className="text-[10px] font-black uppercase text-slate-400 tracking-wider block">Course Portal Cover</label>
                         {/* Interactive Preview Cover */}
                         <div className={`h-40 rounded-2xl flex flex-col justify-between p-4 ${getThumbnailClass(formState.thumbnailPreset)} shadow-md border border-premium-border/10`}>
-                          <span className="px-2 py-0.5 rounded bg-white/20 text-[9px] font-black uppercase tracking-wider self-start border border-white/10">
+                          <span className="px-2 py-0.5 rounded bg-[#0b0b0d]/20 text-[9px] font-black uppercase tracking-wider self-start border border-white/10">
                             {formState.category || 'Category'}
                           </span>
                           <BookOpenCheck className="w-12 h-12 self-center opacity-30 animate-pulse-slow" />
@@ -1173,7 +1173,7 @@ export default function AdminCourses() {
                               className={`p-2.5 rounded-xl border text-[10px] font-bold text-left transition-all relative ${
                                 formState.thumbnailPreset === p.id 
                                   ? 'border-premium-accent ring-2 ring-premium-accent/20 text-premium-accent' 
-                                  : 'border-premium-border dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-750'
+                                  : 'border-premium-border border-[#1a1a1c] hover:border-slate-400 dark:hover:border-slate-750'
                               }`}
                             >
                               <div className="flex items-center gap-1.5 truncate">
@@ -1193,9 +1193,9 @@ export default function AdminCourses() {
                       {/* Mock File Upload UI */}
                       <div className="space-y-1.5 pt-2">
                         <label className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Alternative Media Attachment</label>
-                        <div className="border border-dashed border-premium-border dark:border-slate-800 rounded-xl p-4 text-center hover:border-premium-accent/40 hover:bg-slate-50/50 dark:hover:bg-slate-850/50 transition-all cursor-pointer">
+                        <div className="border border-dashed border-premium-border border-[#1a1a1c] rounded-xl p-4 text-center hover:border-premium-accent/40 hover:bg-[#0f0f12]/50 dark:hover:bg-slate-850/50 transition-all cursor-pointer">
                           <Upload className="w-5 h-5 mx-auto text-slate-400 mb-1" />
-                          <span className="text-[10px] font-extrabold text-slate-600 dark:text-slate-300 block">Select Custom Blueprint JPG</span>
+                          <span className="text-[10px] font-extrabold text-slate-600 text-slate-300 block">Select Custom Blueprint JPG</span>
                           <span className="text-[8px] text-slate-400 mt-0.5 block">Mocked workflow. Maximum size: 5MB</span>
                         </div>
                       </div>
@@ -1206,7 +1206,7 @@ export default function AdminCourses() {
                   <div className="space-y-6">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h4 className="text-xs font-black text-premium-heading dark:text-white uppercase tracking-wider">Curriculum Outline</h4>
+                        <h4 className="text-xs font-black text-white text-white uppercase tracking-wider">Curriculum Outline</h4>
                         <p className="text-[10px] text-slate-400 font-semibold mt-0.5">Author sections, add lessons, and reorder elements within modules.</p>
                       </div>
                       <Button variant="outline" size="sm" onClick={handleAddModule} className="h-9 px-3 text-[10px] font-black uppercase">
@@ -1218,10 +1218,10 @@ export default function AdminCourses() {
                       {formState.modules.map((module, mIdx) => (
                         <div 
                           key={module.id} 
-                          className="border border-premium-border/80 dark:border-slate-800 rounded-2xl bg-slate-50/50 dark:bg-slate-900/60 p-5 space-y-4 text-left"
+                          className="border border-[#1a1a1c] border-[#1a1a1c] rounded-2xl bg-[#0f0f12]/50 bg-[#0b0b0d]/60 p-5 space-y-4 text-left"
                         >
                           {/* Module Header Details */}
-                          <div className="flex items-center justify-between gap-4 border-b border-slate-200/50 dark:border-slate-800/80 pb-3">
+                          <div className="flex items-center justify-between gap-4 border-b border-[#1e1e22]/50 border-[#1a1a1c]/80 pb-3">
                             <div className="flex items-center gap-2 flex-1">
                               <span className="h-6 w-6 rounded-lg bg-premium-violet/10 text-premium-violet flex items-center justify-center text-[10px] font-black shrink-0">
                                 M{mIdx + 1}
@@ -1231,13 +1231,13 @@ export default function AdminCourses() {
                                 value={module.title}
                                 onChange={(e) => handleUpdateModuleTitle(module.id, e.target.value)}
                                 placeholder="Module Title Section"
-                                className="bg-transparent border-b border-transparent hover:border-slate-300 focus:border-premium-accent focus:outline-none text-xs font-black text-premium-heading dark:text-white px-1.5 py-0.5 flex-1"
+                                className="bg-transparent border-b border-transparent hover:border-slate-300 focus:border-premium-accent focus:outline-none text-xs font-black text-white text-white px-1.5 py-0.5 flex-1"
                               />
                             </div>
                             <button
                               type="button"
                               onClick={() => handleRemoveModule(module.id)}
-                              className="p-1 rounded bg-red-50 hover:bg-red-100 text-red-500 border border-red-100/60 transition-all cursor-pointer"
+                              className="p-1 rounded bg-red-500/10 hover:bg-red-100 text-red-500 border border-red-500/20/60 transition-all cursor-pointer"
                               title="Delete Module"
                             >
                               <Trash className="w-3.5 h-3.5" />
@@ -1257,27 +1257,27 @@ export default function AdminCourses() {
                                   <Reorder.Item 
                                     key={lecture.id} 
                                     value={lecture}
-                                    className="p-3 bg-white dark:bg-slate-950 border border-premium-border dark:border-slate-800 rounded-xl flex items-center justify-between gap-4 shadow-sm"
+                                    className="p-3 bg-[#0b0b0d] dark:bg-slate-950 border border-premium-border border-[#1a1a1c] rounded-xl flex items-center justify-between gap-4 shadow-sm"
                                   >
                                     <div className="flex items-center gap-2 flex-1 min-w-0">
                                       {/* Drag Handle */}
-                                      <div className="cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-600 dark:hover:text-white p-1 select-none">
+                                      <div className="cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-600 hover:text-white p-1 select-none">
                                         <GripVertical className="w-4 h-4" />
                                       </div>
                                       
                                       {/* Icon representation */}
                                       <span className={`p-1.5 rounded-lg shrink-0 ${
                                         lecture.type === 'video' 
-                                          ? 'bg-blue-50 text-blue-500 dark:bg-blue-950/20' 
+                                          ? 'bg-[#0A66C2]/10 text-blue-500 dark:bg-blue-950/20' 
                                           : lecture.type === 'document'
-                                            ? 'bg-emerald-50 text-emerald-500 dark:bg-emerald-950/20'
-                                            : 'bg-amber-50 text-amber-500 dark:bg-amber-950/20'
+                                            ? 'bg-emerald-500/10 text-emerald-500 dark:bg-emerald-950/20'
+                                            : 'bg-amber-500/10 text-amber-500 dark:bg-amber-950/20'
                                       }`}>
                                         {lecture.type === 'video' ? <Play className="w-3.5 h-3.5" /> : lecture.type === 'document' ? <FileText className="w-3.5 h-3.5" /> : <Award className="w-3.5 h-3.5" />}
                                       </span>
 
                                       <div className="truncate">
-                                        <p className="text-xs font-bold text-premium-heading dark:text-white truncate">{lecture.title}</p>
+                                        <p className="text-xs font-bold text-white text-white truncate">{lecture.title}</p>
                                         <span className="text-[9px] text-slate-400 font-semibold uppercase tracking-wider block mt-0.5">{lecture.duration} • {lecture.type}</span>
                                       </div>
                                     </div>
@@ -1286,7 +1286,7 @@ export default function AdminCourses() {
                                     <button
                                       type="button"
                                       onClick={() => handleRemoveLecture(module.id, lecture.id)}
-                                      className="p-1 text-slate-400 hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-900 rounded transition-all"
+                                      className="p-1 text-slate-400 hover:text-red-500 hover:bg-[#0f0f12] hover:bg-[#0f0f12] rounded transition-all"
                                       title="Delete Lecture"
                                     >
                                       <Trash className="w-3.5 h-3.5" />
@@ -1295,7 +1295,7 @@ export default function AdminCourses() {
                                 ))}
                               </Reorder.Group>
                             ) : (
-                              <p className="text-[10px] text-slate-400 font-bold text-center py-4 bg-slate-100/40 dark:bg-slate-900/20 border border-dashed border-premium-border/60 dark:border-slate-800 rounded-xl">
+                              <p className="text-[10px] text-slate-400 font-bold text-center py-4 bg-[#111114]/40 bg-[#0b0b0d]/20 border border-dashed border-[#1a1a1c] border-[#1a1a1c] rounded-xl">
                                 Syllabus empty. Add lessons utilizing the form below.
                               </p>
                             )}
@@ -1310,9 +1310,9 @@ export default function AdminCourses() {
                     </div>
 
                     {formState.modules.length === 0 && (
-                      <div className="border border-dashed border-premium-border dark:border-slate-800 rounded-2xl p-10 text-center text-slate-400">
+                      <div className="border border-dashed border-premium-border border-[#1a1a1c] rounded-2xl p-10 text-center text-slate-400">
                         <FolderOpen className="w-10 h-10 mx-auto text-slate-400 mb-2" />
-                        <span className="text-xs font-black text-premium-heading dark:text-white block">No syllabus outlines defined</span>
+                        <span className="text-xs font-black text-white text-white block">No syllabus outlines defined</span>
                         <span className="text-[10px] text-slate-400 block mt-0.5">Click "Add Module Section" above to define folders.</span>
                         <Button variant="outline" size="sm" onClick={handleAddModule} className="mt-3">
                           Add First Module
@@ -1325,7 +1325,7 @@ export default function AdminCourses() {
               </div>
 
               {/* Modal Footer */}
-              <div className="p-6 border-t border-premium-border/60 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/60 shrink-0">
+              <div className="p-6 border-t border-[#1a1a1c] border-[#1a1a1c] flex items-center justify-between bg-[#0f0f12]/50 bg-[#0b0b0d]/60 shrink-0">
                 <div className="flex items-center gap-2">
                   {modalTab === 'curriculum' && (
                     <Button 
@@ -1392,7 +1392,7 @@ export default function AdminCourses() {
                   </button>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 rounded text-[8px] font-black uppercase bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                      <span className="px-2 py-0.5 rounded text-[8px] font-black uppercase bg-emerald-500/100/20 text-emerald-400 border border-emerald-500/30">
                         {previewCourse.category}
                       </span>
                       <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Student Portal Preview Mode</span>
@@ -1405,7 +1405,7 @@ export default function AdminCourses() {
                   <span className="text-xs text-slate-500 font-bold hidden sm:inline">Tuition Gate: <span className="text-emerald-400 font-extrabold">${previewCourse.price}</span></span>
                   <button 
                     onClick={() => setPreviewCourse(null)}
-                    className="h-8 px-3 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-all text-xs font-black uppercase cursor-pointer"
+                    className="h-8 px-3 rounded-lg bg-red-500/100/10 text-red-400 hover:bg-red-500/100/100 hover:text-white transition-all text-xs font-black uppercase cursor-pointer"
                   >
                     Close Preview
                   </button>
@@ -1440,7 +1440,7 @@ export default function AdminCourses() {
                               }`}
                             >
                               <div className="flex items-center gap-2 min-w-0">
-                                <span className={`p-1 rounded ${previewActiveLecture?.id === lec.id ? 'bg-white/20' : 'bg-slate-900'}`}>
+                                <span className={`p-1 rounded ${previewActiveLecture?.id === lec.id ? 'bg-[#0b0b0d]/20' : 'bg-slate-900'}`}>
                                   {lec.type === 'video' ? <Play className="w-3 h-3 text-slate-300" /> : <FileText className="w-3 h-3 text-slate-300" />}
                                 </span>
                                 <span className="text-[11px] font-bold truncate">{lec.title}</span>
@@ -1503,7 +1503,7 @@ export default function AdminCourses() {
                           {previewActiveLecture.type === 'document' && (
                             <button
                               onClick={() => alert(`[Mock Sandbox]: Initiating download of "${previewActiveLecture.title} Blueprint Template.pdf"`)}
-                              className="px-4 py-2 bg-emerald-500 text-white rounded-xl text-xs font-black uppercase hover:shadow-[0_4px_12px_rgba(16,185,129,0.3)] transition-all cursor-pointer active:scale-95 flex items-center gap-1.5"
+                              className="px-4 py-2 bg-emerald-500/100 text-white rounded-xl text-xs font-black uppercase hover:shadow-[0_4px_12px_rgba(16,185,129,0.3)] transition-all cursor-pointer active:scale-95 flex items-center gap-1.5"
                             >
                               <FileText className="w-4 h-4" />
                               <span>Download PDF Blueprint</span>
@@ -1641,9 +1641,9 @@ function LectureAddForm({ onAdd }) {
   };
 
   return (
-    <div className="pt-2 border-t border-slate-200/40 dark:border-slate-800/60">
+    <div className="pt-2 border-t border-[#1e1e22]/40 border-[#1a1a1c]/60">
       {isFormOpen ? (
-        <form onSubmit={handleSubmit} className="p-3 bg-white dark:bg-slate-950 border border-premium-border dark:border-slate-800 rounded-xl space-y-3 text-left">
+        <form onSubmit={handleSubmit} className="p-3 bg-[#0b0b0d] dark:bg-slate-950 border border-premium-border border-[#1a1a1c] rounded-xl space-y-3 text-left">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div className="md:col-span-1 space-y-1">
               <label className="text-[9px] font-black uppercase text-slate-400 tracking-wider">Lesson Title *</label>
@@ -1653,7 +1653,7 @@ function LectureAddForm({ onAdd }) {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g. Underwriting Spreadsheet Demo"
-                className="w-full bg-slate-50 dark:bg-slate-900 border border-premium-border dark:border-slate-800 rounded-lg px-2.5 py-1.5 text-[11px] font-bold text-premium-heading dark:text-white focus:outline-none"
+                className="w-full bg-[#0f0f12] bg-[#0b0b0d] border border-premium-border border-[#1a1a1c] rounded-lg px-2.5 py-1.5 text-[11px] font-bold text-white text-white focus:outline-none"
               />
             </div>
             
@@ -1664,7 +1664,7 @@ function LectureAddForm({ onAdd }) {
                 value={duration}
                 onChange={(e) => setDuration(e.target.value)}
                 placeholder="e.g. 15m or 1h 10m"
-                className="w-full bg-slate-50 dark:bg-slate-900 border border-premium-border dark:border-slate-800 rounded-lg px-2.5 py-1.5 text-[11px] font-bold text-premium-heading dark:text-white focus:outline-none"
+                className="w-full bg-[#0f0f12] bg-[#0b0b0d] border border-premium-border border-[#1a1a1c] rounded-lg px-2.5 py-1.5 text-[11px] font-bold text-white text-white focus:outline-none"
               />
             </div>
 
@@ -1673,7 +1673,7 @@ function LectureAddForm({ onAdd }) {
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-900 border border-premium-border dark:border-slate-800 rounded-lg px-2.5 py-1.5 text-[11px] font-bold text-premium-heading dark:text-white focus:outline-none"
+                className="w-full bg-[#0f0f12] bg-[#0b0b0d] border border-premium-border border-[#1a1a1c] rounded-lg px-2.5 py-1.5 text-[11px] font-bold text-white text-white focus:outline-none"
               >
                 <option value="video">Video Node</option>
                 <option value="document">PDF Document</option>
@@ -1686,7 +1686,7 @@ function LectureAddForm({ onAdd }) {
             <button
               type="button"
               onClick={() => setIsFormOpen(false)}
-              className="px-2.5 py-1.5 rounded-lg border border-premium-border dark:border-slate-800 text-[10px] font-black text-slate-400 hover:text-slate-600 dark:hover:text-white"
+              className="px-2.5 py-1.5 rounded-lg border border-premium-border border-[#1a1a1c] text-[10px] font-black text-slate-400 hover:text-slate-600 hover:text-white"
             >
               Cancel
             </button>
@@ -1702,7 +1702,7 @@ function LectureAddForm({ onAdd }) {
         <button
           type="button"
           onClick={() => setIsFormOpen(true)}
-          className="flex items-center gap-1.5 py-1 px-3 text-[10px] font-black text-premium-accent hover:text-blue-600 transition-all cursor-pointer"
+          className="flex items-center gap-1.5 py-1 px-3 text-[10px] font-black text-premium-accent hover:text-[#1E88E5] transition-all cursor-pointer"
         >
           <Plus className="w-3.5 h-3.5" />
           <span>Add Lecture / File Resource</span>

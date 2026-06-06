@@ -637,16 +637,16 @@ export default function AdminStudents() {
 
   // Helper styles
   const paymentStyles = {
-    Paid: "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900",
-    Partial: "bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900",
-    Pending: "bg-rose-50 text-rose-600 border-rose-100 dark:bg-rose-950/20 dark:text-rose-400 dark:border-rose-900"
+    Paid: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900",
+    Partial: "bg-amber-500/10 text-amber-600 border-amber-500/20 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900",
+    Pending: "bg-rose-500/10 text-rose-400 border-rose-500/20 dark:bg-rose-950/20 dark:text-rose-400 dark:border-rose-900"
   };
 
   const statusStyles = {
-    Active: "bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900",
+    Active: "bg-emerald-500/10 text-emerald-400 border-emerald-200 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900",
     Graduated: "bg-indigo-50 text-indigo-600 border-indigo-200 dark:bg-indigo-950/20 dark:text-indigo-400 dark:border-indigo-900",
-    Suspended: "bg-rose-50 text-rose-600 border-rose-200 dark:bg-rose-950/20 dark:text-rose-400 dark:border-rose-900",
-    Inactive: "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700"
+    Suspended: "bg-rose-500/10 text-rose-400 border-rose-200 dark:bg-rose-950/20 dark:text-rose-400 dark:border-rose-900",
+    Inactive: "bg-[#111114] text-slate-600 border-[#1e1e22] bg-[#111114] text-slate-400 border-[#1e1e22]"
   };
   
   // Analytics Metrics computation
@@ -672,7 +672,7 @@ export default function AdminStudents() {
             initial={{ opacity: 0, y: -20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            className="fixed top-6 right-6 z-[250] flex items-center gap-3 bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-5 py-4.5 rounded-2xl shadow-2xl border border-slate-800 dark:border-slate-200 max-w-sm"
+            className="fixed top-6 right-6 z-[250] flex items-center gap-3 bg-slate-900 text-white dark:bg-[#0b0b0d] dark:text-white px-5 py-4.5 rounded-2xl shadow-2xl border border-slate-800 dark:border-[#1e1e22] max-w-sm"
           >
             {toast.type === 'success' ? (
               <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
@@ -680,7 +680,7 @@ export default function AdminStudents() {
               <AlertCircle className="w-5 h-5 text-rose-400 shrink-0" />
             )}
             <p className="text-xs font-bold leading-tight">{toast.message}</p>
-            <button onClick={() => setToast(prev => ({ ...prev, show: false }))} className="text-slate-400 hover:text-white dark:hover:text-slate-900 ml-auto cursor-pointer">
+            <button onClick={() => setToast(prev => ({ ...prev, show: false }))} className="text-slate-400 hover:text-white dark:hover:text-white ml-auto cursor-pointer">
               <X className="w-3.5 h-3.5" />
             </button>
           </motion.div>
@@ -690,8 +690,8 @@ export default function AdminStudents() {
       {/* Header section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-premium-heading dark:text-white tracking-tight uppercase">Student Management</h1>
-          <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 mt-1">
+          <h1 className="text-2xl font-black text-white text-white tracking-tight uppercase">Student Management</h1>
+          <p className="text-xs font-semibold text-slate-400 text-slate-500 mt-1">
             Track student enrollment progress, active devices, payment logs, and manage accounts.
           </p>
         </div>
@@ -708,12 +708,12 @@ export default function AdminStudents() {
       {/* Analytics Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <GlassCard className="flex items-center gap-4.5 p-5">
-          <div className="h-12 w-12 rounded-xl bg-blue-500/10 dark:bg-blue-950/30 flex items-center justify-center text-blue-500">
+          <div className="h-12 w-12 rounded-xl bg-[#0A66C2]/100/10 dark:bg-blue-950/30 flex items-center justify-center text-blue-500">
             <Users className="w-6 h-6" />
           </div>
           <div>
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Total Students</span>
-            <p className="text-2xl font-black text-premium-heading dark:text-white mt-0.5">{totalStudents}</p>
+            <p className="text-2xl font-black text-white text-white mt-0.5">{totalStudents}</p>
             <span className="text-[10px] font-extrabold text-emerald-500 flex items-center gap-0.5 mt-0.5">
               +12.4% <span className="text-slate-400 font-semibold uppercase">this month</span>
             </span>
@@ -721,14 +721,14 @@ export default function AdminStudents() {
         </GlassCard>
 
         <GlassCard className="flex items-center gap-4.5 p-5">
-          <div className="h-12 w-12 rounded-xl bg-emerald-500/10 dark:bg-emerald-950/30 flex items-center justify-center text-emerald-500">
+          <div className="h-12 w-12 rounded-xl bg-emerald-500/100/10 dark:bg-emerald-950/30 flex items-center justify-center text-emerald-500">
             <UserCheck className="w-6 h-6" />
           </div>
           <div>
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Active Learners</span>
-            <p className="text-2xl font-black text-premium-heading dark:text-white mt-0.5">{activeLearners}</p>
+            <p className="text-2xl font-black text-white text-white mt-0.5">{activeLearners}</p>
             <span className="text-[10px] font-semibold text-slate-400 flex items-center gap-1 mt-0.5">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span> {students.filter(s => s.activeDevices > 0).length} currently online
+              <span className="h-2 w-2 rounded-full bg-emerald-500/100 animate-pulse"></span> {students.filter(s => s.activeDevices > 0).length} currently online
             </span>
           </div>
         </GlassCard>
@@ -739,21 +739,21 @@ export default function AdminStudents() {
           </div>
           <div>
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Avg Course Progress</span>
-            <p className="text-2xl font-black text-premium-heading dark:text-white mt-0.5">{avgProgress}%</p>
+            <p className="text-2xl font-black text-white text-white mt-0.5">{avgProgress}%</p>
             {/* Visual Mini Progress Bar */}
-            <div className="w-24 h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 mt-2 overflow-hidden">
+            <div className="w-24 h-1.5 rounded-full bg-[#111114] bg-[#111114] mt-2 overflow-hidden">
               <div className="h-full bg-gradient-violet rounded-full" style={{ width: `${avgProgress}%` }} />
             </div>
           </div>
         </GlassCard>
 
         <GlassCard className="flex items-center gap-4.5 p-5">
-          <div className="h-12 w-12 rounded-xl bg-violet-500/10 dark:bg-violet-950/30 flex items-center justify-center text-violet-500">
+          <div className="h-12 w-12 rounded-xl bg-violet-500/100/10 dark:bg-violet-950/30 flex items-center justify-center text-violet-500">
             <Clock className="w-6 h-6" />
           </div>
           <div>
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Study Watch Hours</span>
-            <p className="text-2xl font-black text-premium-heading dark:text-white mt-0.5">{totalHours} hrs</p>
+            <p className="text-2xl font-black text-white text-white mt-0.5">{totalHours} hrs</p>
             <span className="text-[10px] font-semibold text-slate-400 flex items-center gap-1 mt-0.5">
               Across {activeDevicesTotal} active devices
             </span>
@@ -766,13 +766,13 @@ export default function AdminStudents() {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           {/* Search box */}
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3.5 top-3.5 h-4.5 w-4.5 text-slate-400 dark:text-slate-500" />
+            <Search className="absolute left-3.5 top-3.5 h-4.5 w-4.5 text-slate-400 text-slate-500" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
               placeholder="Search by student name, email, course..."
-              className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl py-3 pl-10 pr-4 text-xs font-bold text-premium-heading dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-premium-accent/25 focus:border-premium-accent transition-all"
+              className="w-full bg-[#0f0f12] bg-[#111114]/80 border border-[#1e1e22] border-[#1e1e22] rounded-xl py-3 pl-10 pr-4 text-xs font-bold text-white text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-premium-accent/25 focus:border-premium-accent transition-all"
             />
             {searchTerm && (
               <button 
@@ -791,7 +791,7 @@ export default function AdminStudents() {
               <select
                 value={courseFilter}
                 onChange={(e) => { setCourseFilter(e.target.value); setCurrentPage(1); }}
-                className="w-full lg:w-48 appearance-none bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-3 pl-4 pr-10 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/25 transition-all cursor-pointer"
+                className="w-full lg:w-48 appearance-none bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl py-3 pl-4 pr-10 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/25 transition-all cursor-pointer"
               >
                 <option value="all">All Courses</option>
                 {availableCourses.map(course => (
@@ -808,7 +808,7 @@ export default function AdminStudents() {
               <select
                 value={paymentFilter}
                 onChange={(e) => { setPaymentFilter(e.target.value); setCurrentPage(1); }}
-                className="w-full lg:w-40 appearance-none bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-3 pl-4 pr-10 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/25 transition-all cursor-pointer"
+                className="w-full lg:w-40 appearance-none bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl py-3 pl-4 pr-10 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/25 transition-all cursor-pointer"
               >
                 <option value="all">All Payments</option>
                 <option value="Paid">Paid</option>
@@ -825,7 +825,7 @@ export default function AdminStudents() {
               <select
                 value={statusFilter}
                 onChange={(e) => { setStatusFilter(e.target.value); setCurrentPage(1); }}
-                className="w-full lg:w-40 appearance-none bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-3 pl-4 pr-10 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/25 transition-all cursor-pointer"
+                className="w-full lg:w-40 appearance-none bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl py-3 pl-4 pr-10 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/25 transition-all cursor-pointer"
               >
                 <option value="all">All Statuses</option>
                 <option value="Active">Active</option>
@@ -858,11 +858,11 @@ export default function AdminStudents() {
       </GlassCard>
 
       {/* Main Student Registry Table */}
-      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-[0_8px_30px_rgb(0,0,0,0.02)] overflow-hidden">
+      <div className="rounded-2xl border border-[#1e1e22] border-[#1a1a1c] bg-[#0b0b0d] bg-[#0b0b0d] shadow-dark-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[1000px]">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-850 border-b border-slate-200 dark:border-slate-800">
+              <tr className="bg-[#0f0f12] bg-[#0f0f12] border-b border-[#1e1e22] border-[#1a1a1c]">
                 {/* Checkbox Header */}
                 <th className="px-6 py-4.5 w-10">
                   <div className="flex items-center">
@@ -881,7 +881,7 @@ export default function AdminStudents() {
                 </th>
                 
                 {/* Photo & Name */}
-                <th onClick={() => handleSort('name')} className="px-6 py-4.5 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 cursor-pointer select-none">
+                <th onClick={() => handleSort('name')} className="px-6 py-4.5 text-[10px] font-black uppercase tracking-wider text-slate-400 text-slate-500 cursor-pointer select-none">
                   <div className="flex items-center gap-1">
                     Student Profile
                     {sortConfig.key === 'name' && (
@@ -891,12 +891,12 @@ export default function AdminStudents() {
                 </th>
                 
                 {/* Enrolled Course */}
-                <th className="px-6 py-4.5 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 select-none">
+                <th className="px-6 py-4.5 text-[10px] font-black uppercase tracking-wider text-slate-400 text-slate-500 select-none">
                   Enrolled Course
                 </th>
                 
                 {/* Progress */}
-                <th onClick={() => handleSort('progress')} className="px-6 py-4.5 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 cursor-pointer select-none">
+                <th onClick={() => handleSort('progress')} className="px-6 py-4.5 text-[10px] font-black uppercase tracking-wider text-slate-400 text-slate-500 cursor-pointer select-none">
                   <div className="flex items-center gap-1">
                     Progress
                     {sortConfig.key === 'progress' && (
@@ -906,12 +906,12 @@ export default function AdminStudents() {
                 </th>
                 
                 {/* Payment Status */}
-                <th className="px-6 py-4.5 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 select-none">
+                <th className="px-6 py-4.5 text-[10px] font-black uppercase tracking-wider text-slate-400 text-slate-500 select-none">
                   Payment Status
                 </th>
                 
                 {/* Active Device Count */}
-                <th onClick={() => handleSort('activeDevices')} className="px-6 py-4.5 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 cursor-pointer select-none text-center">
+                <th onClick={() => handleSort('activeDevices')} className="px-6 py-4.5 text-[10px] font-black uppercase tracking-wider text-slate-400 text-slate-500 cursor-pointer select-none text-center">
                   <div className="flex items-center justify-center gap-1">
                     Devices
                     {sortConfig.key === 'activeDevices' && (
@@ -921,7 +921,7 @@ export default function AdminStudents() {
                 </th>
                 
                 {/* Join Date */}
-                <th onClick={() => handleSort('joinDate')} className="px-6 py-4.5 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 cursor-pointer select-none">
+                <th onClick={() => handleSort('joinDate')} className="px-6 py-4.5 text-[10px] font-black uppercase tracking-wider text-slate-400 text-slate-500 cursor-pointer select-none">
                   <div className="flex items-center gap-1">
                     Join Date
                     {sortConfig.key === 'joinDate' && (
@@ -931,12 +931,12 @@ export default function AdminStudents() {
                 </th>
                 
                 {/* Account Status */}
-                <th className="px-6 py-4.5 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 select-none">
+                <th className="px-6 py-4.5 text-[10px] font-black uppercase tracking-wider text-slate-400 text-slate-500 select-none">
                   Account Status
                 </th>
                 
                 {/* Actions */}
-                <th className="px-6 py-4.5 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 select-none text-right">
+                <th className="px-6 py-4.5 text-[10px] font-black uppercase tracking-wider text-slate-400 text-slate-500 select-none text-right">
                   Actions
                 </th>
               </tr>
@@ -950,8 +950,8 @@ export default function AdminStudents() {
                     <tr
                       key={row.id}
                       onClick={() => openProfileDrawer(row)}
-                      className={`hover:bg-slate-50/50 dark:hover:bg-slate-800/10 transition-colors cursor-pointer ${
-                        isSelected ? 'bg-blue-50/20 dark:bg-blue-950/10' : ''
+                      className={`hover:bg-[#0f0f12]/50 hover:bg-[#111114]/10 transition-colors cursor-pointer ${
+                        isSelected ? 'bg-[#0A66C2]/10/20 dark:bg-blue-950/10' : ''
                       }`}
                     >
                       {/* Checkbox */}
@@ -973,7 +973,7 @@ export default function AdminStudents() {
                             <img 
                               src={row.avatar} 
                               alt={row.name} 
-                              className="h-10 w-10 rounded-xl object-cover border border-slate-200 dark:border-slate-700 bg-slate-150"
+                              className="h-10 w-10 rounded-xl object-cover border border-[#1e1e22] border-[#1e1e22] bg-slate-150"
                             />
                           ) : (
                             <div className="h-10 w-10 rounded-xl bg-gradient-premium/15 flex items-center justify-center font-black text-premium-accent border border-premium-border/40 text-xs">
@@ -981,7 +981,7 @@ export default function AdminStudents() {
                             </div>
                           )}
                           <div>
-                            <p className="font-bold text-premium-heading dark:text-white leading-tight hover:text-premium-accent transition-colors">
+                            <p className="font-bold text-white text-white leading-tight hover:text-premium-accent transition-colors">
                               {row.name}
                             </p>
                             <span className="text-[10px] text-slate-400 font-semibold">{row.email}</span>
@@ -991,7 +991,7 @@ export default function AdminStudents() {
                       
                       {/* Enrolled Course */}
                       <td className="px-6 py-4">
-                        <span className="font-bold text-slate-700 dark:text-slate-300 max-w-[200px] truncate block text-[11px]">
+                        <span className="font-bold text-slate-700 text-slate-300 max-w-[200px] truncate block text-[11px]">
                           {row.course}
                         </span>
                       </td>
@@ -999,13 +999,13 @@ export default function AdminStudents() {
                       {/* Progress Bar */}
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2 max-w-[130px]">
-                          <div className="flex-1 h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                          <div className="flex-1 h-1.5 rounded-full bg-[#111114] bg-[#111114] overflow-hidden">
                             <div 
                               className={`h-full rounded-full bg-gradient-premium`} 
                               style={{ width: `${row.progress}%` }}
                             />
                           </div>
-                          <span className="text-[10px] font-black text-slate-500 dark:text-slate-400 w-8 text-right shrink-0">
+                          <span className="text-[10px] font-black text-slate-500 text-slate-400 w-8 text-right shrink-0">
                             {row.progress}%
                           </span>
                         </div>
@@ -1022,8 +1022,8 @@ export default function AdminStudents() {
                       <td className="px-6 py-4 text-center">
                         <span className={`inline-flex items-center justify-center px-2 py-0.5 rounded-md text-[10px] font-black ${
                           row.activeDevices > 0 
-                            ? 'bg-blue-50 text-blue-600 border border-blue-100 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-900' 
-                            : 'bg-slate-50 text-slate-400 border border-slate-100 dark:bg-slate-800/40 dark:text-slate-500 dark:border-slate-700'
+                            ? 'bg-[#0A66C2]/10 text-[#1E88E5] border border-[#0A66C2]/20 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-900' 
+                            : 'bg-[#0f0f12] text-slate-400 border border-[#1a1a1c] bg-[#111114]/40 text-slate-500 border-[#1e1e22]'
                         }`}>
                           <Laptop className="w-3 h-3 mr-1" /> {row.activeDevices}
                         </span>
@@ -1031,7 +1031,7 @@ export default function AdminStudents() {
                       
                       {/* Join Date */}
                       <td className="px-6 py-4">
-                        <span className="text-slate-500 dark:text-slate-400 font-semibold text-[11px] flex items-center gap-1.5">
+                        <span className="text-slate-500 text-slate-400 font-semibold text-[11px] flex items-center gap-1.5">
                           <Calendar className="w-3.5 h-3.5 text-slate-400" />
                           {new Date(row.joinDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                         </span>
@@ -1049,7 +1049,7 @@ export default function AdminStudents() {
                         <div className="flex items-center justify-end gap-1.5">
                           <button 
                             onClick={() => openProfileDrawer(row)}
-                            className="p-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-450 hover:text-premium-accent border border-slate-200/60 dark:bg-slate-800 dark:hover:bg-slate-750 dark:border-slate-700 transition-all cursor-pointer"
+                            className="p-1.5 rounded-lg bg-[#0f0f12] hover:bg-[#111114] text-slate-450 hover:text-premium-accent border border-[#1e1e22]/60 bg-[#111114] dark:hover:bg-slate-750 border-[#1e1e22] transition-all cursor-pointer"
                             title="View Detailed Profile"
                           >
                             <Eye className="w-3.5 h-3.5" />
@@ -1057,7 +1057,7 @@ export default function AdminStudents() {
                           
                           <button 
                             onClick={(e) => handleSingleSendNotification(e, row)}
-                            className="p-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-455 hover:text-premium-violet border border-slate-200/60 dark:bg-slate-800 dark:hover:bg-slate-750 dark:border-slate-700 transition-all cursor-pointer"
+                            className="p-1.5 rounded-lg bg-[#0f0f12] hover:bg-[#111114] text-slate-455 hover:text-premium-violet border border-[#1e1e22]/60 bg-[#111114] dark:hover:bg-slate-750 border-[#1e1e22] transition-all cursor-pointer"
                             title="Send Notification"
                           >
                             <Send className="w-3.5 h-3.5" />
@@ -1065,7 +1065,7 @@ export default function AdminStudents() {
                           
                           <button 
                             onClick={(e) => handleSingleResetPassword(e, row)}
-                            className="p-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-455 hover:text-amber-600 border border-slate-200/60 dark:bg-slate-800 dark:hover:bg-slate-750 dark:border-slate-700 transition-all cursor-pointer"
+                            className="p-1.5 rounded-lg bg-[#0f0f12] hover:bg-[#111114] text-slate-455 hover:text-amber-600 border border-[#1e1e22]/60 bg-[#111114] dark:hover:bg-slate-750 border-[#1e1e22] transition-all cursor-pointer"
                             title="Reset Password"
                           >
                             <Lock className="w-3.5 h-3.5" />
@@ -1075,8 +1075,8 @@ export default function AdminStudents() {
                             onClick={(e) => handleSingleSuspendToggle(e, row)}
                             className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
                               row.status === 'Suspended' 
-                                ? 'bg-emerald-50 hover:bg-emerald-100 border-emerald-250 text-emerald-600 dark:bg-emerald-950/20 dark:hover:bg-emerald-900/30' 
-                                : 'bg-rose-50 hover:bg-rose-100 border-rose-250 text-rose-600 dark:bg-rose-950/20 dark:hover:bg-rose-900/30'
+                                ? 'bg-emerald-500/10 hover:bg-emerald-100 border-emerald-250 text-emerald-400 dark:bg-emerald-950/20 dark:hover:bg-emerald-900/30' 
+                                : 'bg-rose-500/10 hover:bg-rose-100 border-rose-250 text-rose-400 dark:bg-rose-950/20 dark:hover:bg-rose-900/30'
                             }`}
                             title={row.status === 'Suspended' ? "Activate Account" : "Suspend Account"}
                           >
@@ -1085,7 +1085,7 @@ export default function AdminStudents() {
                           
                           <div className="relative group">
                             <button 
-                              className="p-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-450 border border-slate-200/60 dark:bg-slate-800 dark:hover:bg-slate-750 dark:border-slate-700 transition-all cursor-pointer"
+                              className="p-1.5 rounded-lg bg-[#0f0f12] hover:bg-[#111114] text-slate-450 border border-[#1e1e22]/60 bg-[#111114] dark:hover:bg-slate-750 border-[#1e1e22] transition-all cursor-pointer"
                             >
                               <MoreVertical className="w-3.5 h-3.5" />
                             </button>
@@ -1105,12 +1105,12 @@ export default function AdminStudents() {
                 })
               ) : (
                 <tr>
-                  <td colSpan="9" className="px-6 py-16 text-center text-slate-400 dark:text-slate-500">
+                  <td colSpan="9" className="px-6 py-16 text-center text-slate-400 text-slate-500">
                     <div className="flex flex-col items-center justify-center gap-2.5 max-w-sm mx-auto">
-                      <div className="h-12 w-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400">
+                      <div className="h-12 w-12 rounded-2xl bg-[#111114] bg-[#111114] flex items-center justify-center text-slate-400">
                         <Users className="w-6 h-6" />
                       </div>
-                      <h4 className="font-black text-sm text-premium-heading dark:text-white uppercase tracking-wider">No Students Found</h4>
+                      <h4 className="font-black text-sm text-white text-white uppercase tracking-wider">No Students Found</h4>
                       <p className="text-xs font-semibold text-slate-400">No student records matched your current search filters. Try adjusting your query or resetting filters.</p>
                       <Button variant="outline" size="sm" className="mt-2" onClick={() => {
                         setSearchTerm(''); setCourseFilter('all'); setPaymentFilter('all'); setStatusFilter('all');
@@ -1127,7 +1127,7 @@ export default function AdminStudents() {
         
         {/* Pagination Footer */}
         {totalPages > 1 && (
-          <div className="px-6 py-4.5 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="px-6 py-4.5 border-t border-[#1a1a1c] border-[#1a1a1c] flex flex-col sm:flex-row items-center justify-between gap-4">
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
               Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, sortedStudents.length)} of {sortedStudents.length} entries
             </span>
@@ -1135,7 +1135,7 @@ export default function AdminStudents() {
               <button
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                className="h-8.5 w-8.5 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 dark:hover:bg-slate-700 transition-all cursor-pointer"
+                className="h-8.5 w-8.5 flex items-center justify-center rounded-xl bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] text-slate-500 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#111114] dark:hover:bg-slate-700 transition-all cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
@@ -1147,7 +1147,7 @@ export default function AdminStudents() {
                   className={`h-8.5 w-8.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
                     currentPage === i + 1
                       ? "bg-premium-accent text-white shadow-md shadow-blue-500/20"
-                      : "bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700"
+                      : "bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] text-slate-500 hover:bg-[#111114] dark:hover:bg-slate-700"
                   }`}
                 >
                   {i + 1}
@@ -1157,7 +1157,7 @@ export default function AdminStudents() {
               <button
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
-                className="h-8.5 w-8.5 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 dark:hover:bg-slate-700 transition-all cursor-pointer"
+                className="h-8.5 w-8.5 flex items-center justify-center rounded-xl bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] text-slate-500 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#111114] dark:hover:bg-slate-700 transition-all cursor-pointer"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -1177,7 +1177,7 @@ export default function AdminStudents() {
           >
             <div className="bg-slate-900 border border-slate-800 text-white rounded-2xl p-4 shadow-2xl flex items-center justify-between flex-wrap gap-3 backdrop-blur-xl bg-opacity-95">
               <div className="flex items-center gap-3">
-                <div className="h-6 w-6 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400">
+                <div className="h-6 w-6 rounded-lg bg-[#0A66C2]/100/20 flex items-center justify-center text-blue-400">
                   <Check className="w-3.5 h-3.5" />
                 </div>
                 <span className="text-xs font-black tracking-wider uppercase">
@@ -1240,16 +1240,16 @@ export default function AdminStudents() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 30, stiffness: 220 }}
-              className="fixed right-0 top-0 bottom-0 w-full max-w-2xl bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 z-[151] flex flex-col shadow-2xl text-left"
+              className="fixed right-0 top-0 bottom-0 w-full max-w-2xl bg-[#0b0b0d] bg-[#0b0b0d] border-l border-[#1e1e22] border-[#1a1a1c] z-[151] flex flex-col shadow-2xl text-left"
             >
               {/* Drawer Header */}
-              <div className="p-6 border-b border-slate-100 dark:border-slate-850 flex items-center justify-between shrink-0">
+              <div className="p-6 border-b border-[#1a1a1c] dark:border-slate-850 flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-4">
                   {selectedStudent.avatar ? (
                     <img 
                       src={selectedStudent.avatar} 
                       alt={selectedStudent.name} 
-                      className="h-14 w-14 rounded-2xl object-cover border border-slate-200 dark:border-slate-700 shadow-sm"
+                      className="h-14 w-14 rounded-2xl object-cover border border-[#1e1e22] border-[#1e1e22] shadow-sm"
                     />
                   ) : (
                     <div className="h-14 w-14 rounded-2xl bg-gradient-premium/15 flex items-center justify-center font-black text-premium-accent border border-premium-border/40 text-lg">
@@ -1257,7 +1257,7 @@ export default function AdminStudents() {
                     </div>
                   )}
                   <div>
-                    <h3 className="text-lg font-black text-premium-heading dark:text-white tracking-tight leading-tight">
+                    <h3 className="text-lg font-black text-white text-white tracking-tight leading-tight">
                       {selectedStudent.name}
                     </h3>
                     <div className="flex flex-wrap items-center gap-2 mt-1">
@@ -1274,7 +1274,7 @@ export default function AdminStudents() {
                   </span>
                   <button
                     onClick={() => setDrawerOpen(false)}
-                    className="h-9 w-9 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer active:scale-95"
+                    className="h-9 w-9 flex items-center justify-center rounded-xl bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] text-slate-400 hover:text-white hover:text-white transition-all cursor-pointer active:scale-95"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -1282,7 +1282,7 @@ export default function AdminStudents() {
               </div>
               
               {/* Drawer Tabs Selection */}
-              <div className="px-6 border-b border-slate-100 dark:border-slate-850 flex items-center gap-5 shrink-0 bg-slate-50/50 dark:bg-slate-900/50">
+              <div className="px-6 border-b border-[#1a1a1c] dark:border-slate-850 flex items-center gap-5 shrink-0 bg-[#0f0f12]/50 bg-[#0b0b0d]/50">
                 <button
                   onClick={() => setDrawerTab('overview')}
                   className={`py-3.5 text-xs font-black uppercase tracking-wider border-b-2 transition-all cursor-pointer ${
@@ -1338,10 +1338,10 @@ export default function AdminStudents() {
                     
                     <div className="grid grid-cols-1 gap-4">
                       {selectedStudent.enrolledCourses.map((c) => (
-                        <div key={c.id} className="border border-slate-200/70 dark:border-slate-800 rounded-2xl p-4.5 bg-slate-50/40 dark:bg-slate-900/40 space-y-3">
+                        <div key={c.id} className="border border-[#1e1e22]/70 border-[#1a1a1c] rounded-2xl p-4.5 bg-[#0f0f12]/40 bg-[#0b0b0d]/40 space-y-3">
                           <div className="flex items-start justify-between gap-3">
                             <div>
-                              <h5 className="text-xs font-black text-premium-heading dark:text-white leading-snug">{c.title}</h5>
+                              <h5 className="text-xs font-black text-white text-white leading-snug">{c.title}</h5>
                               <span className="text-[10px] text-slate-400 font-semibold mt-0.5 block">Instructor: {c.tutor}</span>
                             </div>
                             <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase border shrink-0 ${paymentStyles[c.paymentStatus]}`}>
@@ -1354,13 +1354,13 @@ export default function AdminStudents() {
                             <span>{c.progress}% Completed</span>
                           </div>
                           
-                          <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                          <div className="h-2 rounded-full bg-[#111114] bg-[#111114] overflow-hidden">
                             <div className="h-full bg-gradient-premium rounded-full" style={{ width: `${c.progress}%` }} />
                           </div>
                           
                           <div className="flex items-center justify-between text-[10px] text-slate-400 font-semibold pt-1">
                             <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5 text-slate-400" /> Spent Study Time</span>
-                            <span className="font-extrabold text-slate-700 dark:text-slate-300">{c.watchHours} hours</span>
+                            <span className="font-extrabold text-slate-700 text-slate-300">{c.watchHours} hours</span>
                           </div>
                         </div>
                       ))}
@@ -1374,27 +1374,27 @@ export default function AdminStudents() {
                     <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">Performance Metrics</h4>
                     
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="border border-slate-200/70 dark:border-slate-800 rounded-2xl p-4 bg-slate-50/30 dark:bg-slate-850/40">
+                      <div className="border border-[#1e1e22]/70 border-[#1a1a1c] rounded-2xl p-4 bg-[#0f0f12]/30 bg-[#0f0f12]/40">
                         <span className="text-[10px] font-bold text-slate-450 uppercase tracking-wide block">Total Watch Time</span>
-                        <p className="text-2xl font-black text-premium-heading dark:text-white mt-1">{selectedStudent.watchHours} Hrs</p>
+                        <p className="text-2xl font-black text-white text-white mt-1">{selectedStudent.watchHours} Hrs</p>
                         <span className="text-[9px] text-slate-400 font-semibold block mt-0.5">Across all lessons</span>
                       </div>
                       
-                      <div className="border border-slate-200/70 dark:border-slate-800 rounded-2xl p-4 bg-slate-50/30 dark:bg-slate-850/40">
+                      <div className="border border-[#1e1e22]/70 border-[#1a1a1c] rounded-2xl p-4 bg-[#0f0f12]/30 bg-[#0f0f12]/40">
                         <span className="text-[10px] font-bold text-slate-450 uppercase tracking-wide block">Assignments Done</span>
-                        <p className="text-2xl font-black text-premium-heading dark:text-white mt-1">
+                        <p className="text-2xl font-black text-white text-white mt-1">
                           {selectedStudent.assignments.filter(a => a.status === 'Graded').length} / {selectedStudent.assignments.length}
                         </p>
                         <span className="text-[9px] text-slate-400 font-semibold block mt-0.5">Graded submissions</span>
                       </div>
 
-                      <div className="border border-slate-200/70 dark:border-slate-800 rounded-2xl p-4 bg-slate-50/30 dark:bg-slate-850/40">
+                      <div className="border border-[#1e1e22]/70 border-[#1a1a1c] rounded-2xl p-4 bg-[#0f0f12]/30 bg-[#0f0f12]/40">
                         <span className="text-[10px] font-bold text-slate-455 uppercase tracking-wide block">Active Devices</span>
-                        <p className="text-2xl font-black text-premium-heading dark:text-white mt-1">{selectedStudent.activeDevices}</p>
+                        <p className="text-2xl font-black text-white text-white mt-1">{selectedStudent.activeDevices}</p>
                         <span className="text-[9px] text-slate-400 font-semibold block mt-0.5">Maximum concurrent limit: 5</span>
                       </div>
 
-                      <div className="border border-slate-200/70 dark:border-slate-800 rounded-2xl p-4 bg-slate-50/30 dark:bg-slate-850/40">
+                      <div className="border border-[#1e1e22]/70 border-[#1a1a1c] rounded-2xl p-4 bg-[#0f0f12]/30 bg-[#0f0f12]/40">
                         <span className="text-[10px] font-bold text-slate-450 uppercase tracking-wide block">Billing Portfolio</span>
                         <p className="text-2xl font-black text-emerald-500 mt-1">{selectedStudent.paymentStatus === 'Paid' ? 'Cleared' : 'Due'}</p>
                         <span className="text-[9px] text-slate-400 font-semibold block mt-0.5">Status: {selectedStudent.paymentStatus}</span>
@@ -1402,11 +1402,11 @@ export default function AdminStudents() {
                     </div>
                     
                     {/* Visual Study Bar Graph Representing Weekly Engagement */}
-                    <div className="border border-slate-200/70 dark:border-slate-800 rounded-2xl p-4.5 space-y-4">
+                    <div className="border border-[#1e1e22]/70 border-[#1a1a1c] rounded-2xl p-4.5 space-y-4">
                       <div className="flex items-center justify-between">
                         <div>
                           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Weekly Lesson Interaction</span>
-                          <h5 className="text-xs font-black text-premium-heading dark:text-white mt-0.5">Study Activity Log (Hours/Day)</h5>
+                          <h5 className="text-xs font-black text-white text-white mt-0.5">Study Activity Log (Hours/Day)</h5>
                         </div>
                         <span className="text-[10px] text-premium-accent font-black">May 2026</span>
                       </div>
@@ -1440,22 +1440,22 @@ export default function AdminStudents() {
                     <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">Submitted Assessments</h4>
                     
                     {selectedStudent.assignments.length > 0 ? (
-                      <div className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden divide-y divide-slate-100 dark:divide-slate-850">
+                      <div className="border border-[#1e1e22] border-[#1a1a1c] rounded-2xl overflow-hidden divide-y divide-slate-100 dark:divide-slate-850">
                         {selectedStudent.assignments.map((asg) => (
-                          <div key={asg.id} className="p-4 flex items-center justify-between gap-4 bg-slate-50/10 hover:bg-slate-55/20 transition-colors">
+                          <div key={asg.id} className="p-4 flex items-center justify-between gap-4 bg-[#0f0f12]/10 hover:bg-slate-55/20 transition-colors">
                             <div className="space-y-1">
-                              <h5 className="text-xs font-black text-premium-heading dark:text-white leading-tight">{asg.title}</h5>
+                              <h5 className="text-xs font-black text-white text-white leading-tight">{asg.title}</h5>
                               <div className="flex items-center gap-2 text-[10px] text-slate-400 font-semibold">
                                 <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {asg.date}</span>
                               </div>
                             </div>
                             
                             <div className="flex items-center gap-3">
-                              <span className="text-xs font-black text-premium-heading dark:text-white">{asg.score}</span>
+                              <span className="text-xs font-black text-white text-white">{asg.score}</span>
                               <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider border ${
                                 asg.status === 'Graded'
-                                  ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900'
-                                  : 'bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900'
+                                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900'
+                                  : 'bg-amber-500/10 text-amber-600 border-amber-500/20 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900'
                               }`}>
                                 {asg.status}
                               </span>
@@ -1464,7 +1464,7 @@ export default function AdminStudents() {
                         ))}
                       </div>
                     ) : (
-                      <div className="py-12 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl text-center text-slate-400">
+                      <div className="py-12 border border-dashed border-[#1e1e22] border-[#1a1a1c] rounded-2xl text-center text-slate-400">
                         <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
                         <p className="text-xs font-bold">No assignments submitted yet.</p>
                       </div>
@@ -1479,13 +1479,13 @@ export default function AdminStudents() {
                     
                     <div className="space-y-3">
                       {selectedStudent.loginActivity.map((log, idx) => (
-                        <div key={idx} className="border border-slate-200/60 dark:border-slate-800 rounded-xl p-3.5 flex items-start gap-3 bg-slate-50/20 dark:bg-slate-900/20">
-                          <div className="h-8.5 w-8.5 rounded-lg bg-blue-500/10 dark:bg-blue-950/20 text-blue-500 flex items-center justify-center shrink-0">
+                        <div key={idx} className="border border-[#1e1e22]/60 border-[#1a1a1c] rounded-xl p-3.5 flex items-start gap-3 bg-[#0f0f12]/20 bg-[#0b0b0d]/20">
+                          <div className="h-8.5 w-8.5 rounded-lg bg-[#0A66C2]/100/10 dark:bg-blue-950/20 text-blue-500 flex items-center justify-center shrink-0">
                             <Laptop className="w-4 h-4" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between gap-2">
-                              <span className="text-[11px] font-extrabold text-premium-heading dark:text-white truncate block">{log.device}</span>
+                              <span className="text-[11px] font-extrabold text-white text-white truncate block">{log.device}</span>
                               <span className="text-[9px] text-slate-400 font-semibold shrink-0">{log.timestamp}</span>
                             </div>
                             <div className="flex items-center gap-2 text-[10px] text-slate-400 font-semibold mt-1">
@@ -1502,7 +1502,7 @@ export default function AdminStudents() {
               </div>
               
               {/* Drawer Footer Actions */}
-              <div className="p-6 border-t border-slate-100 dark:border-slate-850 bg-slate-50 dark:bg-slate-850 flex items-center justify-between shrink-0 gap-3">
+              <div className="p-6 border-t border-[#1a1a1c] dark:border-slate-850 bg-[#0f0f12] bg-[#0f0f12] flex items-center justify-between shrink-0 gap-3">
                 <Button 
                   variant="outline" 
                   size="sm" 
@@ -1549,10 +1549,10 @@ export default function AdminStudents() {
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setModalOpen(null)} className="fixed inset-0 bg-slate-950/50 backdrop-blur-xs z-[200]" />
             <div className="fixed inset-0 z-[201] flex items-center justify-center p-4 overflow-y-auto">
-              <motion.div initial={{ opacity: 0, scale: 0.95, y: 15 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 15 }} className="w-full max-w-xl bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden text-left">
-                <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                  <h3 className="text-base font-black text-premium-heading dark:text-white tracking-tight uppercase">Register New Student</h3>
-                  <button onClick={() => setModalOpen(null)} className="h-8 w-8 flex items-center justify-center rounded-lg bg-slate-50 dark:bg-slate-850 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer"><X className="w-4 h-4" /></button>
+              <motion.div initial={{ opacity: 0, scale: 0.95, y: 15 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 15 }} className="w-full max-w-xl bg-[#0b0b0d] bg-[#0b0b0d] rounded-2xl border border-[#1e1e22] border-[#1a1a1c] shadow-2xl overflow-hidden text-left">
+                <div className="p-5 border-b border-[#1a1a1c] border-[#1a1a1c] flex items-center justify-between">
+                  <h3 className="text-base font-black text-white text-white tracking-tight uppercase">Register New Student</h3>
+                  <button onClick={() => setModalOpen(null)} className="h-8 w-8 flex items-center justify-center rounded-lg bg-[#0f0f12] bg-[#0f0f12] text-slate-400 hover:text-white hover:text-white transition-all cursor-pointer"><X className="w-4 h-4" /></button>
                 </div>
                 
                 <form onSubmit={handleCreateStudent} className="p-6 space-y-4">
@@ -1562,7 +1562,7 @@ export default function AdminStudents() {
                       <input
                         type="text" required placeholder="John Doe"
                         value={formState.name} onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
+                        className="w-full bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
                       />
                     </div>
                     <div className="space-y-1">
@@ -1570,7 +1570,7 @@ export default function AdminStudents() {
                       <input
                         type="email" required placeholder="john.doe@gmail.com"
                         value={formState.email} onChange={(e) => setFormState({ ...formState, email: e.target.value })}
-                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
+                        className="w-full bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
                       />
                     </div>
                   </div>
@@ -1581,7 +1581,7 @@ export default function AdminStudents() {
                       <input
                         type="text" placeholder="+1 (555) 123-4567"
                         value={formState.phone} onChange={(e) => setFormState({ ...formState, phone: e.target.value })}
-                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
+                        className="w-full bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
                       />
                     </div>
                     <div className="space-y-1">
@@ -1589,7 +1589,7 @@ export default function AdminStudents() {
                       <input
                         type="number" min="1" max="5" required
                         value={formState.activeDevices} onChange={(e) => setFormState({ ...formState, activeDevices: e.target.value })}
-                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
+                        className="w-full bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
                       />
                     </div>
                   </div>
@@ -1598,7 +1598,7 @@ export default function AdminStudents() {
                     <label className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Enrolled Course</label>
                     <select
                       value={formState.course} onChange={(e) => setFormState({ ...formState, course: e.target.value })}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 cursor-pointer"
+                      className="w-full bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 cursor-pointer"
                     >
                       {availableCourses.map(course => (
                         <option key={course} value={course}>{course}</option>
@@ -1612,14 +1612,14 @@ export default function AdminStudents() {
                       <input
                         type="number" min="0" max="100" required
                         value={formState.progress} onChange={(e) => setFormState({ ...formState, progress: e.target.value })}
-                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
+                        className="w-full bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Payment Status</label>
                       <select
                         value={formState.paymentStatus} onChange={(e) => setFormState({ ...formState, paymentStatus: e.target.value })}
-                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 cursor-pointer"
+                        className="w-full bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 cursor-pointer"
                       >
                         <option value="Paid">Paid</option>
                         <option value="Partial">Partial</option>
@@ -1630,7 +1630,7 @@ export default function AdminStudents() {
                       <label className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Account Status</label>
                       <select
                         value={formState.status} onChange={(e) => setFormState({ ...formState, status: e.target.value })}
-                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 cursor-pointer"
+                        className="w-full bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 cursor-pointer"
                       >
                         <option value="Active">Active</option>
                         <option value="Graduated">Graduated</option>
@@ -1640,7 +1640,7 @@ export default function AdminStudents() {
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2.5">
+                  <div className="pt-4 border-t border-[#1a1a1c] border-[#1a1a1c] flex items-center justify-end gap-2.5">
                     <Button variant="outline" size="sm" type="button" onClick={() => setModalOpen(null)}>Cancel</Button>
                     <Button variant="primary" size="sm" type="submit">Create Record</Button>
                   </div>
@@ -1655,10 +1655,10 @@ export default function AdminStudents() {
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setModalOpen(null)} className="fixed inset-0 bg-slate-950/50 backdrop-blur-xs z-[200]" />
             <div className="fixed inset-0 z-[201] flex items-center justify-center p-4 overflow-y-auto">
-              <motion.div initial={{ opacity: 0, scale: 0.95, y: 15 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 15 }} className="w-full max-w-xl bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden text-left">
-                <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                  <h3 className="text-base font-black text-premium-heading dark:text-white tracking-tight uppercase">Edit Student Record</h3>
-                  <button onClick={() => setModalOpen(null)} className="h-8 w-8 flex items-center justify-center rounded-lg bg-slate-50 dark:bg-slate-850 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer"><X className="w-4 h-4" /></button>
+              <motion.div initial={{ opacity: 0, scale: 0.95, y: 15 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 15 }} className="w-full max-w-xl bg-[#0b0b0d] bg-[#0b0b0d] rounded-2xl border border-[#1e1e22] border-[#1a1a1c] shadow-2xl overflow-hidden text-left">
+                <div className="p-5 border-b border-[#1a1a1c] border-[#1a1a1c] flex items-center justify-between">
+                  <h3 className="text-base font-black text-white text-white tracking-tight uppercase">Edit Student Record</h3>
+                  <button onClick={() => setModalOpen(null)} className="h-8 w-8 flex items-center justify-center rounded-lg bg-[#0f0f12] bg-[#0f0f12] text-slate-400 hover:text-white hover:text-white transition-all cursor-pointer"><X className="w-4 h-4" /></button>
                 </div>
                 
                 <form onSubmit={handleEditStudent} className="p-6 space-y-4">
@@ -1668,7 +1668,7 @@ export default function AdminStudents() {
                       <input
                         type="text" required
                         value={formState.name} onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
+                        className="w-full bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
                       />
                     </div>
                     <div className="space-y-1">
@@ -1676,7 +1676,7 @@ export default function AdminStudents() {
                       <input
                         type="email" required
                         value={formState.email} onChange={(e) => setFormState({ ...formState, email: e.target.value })}
-                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
+                        className="w-full bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
                       />
                     </div>
                   </div>
@@ -1687,7 +1687,7 @@ export default function AdminStudents() {
                       <input
                         type="text"
                         value={formState.phone} onChange={(e) => setFormState({ ...formState, phone: e.target.value })}
-                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
+                        className="w-full bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
                       />
                     </div>
                     <div className="space-y-1">
@@ -1695,7 +1695,7 @@ export default function AdminStudents() {
                       <input
                         type="number" min="1" max="5" required
                         value={formState.activeDevices} onChange={(e) => setFormState({ ...formState, activeDevices: e.target.value })}
-                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
+                        className="w-full bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
                       />
                     </div>
                   </div>
@@ -1704,7 +1704,7 @@ export default function AdminStudents() {
                     <label className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Enrolled Course</label>
                     <select
                       value={formState.course} onChange={(e) => setFormState({ ...formState, course: e.target.value })}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 cursor-pointer"
+                      className="w-full bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 cursor-pointer"
                     >
                       {availableCourses.map(course => (
                         <option key={course} value={course}>{course}</option>
@@ -1718,14 +1718,14 @@ export default function AdminStudents() {
                       <input
                         type="number" min="0" max="100" required
                         value={formState.progress} onChange={(e) => setFormState({ ...formState, progress: e.target.value })}
-                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
+                        className="w-full bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Payment Status</label>
                       <select
                         value={formState.paymentStatus} onChange={(e) => setFormState({ ...formState, paymentStatus: e.target.value })}
-                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 cursor-pointer"
+                        className="w-full bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 cursor-pointer"
                       >
                         <option value="Paid">Paid</option>
                         <option value="Partial">Partial</option>
@@ -1736,7 +1736,7 @@ export default function AdminStudents() {
                       <label className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Account Status</label>
                       <select
                         value={formState.status} onChange={(e) => setFormState({ ...formState, status: e.target.value })}
-                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 cursor-pointer"
+                        className="w-full bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 cursor-pointer"
                       >
                         <option value="Active">Active</option>
                         <option value="Graduated">Graduated</option>
@@ -1746,7 +1746,7 @@ export default function AdminStudents() {
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2.5">
+                  <div className="pt-4 border-t border-[#1a1a1c] border-[#1a1a1c] flex items-center justify-end gap-2.5">
                     <Button variant="outline" size="sm" type="button" onClick={() => setModalOpen(null)}>Cancel</Button>
                     <Button variant="primary" size="sm" type="submit">Save Changes</Button>
                   </div>
@@ -1761,23 +1761,23 @@ export default function AdminStudents() {
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setModalOpen(null)} className="fixed inset-0 bg-slate-950/50 backdrop-blur-xs z-[200]" />
             <div className="fixed inset-0 z-[201] flex items-center justify-center p-4 overflow-y-auto">
-              <motion.div initial={{ opacity: 0, scale: 0.95, y: 15 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 15 }} className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden text-left">
-                <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                  <h3 className="text-base font-black text-premium-heading dark:text-white tracking-tight uppercase">Send Notification</h3>
-                  <button onClick={() => setModalOpen(null)} className="h-8 w-8 flex items-center justify-center rounded-lg bg-slate-50 dark:bg-slate-850 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer"><X className="w-4 h-4" /></button>
+              <motion.div initial={{ opacity: 0, scale: 0.95, y: 15 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 15 }} className="w-full max-w-md bg-[#0b0b0d] bg-[#0b0b0d] rounded-2xl border border-[#1e1e22] border-[#1a1a1c] shadow-2xl overflow-hidden text-left">
+                <div className="p-5 border-b border-[#1a1a1c] border-[#1a1a1c] flex items-center justify-between">
+                  <h3 className="text-base font-black text-white text-white tracking-tight uppercase">Send Notification</h3>
+                  <button onClick={() => setModalOpen(null)} className="h-8 w-8 flex items-center justify-center rounded-lg bg-[#0f0f12] bg-[#0f0f12] text-slate-400 hover:text-white hover:text-white transition-all cursor-pointer"><X className="w-4 h-4" /></button>
                 </div>
                 
                 <form onSubmit={confirmSendNotification} className="p-6 space-y-4">
-                  <div className="text-xs bg-slate-50 dark:bg-slate-850 p-3 rounded-xl border border-slate-150 dark:border-slate-800">
+                  <div className="text-xs bg-[#0f0f12] bg-[#0f0f12] p-3 rounded-xl border border-slate-150 border-[#1a1a1c]">
                     <span className="font-semibold text-slate-400">Recipient:</span>
-                    <span className="font-extrabold text-premium-heading dark:text-white ml-1.5">{activeModalStudent.name} ({activeModalStudent.email})</span>
+                    <span className="font-extrabold text-white text-white ml-1.5">{activeModalStudent.name} ({activeModalStudent.email})</span>
                   </div>
 
                   <div className="space-y-1">
                     <label className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Channel</label>
                     <select
                       value={notifType} onChange={(e) => setNotifType(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 cursor-pointer"
+                      className="w-full bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 cursor-pointer"
                     >
                       <option value="Email">Email Message</option>
                       <option value="Push">Mobile Push Notification</option>
@@ -1790,7 +1790,7 @@ export default function AdminStudents() {
                     <input
                       type="text" required placeholder="e.g. Action Required: Update Profile"
                       value={notifSubject} onChange={(e) => setNotifSubject(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+                      className="w-full bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none"
                     />
                   </div>
 
@@ -1799,11 +1799,11 @@ export default function AdminStudents() {
                     <textarea
                       required rows="4" placeholder="Write message body..."
                       value={notifContent} onChange={(e) => setNotifContent(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+                      className="w-full bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none"
                     />
                   </div>
 
-                  <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2.5">
+                  <div className="pt-4 border-t border-[#1a1a1c] border-[#1a1a1c] flex items-center justify-end gap-2.5">
                     <Button variant="outline" size="sm" type="button" onClick={() => setModalOpen(null)}>Cancel</Button>
                     <Button variant="primary" size="sm" type="submit">Dispatch Notification</Button>
                   </div>
@@ -1818,14 +1818,14 @@ export default function AdminStudents() {
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setModalOpen(null)} className="fixed inset-0 bg-slate-950/50 backdrop-blur-xs z-[200]" />
             <div className="fixed inset-0 z-[201] flex items-center justify-center p-4 overflow-y-auto">
-              <motion.div initial={{ opacity: 0, scale: 0.95, y: 15 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 15 }} className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden text-left">
-                <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                  <h3 className="text-base font-black text-premium-heading dark:text-white tracking-tight uppercase">Bulk Dispatch Notification</h3>
-                  <button onClick={() => setModalOpen(null)} className="h-8 w-8 flex items-center justify-center rounded-lg bg-slate-50 dark:bg-slate-855 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer"><X className="w-4 h-4" /></button>
+              <motion.div initial={{ opacity: 0, scale: 0.95, y: 15 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 15 }} className="w-full max-w-md bg-[#0b0b0d] bg-[#0b0b0d] rounded-2xl border border-[#1e1e22] border-[#1a1a1c] shadow-2xl overflow-hidden text-left">
+                <div className="p-5 border-b border-[#1a1a1c] border-[#1a1a1c] flex items-center justify-between">
+                  <h3 className="text-base font-black text-white text-white tracking-tight uppercase">Bulk Dispatch Notification</h3>
+                  <button onClick={() => setModalOpen(null)} className="h-8 w-8 flex items-center justify-center rounded-lg bg-[#0f0f12] dark:bg-slate-855 text-slate-400 hover:text-white hover:text-white transition-all cursor-pointer"><X className="w-4 h-4" /></button>
                 </div>
                 
                 <form onSubmit={confirmBulkNotify} className="p-6 space-y-4">
-                  <div className="text-xs bg-blue-50 text-blue-700 dark:bg-blue-955/30 dark:text-blue-400 p-3.5 rounded-xl border border-blue-100/60 font-black">
+                  <div className="text-xs bg-[#0A66C2]/10 text-blue-700 dark:bg-blue-955/30 dark:text-blue-400 p-3.5 rounded-xl border border-[#0A66C2]/20/60 font-black">
                     Broadcasting message to {selectedIds.length} selected students.
                   </div>
 
@@ -1833,7 +1833,7 @@ export default function AdminStudents() {
                     <label className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Broadcast Channel</label>
                     <select
                       value={notifType} onChange={(e) => setNotifType(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 cursor-pointer"
+                      className="w-full bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 cursor-pointer"
                     >
                       <option value="Email">Email Message</option>
                       <option value="Push">Mobile Push Notification</option>
@@ -1846,7 +1846,7 @@ export default function AdminStudents() {
                     <input
                       type="text" required placeholder="e.g. Schedule Update: Upcoming Live Class"
                       value={notifSubject} onChange={(e) => setNotifSubject(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+                      className="w-full bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none"
                     />
                   </div>
 
@@ -1855,11 +1855,11 @@ export default function AdminStudents() {
                     <textarea
                       required rows="4" placeholder="Write broadcast message..."
                       value={notifContent} onChange={(e) => setNotifContent(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+                      className="w-full bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none"
                     />
                   </div>
 
-                  <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2.5">
+                  <div className="pt-4 border-t border-[#1a1a1c] border-[#1a1a1c] flex items-center justify-end gap-2.5">
                     <Button variant="outline" size="sm" type="button" onClick={() => setModalOpen(null)}>Cancel</Button>
                     <Button variant="primary" size="sm" type="submit">Broadcast Message</Button>
                   </div>
@@ -1874,16 +1874,16 @@ export default function AdminStudents() {
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setModalOpen(null)} className="fixed inset-0 bg-slate-950/50 backdrop-blur-xs z-[200]" />
             <div className="fixed inset-0 z-[201] flex items-center justify-center p-4">
-              <motion.div initial={{ opacity: 0, scale: 0.95, y: 15 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 15 }} className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden text-left p-6">
+              <motion.div initial={{ opacity: 0, scale: 0.95, y: 15 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 15 }} className="w-full max-w-md bg-[#0b0b0d] bg-[#0b0b0d] rounded-2xl border border-[#1e1e22] border-[#1a1a1c] shadow-2xl overflow-hidden text-left p-6">
                 <div className="flex items-start gap-4">
-                  <div className="h-10 w-10 rounded-xl bg-rose-50 dark:bg-rose-950/30 flex items-center justify-center text-rose-600 shrink-0">
+                  <div className="h-10 w-10 rounded-xl bg-rose-500/10 dark:bg-rose-950/30 flex items-center justify-center text-rose-400 shrink-0">
                     <AlertIcon className="w-5 h-5" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="text-base font-black text-premium-heading dark:text-white tracking-tight uppercase">
+                    <h3 className="text-base font-black text-white text-white tracking-tight uppercase">
                       {activeModalStudent.status === 'Suspended' ? 'Re-Activate Student Account?' : 'Suspend Student Account?'}
                     </h3>
-                    <p className="text-xs font-semibold text-slate-450 dark:text-slate-400 mt-1">
+                    <p className="text-xs font-semibold text-slate-450 text-slate-400 mt-1">
                       {activeModalStudent.status === 'Suspended' 
                         ? `Are you sure you want to restore learning access for ${activeModalStudent.name}? They will immediately be allowed to login and watch courses.`
                         : `Are you sure you want to suspend learning access for ${activeModalStudent.name}? This will terminate their current session and lock access to all LMS content.`
@@ -1892,7 +1892,7 @@ export default function AdminStudents() {
                   </div>
                 </div>
 
-                <div className="pt-5 mt-5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2.5">
+                <div className="pt-5 mt-5 border-t border-[#1a1a1c] border-[#1a1a1c] flex items-center justify-end gap-2.5">
                   <Button variant="outline" size="sm" onClick={() => setModalOpen(null)}>Cancel</Button>
                   <Button 
                     variant={activeModalStudent.status === 'Suspended' ? 'primary' : 'danger'} 
@@ -1912,23 +1912,23 @@ export default function AdminStudents() {
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setModalOpen(null)} className="fixed inset-0 bg-slate-950/50 backdrop-blur-xs z-[200]" />
             <div className="fixed inset-0 z-[201] flex items-center justify-center p-4">
-              <motion.div initial={{ opacity: 0, scale: 0.95, y: 15 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 15 }} className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden text-left p-6">
+              <motion.div initial={{ opacity: 0, scale: 0.95, y: 15 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 15 }} className="w-full max-w-md bg-[#0b0b0d] bg-[#0b0b0d] rounded-2xl border border-[#1e1e22] border-[#1a1a1c] shadow-2xl overflow-hidden text-left p-6">
                 <div className="flex items-start gap-4">
-                  <div className="h-10 w-10 rounded-xl bg-rose-50 dark:bg-rose-950/30 flex items-center justify-center text-rose-600 shrink-0">
+                  <div className="h-10 w-10 rounded-xl bg-rose-500/10 dark:bg-rose-950/30 flex items-center justify-center text-rose-400 shrink-0">
                     <AlertIcon className="w-5 h-5" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="text-base font-black text-premium-heading dark:text-white tracking-tight uppercase">
+                    <h3 className="text-base font-black text-white text-white tracking-tight uppercase">
                       Suspend Selected Accounts?
                     </h3>
-                    <p className="text-xs font-semibold text-slate-450 dark:text-slate-400 mt-1">
+                    <p className="text-xs font-semibold text-slate-450 text-slate-400 mt-1">
                       Are you sure you want to suspend account access for the <strong>{selectedIds.length} selected students</strong>? 
                       They will not be able to log in to the system until activated again.
                     </p>
                   </div>
                 </div>
 
-                <div className="pt-5 mt-5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2.5">
+                <div className="pt-5 mt-5 border-t border-[#1a1a1c] border-[#1a1a1c] flex items-center justify-end gap-2.5">
                   <Button variant="outline" size="sm" onClick={() => setModalOpen(null)}>Cancel</Button>
                   <Button variant="danger" size="sm" onClick={confirmBulkSuspend}>
                     Suspend {selectedIds.length} Accounts
@@ -1944,23 +1944,23 @@ export default function AdminStudents() {
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setModalOpen(null)} className="fixed inset-0 bg-slate-950/50 backdrop-blur-xs z-[200]" />
             <div className="fixed inset-0 z-[201] flex items-center justify-center p-4">
-              <motion.div initial={{ opacity: 0, scale: 0.95, y: 15 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 15 }} className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden text-left p-6">
+              <motion.div initial={{ opacity: 0, scale: 0.95, y: 15 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 15 }} className="w-full max-w-md bg-[#0b0b0d] bg-[#0b0b0d] rounded-2xl border border-[#1e1e22] border-[#1a1a1c] shadow-2xl overflow-hidden text-left p-6">
                 <div className="flex items-start gap-4">
-                  <div className="h-10 w-10 rounded-xl bg-amber-50 dark:bg-amber-955/20 flex items-center justify-center text-amber-600 shrink-0">
+                  <div className="h-10 w-10 rounded-xl bg-amber-500/10 dark:bg-amber-955/20 flex items-center justify-center text-amber-600 shrink-0">
                     <Lock className="w-5 h-5" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="text-base font-black text-premium-heading dark:text-white tracking-tight uppercase">
+                    <h3 className="text-base font-black text-white text-white tracking-tight uppercase">
                       Reset Password for Selected?
                     </h3>
-                    <p className="text-xs font-semibold text-slate-450 dark:text-slate-400 mt-1">
+                    <p className="text-xs font-semibold text-slate-450 text-slate-400 mt-1">
                       This will reset passwords for the <strong>{selectedIds.length} selected students</strong>. 
                       An automated email will be sent containing temporary passwords to access their profile.
                     </p>
                   </div>
                 </div>
 
-                <div className="pt-5 mt-5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2.5">
+                <div className="pt-5 mt-5 border-t border-[#1a1a1c] border-[#1a1a1c] flex items-center justify-end gap-2.5">
                   <Button variant="outline" size="sm" onClick={() => setModalOpen(null)}>Cancel</Button>
                   <Button variant="gold" size="sm" onClick={confirmBulkResetPassword}>
                     Reset Passwords
@@ -1976,13 +1976,13 @@ export default function AdminStudents() {
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setModalOpen(null)} className="fixed inset-0 bg-slate-950/50 backdrop-blur-xs z-[200]" />
             <div className="fixed inset-0 z-[201] flex items-center justify-center p-4">
-              <motion.div initial={{ opacity: 0, scale: 0.95, y: 15 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 15 }} className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden text-left p-6">
+              <motion.div initial={{ opacity: 0, scale: 0.95, y: 15 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 15 }} className="w-full max-w-md bg-[#0b0b0d] bg-[#0b0b0d] rounded-2xl border border-[#1e1e22] border-[#1a1a1c] shadow-2xl overflow-hidden text-left p-6">
                 <div className="flex items-start gap-4">
-                  <div className="h-10 w-10 rounded-xl bg-amber-50 dark:bg-amber-955/20 flex items-center justify-center text-amber-600 shrink-0">
+                  <div className="h-10 w-10 rounded-xl bg-amber-500/10 dark:bg-amber-955/20 flex items-center justify-center text-amber-600 shrink-0">
                     <Lock className="w-5 h-5" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="text-base font-black text-premium-heading dark:text-white tracking-tight uppercase">
+                    <h3 className="text-base font-black text-white text-white tracking-tight uppercase">
                       Reset Password for Student
                     </h3>
                     <p className="text-xs font-semibold text-slate-450 dark:text-slate-450 mt-1">
@@ -1991,7 +1991,7 @@ export default function AdminStudents() {
                   </div>
                 </div>
 
-                <div className="mt-4 p-4.5 bg-slate-50 dark:bg-slate-850 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+                <div className="mt-4 p-4.5 bg-[#0f0f12] bg-[#0f0f12] rounded-2xl border border-[#1e1e22] border-[#1a1a1c] space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Temporary Password</span>
                     <button 
@@ -2004,13 +2004,13 @@ export default function AdminStudents() {
                       <Copy className="w-3.5 h-3.5" /> Copy Code
                     </button>
                   </div>
-                  <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-center text-sm font-black tracking-widest text-premium-heading dark:text-white font-mono select-all">
+                  <div className="bg-[#0b0b0d] bg-[#0b0b0d] border border-[#1e1e22] border-[#1e1e22] rounded-xl px-4 py-3 text-center text-sm font-black tracking-widest text-white text-white font-mono select-all">
                     {generatedPassword}
                   </div>
                   <p className="text-[9px] text-slate-400 leading-tight">Copy and send this credentials key to the student. They will be forced to change it on their next login session.</p>
                 </div>
 
-                <div className="pt-4 mt-5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2.5">
+                <div className="pt-4 mt-5 border-t border-[#1a1a1c] border-[#1a1a1c] flex items-center justify-end gap-2.5">
                   <Button variant="outline" size="sm" onClick={() => setModalOpen(null)}>Cancel</Button>
                   <Button variant="primary" size="sm" onClick={confirmResetPassword}>Confirm Reset</Button>
                 </div>

@@ -183,16 +183,16 @@ export default function AdminAnalytics() {
     <div className="space-y-8 animate-in text-left">
       
       {/* Title block with date filter & export button */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-premium-border/60 dark:border-slate-800/80 pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#1a1a1c] border-[#1a1a1c]/80 pb-6">
         <div>
           <div className="flex items-center gap-2 text-premium-accent font-black text-xs uppercase tracking-wider mb-1">
             <TrendingUp className="w-4 h-4" />
             <span>Platform Statistics</span>
           </div>
-          <h1 className="text-3xl font-black text-premium-heading dark:text-white tracking-tight uppercase">
+          <h1 className="text-3xl font-black text-white text-white tracking-tight uppercase">
             Performance Analytics
           </h1>
-          <p className="text-sm font-semibold text-slate-400 dark:text-slate-500 mt-1">
+          <p className="text-sm font-semibold text-slate-400 text-slate-500 mt-1">
             Analyze active student learning metrics, assignment completion ratios, study log activities, and event funnel conversions.
           </p>
         </div>
@@ -203,7 +203,7 @@ export default function AdminAnalytics() {
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className="appearance-none bg-white dark:bg-slate-900 border border-premium-border dark:border-slate-800 rounded-xl py-2.5 pl-4 pr-10 text-xs font-black text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/25 cursor-pointer shadow-sm"
+              className="appearance-none bg-[#0b0b0d] bg-[#0b0b0d] border border-premium-border border-[#1a1a1c] rounded-xl py-2.5 pl-4 pr-10 text-xs font-black text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/25 cursor-pointer shadow-sm"
             >
               <option value="7days">Last 7 Days</option>
               <option value="30days">Last 30 Days</option>
@@ -222,60 +222,60 @@ export default function AdminAnalytics() {
 
       {/* KPI Stats widgets grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <GlassCard className="bg-white dark:bg-slate-900 border-premium-border dark:border-slate-800 p-5 rounded-2xl flex flex-col justify-between">
+        <GlassCard className="bg-[#0b0b0d] bg-[#0b0b0d] border-premium-border border-[#1a1a1c] p-5 rounded-2xl flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider">Active Students</span>
-            <div className="h-9 w-9 rounded-lg bg-blue-50 dark:bg-blue-950/20 text-premium-accent flex items-center justify-center border border-blue-100 dark:border-blue-900 shrink-0">
+            <span className="text-[10px] font-black text-slate-400 text-slate-500 uppercase tracking-wider">Active Students</span>
+            <div className="h-9 w-9 rounded-lg bg-[#0A66C2]/10 dark:bg-blue-950/20 text-premium-accent flex items-center justify-center border border-[#0A66C2]/20 dark:border-blue-900 shrink-0">
               <Users className="w-4.5 h-4.5" />
             </div>
           </div>
           <div className="mt-4">
-            <h3 className="text-2xl font-black text-premium-heading dark:text-white tracking-tight leading-none">{currentDataset.kpi.activeStudents}</h3>
+            <h3 className="text-2xl font-black text-white text-white tracking-tight leading-none">{currentDataset.kpi.activeStudents}</h3>
             <span className="text-[10px] text-emerald-500 font-extrabold mt-2 flex items-center gap-1">
               <ArrowUpRight className="w-3.5 h-3.5" /> {currentDataset.kpi.activeTrend} Growth rate
             </span>
           </div>
         </GlassCard>
 
-        <GlassCard className="bg-white dark:bg-slate-900 border-premium-border dark:border-slate-800 p-5 rounded-2xl flex flex-col justify-between">
+        <GlassCard className="bg-[#0b0b0d] bg-[#0b0b0d] border-premium-border border-[#1a1a1c] p-5 rounded-2xl flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider">Avg Study Duration</span>
-            <div className="h-9 w-9 rounded-lg bg-violet-50 dark:bg-violet-950/20 text-premium-violet flex items-center justify-center border border-violet-100 dark:border-violet-900 shrink-0">
+            <span className="text-[10px] font-black text-slate-400 text-slate-500 uppercase tracking-wider">Avg Study Duration</span>
+            <div className="h-9 w-9 rounded-lg bg-violet-500/10 dark:bg-violet-950/20 text-premium-violet flex items-center justify-center border border-violet-500/20 dark:border-violet-900 shrink-0">
               <Clock className="w-4.5 h-4.5" />
             </div>
           </div>
           <div className="mt-4">
-            <h3 className="text-2xl font-black text-premium-heading dark:text-white tracking-tight leading-none">{currentDataset.kpi.duration}</h3>
+            <h3 className="text-2xl font-black text-white text-white tracking-tight leading-none">{currentDataset.kpi.duration}</h3>
             <span className="text-[10px] text-emerald-500 font-extrabold mt-2 flex items-center gap-1">
               <ArrowUpRight className="w-3.5 h-3.5" /> {currentDataset.kpi.durationTrend} Learning intensity
             </span>
           </div>
         </GlassCard>
 
-        <GlassCard className="bg-white dark:bg-slate-900 border-premium-border dark:border-slate-800 p-5 rounded-2xl flex flex-col justify-between">
+        <GlassCard className="bg-[#0b0b0d] bg-[#0b0b0d] border-premium-border border-[#1a1a1c] p-5 rounded-2xl flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider">Assignment Completion</span>
-            <div className="h-9 w-9 rounded-lg bg-emerald-50 dark:bg-emerald-950/20 text-emerald-500 flex items-center justify-center border border-emerald-100 dark:border-emerald-900 shrink-0">
+            <span className="text-[10px] font-black text-slate-400 text-slate-500 uppercase tracking-wider">Assignment Completion</span>
+            <div className="h-9 w-9 rounded-lg bg-emerald-500/10 dark:bg-emerald-950/20 text-emerald-500 flex items-center justify-center border border-emerald-500/20 dark:border-emerald-900 shrink-0">
               <Award className="w-4.5 h-4.5" />
             </div>
           </div>
           <div className="mt-4">
-            <h3 className="text-2xl font-black text-premium-heading dark:text-white tracking-tight leading-none">{currentDataset.kpi.completion}</h3>
+            <h3 className="text-2xl font-black text-white text-white tracking-tight leading-none">{currentDataset.kpi.completion}</h3>
             <span className="text-[10px] text-emerald-500 font-extrabold mt-2 flex items-center gap-1">
               <ArrowUpRight className="w-3.5 h-3.5" /> {currentDataset.kpi.completionTrend} Class retention
             </span>
           </div>
         </GlassCard>
 
-        <GlassCard className="bg-white dark:bg-slate-900 border-premium-border dark:border-slate-800 p-5 rounded-2xl flex flex-col justify-between">
+        <GlassCard className="bg-[#0b0b0d] bg-[#0b0b0d] border-premium-border border-[#1a1a1c] p-5 rounded-2xl flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider">Webinar Conversion</span>
-            <div className="h-9 w-9 rounded-lg bg-amber-50 dark:bg-amber-950/20 text-amber-500 flex items-center justify-center border border-amber-100 dark:border-amber-900 shrink-0">
+            <span className="text-[10px] font-black text-slate-400 text-slate-500 uppercase tracking-wider">Webinar Conversion</span>
+            <div className="h-9 w-9 rounded-lg bg-amber-500/10 dark:bg-amber-950/20 text-amber-500 flex items-center justify-center border border-amber-500/20 dark:border-amber-900 shrink-0">
               <Radio className="w-4.5 h-4.5" />
             </div>
           </div>
           <div className="mt-4">
-            <h3 className="text-2xl font-black text-premium-heading dark:text-white tracking-tight leading-none">{currentDataset.kpi.webinarConversion}</h3>
+            <h3 className="text-2xl font-black text-white text-white tracking-tight leading-none">{currentDataset.kpi.webinarConversion}</h3>
             <span className="text-[10px] text-emerald-500 font-extrabold mt-2 flex items-center gap-1">
               <ArrowUpRight className="w-3.5 h-3.5" /> {currentDataset.kpi.webinarTrend} Lead funnel
             </span>
@@ -287,19 +287,19 @@ export default function AdminAnalytics() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Engagement Study Hours line-bar chart */}
-        <div className="lg:col-span-8 rounded-2xl border border-premium-border/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] text-left">
+        <div className="lg:col-span-8 rounded-2xl border border-[#1a1a1c] border-[#1a1a1c] bg-[#0b0b0d] bg-[#0b0b0d] p-6 shadow-dark-card text-left">
           <div className="mb-6 flex items-center justify-between">
             <div>
-              <h3 className="text-base font-black text-premium-heading dark:text-white tracking-tight uppercase">Daily Learning Hours</h3>
-              <p className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">Platform engagement log by hours & active logons</p>
+              <h3 className="text-base font-black text-white text-white tracking-tight uppercase">Daily Learning Hours</h3>
+              <p className="text-[11px] font-semibold text-slate-400 text-slate-500 mt-0.5">Platform engagement log by hours & active logons</p>
             </div>
-            <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 font-mono">Real-time update</span>
+            <span className="text-[10px] font-bold text-slate-400 text-slate-500 font-mono">Real-time update</span>
           </div>
           
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={currentDataset.dailyEngagement} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-800" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="stroke-[#1a1a1c]" vertical={false} />
                 <XAxis dataKey="name" stroke="#94a3b8" fontSize={10} fontWeight="bold" />
                 <YAxis stroke="#94a3b8" fontSize={10} fontWeight="bold" />
                 <Tooltip 
@@ -320,20 +320,20 @@ export default function AdminAnalytics() {
         </div>
 
         {/* Webinar Conversion Funnel */}
-        <div className="lg:col-span-4 rounded-2xl border border-premium-border/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] text-left flex flex-col justify-between">
+        <div className="lg:col-span-4 rounded-2xl border border-[#1a1a1c] border-[#1a1a1c] bg-[#0b0b0d] bg-[#0b0b0d] p-6 shadow-dark-card text-left flex flex-col justify-between">
           <div>
-            <h3 className="text-base font-black text-premium-heading dark:text-white tracking-tight uppercase">Webinar Conversion Funnel</h3>
-            <p className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">Leads to Premium sales conversion ratios</p>
+            <h3 className="text-base font-black text-white text-white tracking-tight uppercase">Webinar Conversion Funnel</h3>
+            <p className="text-[11px] font-semibold text-slate-400 text-slate-500 mt-0.5">Leads to Premium sales conversion ratios</p>
           </div>
 
           <div className="my-6 space-y-3.5">
             {currentDataset.funnelData.map((item, idx) => (
               <div key={idx} className="space-y-1">
-                <div className="flex justify-between items-center text-xs font-bold text-slate-700 dark:text-slate-300">
+                <div className="flex justify-between items-center text-xs font-bold text-slate-700 text-slate-300">
                   <span>{item.stage}</span>
                   <span className="font-mono font-black">{item.value} ({item.percentage}%)</span>
                 </div>
-                <div className="w-full h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                <div className="w-full h-3 bg-[#111114] bg-[#111114] rounded-full overflow-hidden">
                   <div 
                     className="h-full rounded-full transition-all duration-500" 
                     style={{ width: `${item.percentage}%`, backgroundColor: item.fill }}
@@ -343,10 +343,10 @@ export default function AdminAnalytics() {
             ))}
           </div>
 
-          <div className="p-3 bg-blue-50/50 dark:bg-blue-950/10 border border-blue-100 dark:border-blue-900/40 rounded-xl flex gap-2.5">
+          <div className="p-3 bg-[#0A66C2]/10/50 dark:bg-blue-950/10 border border-[#0A66C2]/20 dark:border-blue-900/40 rounded-xl flex gap-2.5">
             <Info className="w-4 h-4 text-premium-accent shrink-0 mt-0.5" />
-            <p className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 leading-normal">
-              Industry standard conversion for high-ticket coaching is 8-10%. BJ Academy stands at <span className="text-premium-accent font-black">13.6% conversion rate</span>.
+            <p className="text-[9px] font-semibold text-slate-500 text-slate-400 leading-normal">
+              Industry standard conversion for high-ticket coaching is 8-10%. BG Realty Training Academy stands at <span className="text-premium-accent font-black">13.6% conversion rate</span>.
             </p>
           </div>
         </div>
@@ -357,10 +357,10 @@ export default function AdminAnalytics() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* Radar Course Performance Chart */}
-        <div className="rounded-2xl border border-premium-border/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] text-left">
+        <div className="rounded-2xl border border-[#1a1a1c] border-[#1a1a1c] bg-[#0b0b0d] bg-[#0b0b0d] p-6 shadow-dark-card text-left">
           <div className="mb-6">
-            <h3 className="text-base font-black text-premium-heading dark:text-white tracking-tight uppercase">Syllabus Subject Strength</h3>
-            <p className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">Performance averages across major learning paths</p>
+            <h3 className="text-base font-black text-white text-white tracking-tight uppercase">Syllabus Subject Strength</h3>
+            <p className="text-[11px] font-semibold text-slate-400 text-slate-500 mt-0.5">Performance averages across major learning paths</p>
           </div>
 
           <div className="h-72 flex items-center justify-center">
@@ -379,10 +379,10 @@ export default function AdminAnalytics() {
         </div>
 
         {/* Student Acquisition Line Chart */}
-        <div className="rounded-2xl border border-premium-border/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] text-left">
+        <div className="rounded-2xl border border-[#1a1a1c] border-[#1a1a1c] bg-[#0b0b0d] bg-[#0b0b0d] p-6 shadow-dark-card text-left">
           <div className="mb-6">
-            <h3 className="text-base font-black text-premium-heading dark:text-white tracking-tight uppercase">Monthly Account Registration</h3>
-            <p className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">Growth comparison between premium realtors and basic logins</p>
+            <h3 className="text-base font-black text-white text-white tracking-tight uppercase">Monthly Account Registration</h3>
+            <p className="text-[11px] font-semibold text-slate-400 text-slate-500 mt-0.5">Growth comparison between premium realtors and basic logins</p>
           </div>
           
           <div className="h-72">
@@ -398,7 +398,7 @@ export default function AdminAnalytics() {
                     <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-800" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="stroke-[#1a1a1c]" vertical={false} />
                 <XAxis dataKey="name" stroke="#94a3b8" fontSize={10} fontWeight="bold" />
                 <YAxis stroke="#94a3b8" fontSize={10} fontWeight="bold" />
                 <Tooltip 
@@ -421,12 +421,12 @@ export default function AdminAnalytics() {
       </div>
 
       {/* Row 3: Advanced UI - Engagement Activity Heatmap */}
-      <div className="rounded-2xl border border-premium-border/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] text-left space-y-6">
+      <div className="rounded-2xl border border-[#1a1a1c] border-[#1a1a1c] bg-[#0b0b0d] bg-[#0b0b0d] p-6 shadow-dark-card text-left space-y-6">
         <div>
-          <h3 className="text-base font-black text-premium-heading dark:text-white tracking-tight uppercase flex items-center gap-2">
+          <h3 className="text-base font-black text-white text-white tracking-tight uppercase flex items-center gap-2">
             <Flame className="w-5 h-5 text-red-500 fill-current animate-pulse" /> Student Learning Activity Grid
           </h3>
-          <p className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">Heatmap tracking aggregate student platform activities (in hours) over the last 12 weeks</p>
+          <p className="text-[11px] font-semibold text-slate-400 text-slate-500 mt-0.5">Heatmap tracking aggregate student platform activities (in hours) over the last 12 weeks</p>
         </div>
 
         {/* Heatmap Grid Calendar wrapper */}
@@ -452,10 +452,10 @@ export default function AdminAnalytics() {
               <div className="grid grid-rows-7 grid-flow-col gap-1.5">
                 {activityHeatmap.map(cell => {
                   const levelColors = [
-                    "bg-slate-50 dark:bg-slate-850 hover:ring-1 hover:ring-slate-300 dark:hover:ring-slate-700", // 0
+                    "bg-[#0f0f12] bg-[#0f0f12] hover:ring-1 hover:ring-slate-300 dark:hover:ring-slate-700", // 0
                     "bg-emerald-100 dark:bg-emerald-950/30 hover:ring-1 hover:ring-emerald-300 dark:hover:ring-emerald-800", // 1
                     "bg-emerald-300 dark:bg-emerald-800 hover:ring-1 hover:ring-emerald-400 dark:hover:ring-emerald-600", // 2
-                    "bg-emerald-500 dark:bg-emerald-600 hover:ring-1 hover:ring-emerald-600 dark:hover:ring-emerald-400", // 3
+                    "bg-emerald-500/100 dark:bg-emerald-600 hover:ring-1 hover:ring-emerald-600 dark:hover:ring-emerald-400", // 3
                     "bg-emerald-700 dark:bg-emerald-400 hover:ring-1 hover:ring-emerald-800 dark:hover:ring-emerald-300", // 4
                   ];
 
@@ -466,7 +466,7 @@ export default function AdminAnalytics() {
                       title={`Week ${cell.week}, ${cell.dayName}: ${cell.studyMins} minutes study activity`}
                     >
                       {cell.level > 0 && (
-                        <span className="text-[7px] font-mono font-black text-emerald-900 dark:text-white opacity-40">
+                        <span className="text-[7px] font-mono font-black text-emerald-900 text-white opacity-40">
                           {Math.round(cell.studyMins / 60)}h
                         </span>
                       )}
@@ -478,12 +478,12 @@ export default function AdminAnalytics() {
           </div>
 
           {/* Legend */}
-          <div className="flex items-center justify-end gap-2.5 text-[9px] font-black uppercase text-slate-400 dark:text-slate-500 pr-4">
+          <div className="flex items-center justify-end gap-2.5 text-[9px] font-black uppercase text-slate-400 text-slate-500 pr-4">
             <span>Low Activity</span>
-            <span className="h-3 w-3 rounded bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-800"></span>
+            <span className="h-3 w-3 rounded bg-[#0f0f12] bg-[#0f0f12] border border-[#1e1e22] border-[#1a1a1c]"></span>
             <span className="h-3 w-3 rounded bg-emerald-100 dark:bg-emerald-950/30"></span>
             <span className="h-3 w-3 rounded bg-emerald-300 dark:bg-emerald-800"></span>
-            <span className="h-3 w-3 rounded bg-emerald-500 dark:bg-emerald-600"></span>
+            <span className="h-3 w-3 rounded bg-emerald-500/100 dark:bg-emerald-600"></span>
             <span className="h-3 w-3 rounded bg-emerald-700 dark:bg-emerald-400"></span>
             <span>Peak Activity</span>
           </div>

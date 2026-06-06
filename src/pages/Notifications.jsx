@@ -28,10 +28,10 @@ const TAB_FILTER = {
 };
 
 const TYPE_STYLES = {
-  urgent:  { card: 'bg-red-50 text-red-500 border-red-100' },
-  success: { card: 'bg-green-50 text-green-500 border-green-100' },
-  warning: { card: 'bg-amber-50 text-amber-500 border-amber-100' },
-  info:    { card: 'bg-blue-50 text-blue-500 border-blue-100' },
+  urgent:  { card: 'bg-red-500/10 text-red-500 border-red-500/20' },
+  success: { card: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
+  warning: { card: 'bg-amber-500/10 text-amber-500 border-amber-500/20' },
+  info:    { card: 'bg-[#0A66C2]/10 text-blue-500 border-[#0A66C2]/20' },
 };
 
 const Notifications = () => {
@@ -92,7 +92,7 @@ const Notifications = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1">
-          <h1 className="text-3xl font-black text-premium-heading">Notification Center</h1>
+          <h1 className="text-3xl font-black text-white">Notification Center</h1>
           <p className="text-sm text-slate-400 font-bold">
             Stay updated with your courses and security alerts.
             {unreadCount > 0 && (
@@ -107,7 +107,7 @@ const Notifications = () => {
             variant="ghost"
             size="sm"
             onClick={handleMarkAllRead}
-            className="text-slate-400 hover:text-premium-heading font-black text-xs cursor-pointer"
+            className="text-slate-400 hover:text-white font-black text-xs cursor-pointer"
           >
             Mark all as read
           </Button>
@@ -115,7 +115,7 @@ const Notifications = () => {
             variant="outline"
             size="icon"
             onClick={handleClearAll}
-            className="h-10 w-10 p-0 flex items-center justify-center bg-white border border-premium-border hover:border-red-300 hover:text-red-500 rounded-xl shadow-sm text-slate-400 cursor-pointer"
+            className="h-10 w-10 p-0 flex items-center justify-center bg-[#0b0b0d] border border-premium-border hover:border-red-300 hover:text-red-500 rounded-xl shadow-sm text-slate-400 cursor-pointer"
             title="Clear all notifications"
           >
             <Trash2 className="w-4 h-4" />
@@ -130,7 +130,7 @@ const Notifications = () => {
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`pb-3 px-4 text-sm font-black transition-all relative cursor-pointer focus:outline-none ${
-              activeTab === tab ? 'text-premium-accent' : 'text-slate-400 hover:text-premium-heading'
+              activeTab === tab ? 'text-premium-accent' : 'text-slate-400 hover:text-white'
             }`}
           >
             {tab}
@@ -150,12 +150,12 @@ const Notifications = () => {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="py-20 flex flex-col items-center justify-center text-center bg-white rounded-3xl border border-premium-border shadow-sm"
+            className="py-20 flex flex-col items-center justify-center text-center bg-[#0b0b0d] rounded-3xl border border-premium-border shadow-sm"
           >
-            <div className="w-14 h-14 bg-slate-50 border border-premium-border rounded-2xl flex items-center justify-center mb-5 shadow-sm">
+            <div className="w-14 h-14 bg-[#0f0f12] border border-premium-border rounded-2xl flex items-center justify-center mb-5 shadow-sm">
               <Bell className="w-6 h-6 text-slate-400" />
             </div>
-            <h3 className="text-lg font-black text-premium-heading mb-1">All Clear</h3>
+            <h3 className="text-lg font-black text-white mb-1">All Clear</h3>
             <p className="text-xs text-slate-400 font-bold max-w-xs">
               No notifications in this category. Check back later.
             </p>
@@ -176,7 +176,7 @@ const Notifications = () => {
                 onClick={() => handleMarkRead(notif.id)}
               >
                 <GlassCard
-                  className={`group hover:border-premium-accent/20 bg-white border p-6 shadow-sm rounded-2xl transition-all cursor-pointer ${
+                  className={`group hover:border-premium-accent/20 bg-[#0b0b0d] border p-6 shadow-sm rounded-2xl transition-all cursor-pointer ${
                     isRead
                       ? 'border-premium-border opacity-80'
                       : 'border-premium-accent/20 shadow-md shadow-blue-500/5'
@@ -197,7 +197,7 @@ const Notifications = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between mb-1.5 gap-3">
                         <h3 className={`font-bold text-base transition-colors group-hover:text-premium-accent ${
-                          isRead ? 'text-premium-text' : 'text-premium-heading'
+                          isRead ? 'text-premium-text' : 'text-white'
                         }`}>
                           {notif.title}
                         </h3>
@@ -210,7 +210,7 @@ const Notifications = () => {
                             variant="ghost"
                             size="sm"
                             onClick={(e) => { e.stopPropagation(); handleMarkRead(notif.id); }}
-                            className="h-8 px-3 text-xs bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg border border-premium-border/40 font-bold cursor-pointer"
+                            className="h-8 px-3 text-xs bg-[#0f0f12] hover:bg-[#111114] text-slate-600 rounded-lg border border-premium-border/40 font-bold cursor-pointer"
                           >
                             Mark Read
                           </Button>
@@ -229,7 +229,7 @@ const Notifications = () => {
                     <div className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity self-start">
                       <button
                         onClick={(e) => e.stopPropagation()}
-                        className="p-2 text-slate-400 hover:text-premium-heading transition-colors rounded-lg hover:bg-slate-50 cursor-pointer"
+                        className="p-2 text-slate-400 hover:text-white transition-colors rounded-lg hover:bg-[#0f0f12] cursor-pointer"
                       >
                         <MoreVertical className="w-5 h-5" />
                       </button>
@@ -246,7 +246,7 @@ const Notifications = () => {
       {visible.length > 0 && (
         <div className="pt-6 flex flex-col items-center gap-3">
           <p className="text-slate-400 text-sm font-bold">You're all caught up!</p>
-          <div className="w-12 h-12 bg-slate-100 border border-premium-border rounded-full flex items-center justify-center shadow-sm">
+          <div className="w-12 h-12 bg-[#111114] border border-premium-border rounded-full flex items-center justify-center shadow-sm">
             <CheckCircle className="w-5 h-5 text-slate-400" />
           </div>
         </div>

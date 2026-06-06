@@ -46,7 +46,7 @@ export default function AdminNotifications() {
       accessor: "title",
       render: (row) => (
         <div className="max-w-[280px]">
-          <p className="font-bold text-premium-heading dark:text-white leading-normal">{row.title}</p>
+          <p className="font-bold text-white text-white leading-normal">{row.title}</p>
           <p className="text-[10px] text-slate-400 font-semibold truncate mt-0.5">{row.message}</p>
         </div>
       )
@@ -96,16 +96,16 @@ export default function AdminNotifications() {
       
       {/* Title */}
       <div>
-        <h1 className="text-2xl font-black text-premium-heading dark:text-white tracking-tight uppercase">System Alerts Broadcast</h1>
-        <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 mt-1">Broadcast pushing notifications to student dashboard grids, dispatch emails, or alert system downtime.</p>
+        <h1 className="text-2xl font-black text-white text-white tracking-tight uppercase">System Alerts Broadcast</h1>
+        <p className="text-xs font-semibold text-slate-400 text-slate-500 mt-1">Broadcast pushing notifications to student dashboard grids, dispatch emails, or alert system downtime.</p>
       </div>
 
       {/* Broadcast Composer */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Composer Form card */}
-        <div className="lg:col-span-2 rounded-2xl border border-premium-border/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
-          <h3 className="text-base font-black text-premium-heading dark:text-white tracking-tight uppercase mb-4">Compose Broadcast</h3>
+        <div className="lg:col-span-2 rounded-2xl border border-[#1a1a1c] border-[#1a1a1c] bg-[#0b0b0d] bg-[#0b0b0d] p-6 shadow-dark-card">
+          <h3 className="text-base font-black text-white text-white tracking-tight uppercase mb-4">Compose Broadcast</h3>
           
           <form onSubmit={handleSendBroadcast} className="space-y-4">
             <div className="space-y-1.5">
@@ -116,7 +116,7 @@ export default function AdminNotifications() {
                 placeholder="e.g. Schedule Update: Live webinars shift to Zoom ID 920"
                 value={composer.title}
                 onChange={(e) => setComposer({ ...composer, title: e.target.value })}
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+                className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none"
               />
             </div>
 
@@ -126,7 +126,7 @@ export default function AdminNotifications() {
                 <select
                   value={composer.target}
                   onChange={(e) => setComposer({ ...composer, target: e.target.value })}
-                  className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none"
+                  className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none"
                 >
                   <option value="All Students">All Students</option>
                   <option value="Luxury Flipping Students">Luxury Flipping Program only</option>
@@ -144,7 +144,7 @@ export default function AdminNotifications() {
                       type="checkbox"
                       checked={composer.emailChannel}
                       onChange={(e) => setComposer({ ...composer, emailChannel: e.target.checked })}
-                      className="rounded text-premium-accent border-premium-border dark:border-slate-700 w-4 h-4 cursor-pointer"
+                      className="rounded text-premium-accent border-premium-border border-[#1e1e22] w-4 h-4 cursor-pointer"
                     />
                     Dispatch Email
                   </label>
@@ -153,7 +153,7 @@ export default function AdminNotifications() {
                       type="checkbox"
                       checked={composer.pushChannel}
                       onChange={(e) => setComposer({ ...composer, pushChannel: e.target.checked })}
-                      className="rounded text-premium-accent border-premium-border dark:border-slate-700 w-4 h-4 cursor-pointer"
+                      className="rounded text-premium-accent border-premium-border border-[#1e1e22] w-4 h-4 cursor-pointer"
                     />
                     Push Notification
                   </label>
@@ -169,11 +169,11 @@ export default function AdminNotifications() {
                 placeholder="Compose notification content. Keep it short and actionable..."
                 value={composer.message}
                 onChange={(e) => setComposer({ ...composer, message: e.target.value })}
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none scrollbar-thin"
+                className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none scrollbar-thin"
               />
             </div>
 
-            <div className="pt-4 border-t border-slate-100 dark:border-slate-850 flex justify-end">
+            <div className="pt-4 border-t border-[#1a1a1c] dark:border-slate-850 flex justify-end">
               <Button variant="primary" size="sm" type="submit">
                 <Send className="w-4 h-4 mr-2" /> Dispatch Announcement
               </Button>
@@ -182,26 +182,26 @@ export default function AdminNotifications() {
         </div>
 
         {/* Channel Details Info */}
-        <div className="rounded-2xl border border-premium-border/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
-          <h3 className="text-base font-black text-premium-heading dark:text-white tracking-tight uppercase mb-4">Notification Channels</h3>
+        <div className="rounded-2xl border border-[#1a1a1c] border-[#1a1a1c] bg-[#0b0b0d] bg-[#0b0b0d] p-6 shadow-dark-card">
+          <h3 className="text-base font-black text-white text-white tracking-tight uppercase mb-4">Notification Channels</h3>
           
           <div className="space-y-4">
             <div className="flex gap-3.5">
-              <div className="h-9 w-9 rounded-xl bg-blue-500/10 flex items-center justify-center text-premium-accent shrink-0">
+              <div className="h-9 w-9 rounded-xl bg-[#0A66C2]/100/10 flex items-center justify-center text-premium-accent shrink-0">
                 <Mail className="w-5 h-5" />
               </div>
               <div className="text-xs text-left">
-                <h5 className="font-black text-premium-heading dark:text-white">Email dispatch SMTP</h5>
+                <h5 className="font-black text-white text-white">Email dispatch SMTP</h5>
                 <p className="text-slate-400 dark:text-slate-555 mt-0.5 leading-relaxed">Broadcast messages will queue and dispatch to all user profiles associated with the target audience group.</p>
               </div>
             </div>
 
             <div className="flex gap-3.5">
-              <div className="h-9 w-9 rounded-xl bg-violet-500/10 flex items-center justify-center text-premium-violet shrink-0">
+              <div className="h-9 w-9 rounded-xl bg-violet-500/100/10 flex items-center justify-center text-premium-violet shrink-0">
                 <Bell className="w-5 h-5" />
               </div>
               <div className="text-xs text-left">
-                <h5 className="font-black text-premium-heading dark:text-white">In-App Live Stream</h5>
+                <h5 className="font-black text-white text-white">In-App Live Stream</h5>
                 <p className="text-slate-400 dark:text-slate-555 mt-0.5 leading-relaxed">Alert banner is immediately push-synchronized onto student main panels using WebSocket ping triggers.</p>
               </div>
             </div>

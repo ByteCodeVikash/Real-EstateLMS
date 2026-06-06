@@ -1,0 +1,15 @@
+# Disable directory listing
+Options -Indexes
+
+# Enable URL Rewriting
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Prevent access to sensitive directories / files starting with dot
+    RewriteRule (^\.|/\.) - [F]
+
+    # Redirect all requests to index.php unless it is an existing file or directory
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>

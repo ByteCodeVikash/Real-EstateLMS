@@ -430,7 +430,7 @@ export default function AdminLiveClasses() {
       accessor: "topic",
       render: (row) => (
         <div className="flex items-center gap-4 min-w-[280px]">
-          <div className="h-12 w-20 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-100 shrink-0 relative group">
+          <div className="h-12 w-20 rounded-lg overflow-hidden border border-[#1e1e22] border-[#1a1a1c] bg-[#111114] shrink-0 relative group">
             <img src={row.banner} alt={row.topic} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
             {row.status === "Live" && (
               <span className="absolute top-1 left-1 flex h-2 w-2">
@@ -440,7 +440,7 @@ export default function AdminLiveClasses() {
             )}
           </div>
           <div>
-            <p className="font-bold text-premium-heading dark:text-white line-clamp-1 max-w-[240px] hover:text-premium-accent transition-colors cursor-pointer" onClick={() => openEditModal(row)}>{row.topic}</p>
+            <p className="font-bold text-white text-white line-clamp-1 max-w-[240px] hover:text-premium-accent transition-colors cursor-pointer" onClick={() => openEditModal(row)}>{row.topic}</p>
             <p className="text-[10px] text-slate-400 font-semibold line-clamp-1 mt-0.5">{row.description}</p>
           </div>
         </div>
@@ -453,10 +453,10 @@ export default function AdminLiveClasses() {
         const mentor = MENTORS.find(m => m.name === row.instructor) || MENTORS[0];
         return (
           <div className="flex items-center gap-2.5">
-            <img src={mentor.avatar} alt={row.instructor} className="h-8 w-8 rounded-full border border-slate-200 dark:border-slate-700 object-cover" />
+            <img src={mentor.avatar} alt={row.instructor} className="h-8 w-8 rounded-full border border-[#1e1e22] border-[#1e1e22] object-cover" />
             <div>
-              <p className="font-bold text-slate-700 dark:text-slate-300 leading-none">{row.instructor}</p>
-              <span className="text-[9px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">{mentor.role}</span>
+              <p className="font-bold text-slate-700 text-slate-300 leading-none">{row.instructor}</p>
+              <span className="text-[9px] text-slate-400 text-slate-500 font-bold uppercase tracking-wider">{mentor.role}</span>
             </div>
           </div>
         );
@@ -467,7 +467,7 @@ export default function AdminLiveClasses() {
       accessor: "date",
       render: (row) => (
         <div className="flex flex-col text-left">
-          <span className="font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+          <span className="font-bold text-slate-700 text-slate-300 flex items-center gap-1.5">
             <Calendar className="w-3.5 h-3.5 text-slate-400" /> {row.date}
           </span>
           <span className="text-[10px] text-slate-400 font-semibold flex items-center gap-1.5 mt-1">
@@ -491,7 +491,7 @@ export default function AdminLiveClasses() {
           );
         }
         return (
-          <div className="flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300">
+          <div className="flex items-center gap-1.5 font-bold text-slate-700 text-slate-300">
             <Users className="w-3.5 h-3.5 text-slate-400" />
             <span>{row.students} Enrolled</span>
           </div>
@@ -503,9 +503,9 @@ export default function AdminLiveClasses() {
       accessor: "status",
       render: (row) => {
         const config = {
-          Live: "bg-red-50 text-red-600 border-red-200 dark:bg-red-950/20 dark:text-red-400 dark:border-red-900 animate-pulse font-black",
-          Upcoming: "bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-900",
-          Completed: "bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700"
+          Live: "bg-red-500/10 text-red-400 border-red-200 dark:bg-red-950/20 dark:text-red-400 dark:border-red-900 animate-pulse font-black",
+          Upcoming: "bg-[#0A66C2]/10 text-[#1E88E5] border-[#0A66C2]/20 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-900",
+          Completed: "bg-[#111114] text-slate-500 border-[#1e1e22] bg-[#111114] text-slate-400 border-[#1e1e22]"
         };
         return (
           <div className="flex flex-col items-start gap-1">
@@ -550,7 +550,7 @@ export default function AdminLiveClasses() {
           )}
           <button
             onClick={() => openEditModal(row)}
-            className="h-8 w-8 flex items-center justify-center rounded-lg bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-750 text-slate-500 hover:text-premium-accent hover:border-premium-accent/30 transition-all cursor-pointer"
+            className="h-8 w-8 flex items-center justify-center rounded-lg bg-[#0f0f12] bg-[#111114] border border-premium-border dark:border-slate-750 text-slate-500 hover:text-premium-accent hover:border-premium-accent/30 transition-all cursor-pointer"
             title="Edit Details"
           >
             <Edit2 className="w-3.5 h-3.5" />
@@ -572,16 +572,16 @@ export default function AdminLiveClasses() {
     <div className="space-y-8 animate-in text-left">
       
       {/* Title Header Block */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-premium-border/60 dark:border-slate-800/80 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#1a1a1c] border-[#1a1a1c]/80 pb-6">
         <div>
           <div className="flex items-center gap-2 text-premium-accent font-black text-xs uppercase tracking-wider mb-1">
             <Radio className="w-4 h-4 animate-pulse text-red-500" />
             <span>Admin Control Panel</span>
           </div>
-          <h1 className="text-3xl font-black text-premium-heading dark:text-white tracking-tight uppercase">
+          <h1 className="text-3xl font-black text-white text-white tracking-tight uppercase">
             Live Webinars & Classes
           </h1>
-          <p className="text-sm font-semibold text-slate-400 dark:text-slate-500 mt-1">
+          <p className="text-sm font-semibold text-slate-400 text-slate-500 mt-1">
             Schedule live masterclass broadcasts, manage mentor listings, view active streaming health, and run post-event analytics.
           </p>
         </div>
@@ -592,43 +592,43 @@ export default function AdminLiveClasses() {
 
       {/* Analytics Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <GlassCard className="flex items-center gap-4 bg-white dark:bg-slate-900 border-premium-border dark:border-slate-800 p-5 rounded-2xl">
-          <div className="h-12 w-12 rounded-xl bg-blue-50 dark:bg-blue-950/20 text-premium-accent flex items-center justify-center border border-blue-100 dark:border-blue-900 shrink-0">
+        <GlassCard className="flex items-center gap-4 bg-[#0b0b0d] bg-[#0b0b0d] border-premium-border border-[#1a1a1c] p-5 rounded-2xl">
+          <div className="h-12 w-12 rounded-xl bg-[#0A66C2]/10 dark:bg-blue-950/20 text-premium-accent flex items-center justify-center border border-[#0A66C2]/20 dark:border-blue-900 shrink-0">
             <Video className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-slate-400 dark:text-slate-500 text-xs font-black uppercase tracking-wider">Total Broadcasts</p>
-            <p className="text-2xl font-black text-premium-heading dark:text-white tracking-tight mt-0.5">{totalScheduled}</p>
+            <p className="text-slate-400 text-slate-500 text-xs font-black uppercase tracking-wider">Total Broadcasts</p>
+            <p className="text-2xl font-black text-white text-white tracking-tight mt-0.5">{totalScheduled}</p>
           </div>
         </GlassCard>
 
-        <GlassCard className="flex items-center gap-4 bg-white dark:bg-slate-900 border-premium-border dark:border-slate-800 p-5 rounded-2xl">
-          <div className="h-12 w-12 rounded-xl bg-red-50 dark:bg-red-950/20 text-red-500 flex items-center justify-center border border-red-100 dark:border-red-900/60 shrink-0">
+        <GlassCard className="flex items-center gap-4 bg-[#0b0b0d] bg-[#0b0b0d] border-premium-border border-[#1a1a1c] p-5 rounded-2xl">
+          <div className="h-12 w-12 rounded-xl bg-red-500/10 dark:bg-red-950/20 text-red-500 flex items-center justify-center border border-red-500/20 dark:border-red-900/60 shrink-0">
             <Activity className="w-6 h-6 animate-pulse" />
           </div>
           <div>
-            <p className="text-slate-400 dark:text-slate-500 text-xs font-black uppercase tracking-wider">Live Broadcasts</p>
-            <p className="text-2xl font-black text-premium-heading dark:text-white tracking-tight mt-0.5">{activeStreamsCount}</p>
+            <p className="text-slate-400 text-slate-500 text-xs font-black uppercase tracking-wider">Live Broadcasts</p>
+            <p className="text-2xl font-black text-white text-white tracking-tight mt-0.5">{activeStreamsCount}</p>
           </div>
         </GlassCard>
 
-        <GlassCard className="flex items-center gap-4 bg-white dark:bg-slate-900 border-premium-border dark:border-slate-800 p-5 rounded-2xl">
-          <div className="h-12 w-12 rounded-xl bg-violet-50 dark:bg-violet-950/20 text-premium-violet flex items-center justify-center border border-violet-100 dark:border-violet-900 shrink-0">
+        <GlassCard className="flex items-center gap-4 bg-[#0b0b0d] bg-[#0b0b0d] border-premium-border border-[#1a1a1c] p-5 rounded-2xl">
+          <div className="h-12 w-12 rounded-xl bg-violet-500/10 dark:bg-violet-950/20 text-premium-violet flex items-center justify-center border border-violet-500/20 dark:border-violet-900 shrink-0">
             <Users className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-slate-400 dark:text-slate-500 text-xs font-black uppercase tracking-wider">Total Registrations</p>
-            <p className="text-2xl font-black text-premium-heading dark:text-white tracking-tight mt-0.5">{totalRegisteredCount}</p>
+            <p className="text-slate-400 text-slate-500 text-xs font-black uppercase tracking-wider">Total Registrations</p>
+            <p className="text-2xl font-black text-white text-white tracking-tight mt-0.5">{totalRegisteredCount}</p>
           </div>
         </GlassCard>
 
-        <GlassCard className="flex items-center gap-4 bg-white dark:bg-slate-900 border-premium-border dark:border-slate-800 p-5 rounded-2xl">
-          <div className="h-12 w-12 rounded-xl bg-amber-50 dark:bg-amber-950/20 text-amber-500 flex items-center justify-center border border-amber-100 dark:border-amber-900 shrink-0">
+        <GlassCard className="flex items-center gap-4 bg-[#0b0b0d] bg-[#0b0b0d] border-premium-border border-[#1a1a1c] p-5 rounded-2xl">
+          <div className="h-12 w-12 rounded-xl bg-amber-500/10 dark:bg-amber-950/20 text-amber-500 flex items-center justify-center border border-amber-500/20 dark:border-amber-900 shrink-0">
             <Star className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-slate-400 dark:text-slate-500 text-xs font-black uppercase tracking-wider">Avg Class Rating</p>
-            <p className="text-2xl font-black text-premium-heading dark:text-white tracking-tight mt-0.5">{avgRatingVal} / 5.0</p>
+            <p className="text-slate-400 text-slate-500 text-xs font-black uppercase tracking-wider">Avg Class Rating</p>
+            <p className="text-2xl font-black text-white text-white tracking-tight mt-0.5">{avgRatingVal} / 5.0</p>
           </div>
         </GlassCard>
       </div>
@@ -637,8 +637,8 @@ export default function AdminLiveClasses() {
       {webinars.some(w => w.status === "Live") && (
         <div className="space-y-4">
           <div className="flex items-center gap-2 border-b border-premium-border/40 dark:border-slate-850 pb-2">
-            <span className="h-2 w-2 rounded-full bg-red-500 animate-ping"></span>
-            <h2 className="text-lg font-black uppercase tracking-tight text-slate-800 dark:text-white">Active Streaming Server Health</h2>
+            <span className="h-2 w-2 rounded-full bg-red-500/100 animate-ping"></span>
+            <h2 className="text-lg font-black uppercase tracking-tight text-slate-200 text-white">Active Streaming Server Health</h2>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {webinars.filter(w => w.status === "Live").map(liveWebinar => {
@@ -667,7 +667,7 @@ export default function AdminLiveClasses() {
 
                     {/* Simulator Center Play Overlay */}
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-                      <div className="h-14 w-14 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-lg group-hover:scale-110 transition-transform">
+                      <div className="h-14 w-14 rounded-full bg-[#0b0b0d]/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-lg group-hover:scale-110 transition-transform">
                         <Play className="w-6 h-6 text-white fill-current ml-1" />
                       </div>
                     </div>
@@ -730,27 +730,27 @@ export default function AdminLiveClasses() {
 
       {/* Advanced UI: Interactive Calendar-Style Schedule & Detail Panel */}
       <div className="space-y-4">
-        <h2 className="text-lg font-black uppercase tracking-tight text-slate-800 dark:text-white border-b border-premium-border/40 dark:border-slate-850 pb-2 flex items-center gap-2">
+        <h2 className="text-lg font-black uppercase tracking-tight text-slate-200 text-white border-b border-premium-border/40 dark:border-slate-850 pb-2 flex items-center gap-2">
           <Calendar className="w-5 h-5 text-premium-accent" /> Interactive Webinar Calendar
         </h2>
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Calendar Grid - Left Panel */}
-          <div className="lg:col-span-8 bg-white dark:bg-slate-900 border border-premium-border/80 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden p-6">
+          <div className="lg:col-span-8 bg-[#0b0b0d] bg-[#0b0b0d] border border-[#1a1a1c] border-[#1a1a1c] rounded-2xl shadow-sm overflow-hidden p-6">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-base font-black text-premium-heading dark:text-white uppercase tracking-tight">
+              <h3 className="text-base font-black text-white text-white uppercase tracking-tight">
                 {monthNames[currentMonth]} {currentYear}
               </h3>
               <div className="flex items-center gap-2">
                 <button 
                   onClick={prevMonth}
-                  className="h-9 w-9 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-premium-accent transition-all cursor-pointer"
+                  className="h-9 w-9 flex items-center justify-center rounded-xl bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] text-slate-500 text-slate-400 hover:text-premium-accent transition-all cursor-pointer"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 <button 
                   onClick={nextMonth}
-                  className="h-9 w-9 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-premium-accent transition-all cursor-pointer"
+                  className="h-9 w-9 flex items-center justify-center rounded-xl bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] text-slate-500 text-slate-400 hover:text-premium-accent transition-all cursor-pointer"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
@@ -758,9 +758,9 @@ export default function AdminLiveClasses() {
             </div>
 
             {/* Days of Week Header */}
-            <div className="grid grid-cols-7 gap-2 text-center border-b border-slate-100 dark:border-slate-800/80 pb-3 mb-2">
+            <div className="grid grid-cols-7 gap-2 text-center border-b border-[#1a1a1c] border-[#1a1a1c]/80 pb-3 mb-2">
               {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(day => (
-                <span key={day} className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-wider">
+                <span key={day} className="text-[10px] font-black uppercase text-slate-400 text-slate-500 tracking-wider">
                   {day}
                 </span>
               ))}
@@ -780,12 +780,12 @@ export default function AdminLiveClasses() {
                     onClick={() => cell.dateStr && setSelectedDate(cell.dateStr)}
                     className={`min-h-[75px] sm:min-h-[85px] p-2 rounded-xl border transition-all flex flex-col justify-between cursor-pointer ${
                       cell.day === null 
-                        ? "bg-slate-50/40 dark:bg-slate-900/40 border-transparent cursor-default pointer-events-none" 
+                        ? "bg-[#0f0f12]/40 bg-[#0b0b0d]/40 border-transparent cursor-default pointer-events-none" 
                         : isSelected
-                          ? "bg-blue-50/60 dark:bg-blue-950/20 border-premium-accent dark:border-premium-accent/40 shadow-sm"
+                          ? "bg-[#0A66C2]/10/60 dark:bg-blue-950/20 border-premium-accent dark:border-premium-accent/40 shadow-sm"
                           : isToday
-                            ? "bg-slate-50 dark:bg-slate-850 border-slate-300 dark:border-slate-700 text-premium-heading dark:text-white"
-                            : "bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 hover:border-premium-accent/30 dark:hover:border-premium-accent/20"
+                            ? "bg-[#0f0f12] bg-[#0f0f12] border-slate-300 border-[#1e1e22] text-white text-white"
+                            : "bg-[#0b0b0d] bg-[#0b0b0d] border-[#1a1a1c] border-[#1a1a1c] hover:border-premium-accent/30 dark:hover:border-premium-accent/20"
                     }`}
                   >
                     <div className="flex justify-between items-center">
@@ -793,8 +793,8 @@ export default function AdminLiveClasses() {
                         isSelected 
                           ? "text-premium-accent font-black" 
                           : isToday 
-                            ? "text-premium-accent font-black ring-1 ring-premium-accent/25 rounded-md px-1.5 py-0.5 bg-blue-50 dark:bg-blue-950/40"
-                            : "text-slate-600 dark:text-slate-400"
+                            ? "text-premium-accent font-black ring-1 ring-premium-accent/25 rounded-md px-1.5 py-0.5 bg-[#0A66C2]/10 dark:bg-blue-950/40"
+                            : "text-slate-600 text-slate-400"
                       }`}>
                         {cell.day}
                       </span>
@@ -804,12 +804,12 @@ export default function AdminLiveClasses() {
                     <div className="mt-1 space-y-1 overflow-hidden">
                       {dayWebinarsList.map(w => {
                         const statusColor = 
-                          w.status === "Live" ? "bg-red-500" : 
-                          w.status === "Completed" ? "bg-slate-400" : "bg-blue-500";
+                          w.status === "Live" ? "bg-red-500/100" : 
+                          w.status === "Completed" ? "bg-slate-400" : "bg-[#0A66C2]/100";
                         return (
                           <div key={w.id} className="flex items-center gap-1">
                             <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${statusColor}`}></span>
-                            <span className="text-[8px] font-black text-slate-500 dark:text-slate-400 truncate hidden sm:inline max-w-full">
+                            <span className="text-[8px] font-black text-slate-500 text-slate-400 truncate hidden sm:inline max-w-full">
                               {w.topic}
                             </span>
                           </div>
@@ -824,17 +824,17 @@ export default function AdminLiveClasses() {
 
           {/* Agenda Right Panel Detail */}
           <div className="lg:col-span-4 space-y-6">
-            <GlassCard className="bg-white dark:bg-slate-900 border-premium-border/80 dark:border-slate-800 p-6 rounded-2xl shadow-sm flex flex-col gap-5 text-left">
-              <div className="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-3">
+            <GlassCard className="bg-[#0b0b0d] bg-[#0b0b0d] border-[#1a1a1c] border-[#1a1a1c] p-6 rounded-2xl shadow-sm flex flex-col gap-5 text-left">
+              <div className="flex justify-between items-center border-b border-[#1a1a1c] border-[#1a1a1c] pb-3">
                 <div>
                   <span className="text-[9px] text-slate-400 font-black uppercase tracking-wider">Selected Day</span>
-                  <h3 className="text-sm font-black text-premium-heading dark:text-white uppercase mt-0.5">
+                  <h3 className="text-sm font-black text-white text-white uppercase mt-0.5">
                     {selectedDate === "2026-05-27" ? "Today, May 27" : selectedDate}
                   </h3>
                 </div>
                 <button
                   onClick={() => openCreateModal(selectedDate)}
-                  className="h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] font-black uppercase text-premium-accent hover:bg-premium-accent hover:text-white transition-all flex items-center gap-1 cursor-pointer"
+                  className="h-8 px-2.5 rounded-lg bg-[#0f0f12] bg-[#111114] border border-[#1e1e22] border-[#1e1e22] text-[10px] font-black uppercase text-premium-accent hover:bg-premium-accent hover:text-white transition-all flex items-center gap-1 cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5" /> Add
                 </button>
@@ -844,27 +844,27 @@ export default function AdminLiveClasses() {
                 <div className="space-y-4">
                   {selectedDateWebinars.map(w => {
                     const statusStyles = {
-                      Live: "bg-red-50 text-red-600 border-red-200 dark:bg-red-950/20 dark:text-red-400 dark:border-red-900 animate-pulse font-black",
-                      Upcoming: "bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-900",
-                      Completed: "bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700"
+                      Live: "bg-red-500/10 text-red-400 border-red-200 dark:bg-red-950/20 dark:text-red-400 dark:border-red-900 animate-pulse font-black",
+                      Upcoming: "bg-[#0A66C2]/10 text-[#1E88E5] border-[#0A66C2]/20 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-900",
+                      Completed: "bg-[#111114] text-slate-500 border-[#1e1e22] bg-[#111114] text-slate-400 border-[#1e1e22]"
                     };
 
                     return (
-                      <div key={w.id} className="p-3.5 rounded-xl border border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/50 flex flex-col gap-2.5 hover:border-premium-accent/20 transition-all">
+                      <div key={w.id} className="p-3.5 rounded-xl border border-[#1a1a1c] border-[#1a1a1c]/80 bg-[#0f0f12]/50 bg-[#0b0b0d]/50 flex flex-col gap-2.5 hover:border-premium-accent/20 transition-all">
                         <div className="flex justify-between items-start gap-2">
-                          <h4 className="text-xs font-black text-premium-heading dark:text-white uppercase leading-tight line-clamp-2">{w.topic}</h4>
+                          <h4 className="text-xs font-black text-white text-white uppercase leading-tight line-clamp-2">{w.topic}</h4>
                           <span className={`text-[8px] px-1.5 py-0.5 rounded-full border shrink-0 tracking-wider uppercase ${statusStyles[w.status] || ''}`}>
                             {w.status}
                           </span>
                         </div>
-                        <p className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold line-clamp-1">{w.description}</p>
+                        <p className="text-[10px] text-slate-400 text-slate-500 font-semibold line-clamp-1">{w.description}</p>
                         
-                        <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-800/50 pt-2.5 mt-1">
+                        <div className="flex items-center justify-between border-t border-[#1a1a1c] border-[#1a1a1c]/50 pt-2.5 mt-1">
                           <div className="flex items-center gap-1.5">
                             <Clock className="w-3 h-3 text-slate-400" />
-                            <span className="text-[9px] font-bold text-slate-500 dark:text-slate-400 font-mono">{w.time} ({w.duration})</span>
+                            <span className="text-[9px] font-bold text-slate-500 text-slate-400 font-mono">{w.time} ({w.duration})</span>
                           </div>
-                          <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500">Host: {w.instructor}</span>
+                          <span className="text-[9px] font-bold text-slate-400 text-slate-500">Host: {w.instructor}</span>
                         </div>
                       </div>
                     );
@@ -872,11 +872,11 @@ export default function AdminLiveClasses() {
                 </div>
               ) : (
                 <div className="py-8 text-center flex flex-col items-center justify-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-slate-50 dark:bg-slate-850 flex items-center justify-center text-slate-400">
+                  <div className="h-10 w-10 rounded-full bg-[#0f0f12] bg-[#0f0f12] flex items-center justify-center text-slate-400">
                     <Info className="w-5 h-5" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-500 dark:text-slate-400">No Masterclasses Scheduled</p>
+                    <p className="text-xs font-bold text-slate-500 text-slate-400">No Masterclasses Scheduled</p>
                     <p className="text-[10px] text-slate-400 mt-1">Easily configure a live stream block for this calendar day.</p>
                   </div>
                   <Button variant="outline" size="sm" className="mt-2 text-[10px] font-black uppercase py-2" onClick={() => openCreateModal(selectedDate)}>
@@ -887,11 +887,11 @@ export default function AdminLiveClasses() {
             </GlassCard>
 
             {/* Quick Tips Box */}
-            <div className="p-4 rounded-xl border border-blue-100 dark:border-blue-900/40 bg-blue-50/30 dark:bg-blue-950/10 flex gap-3 text-left">
+            <div className="p-4 rounded-xl border border-[#0A66C2]/20 dark:border-blue-900/40 bg-[#0A66C2]/10/30 dark:bg-blue-950/10 flex gap-3 text-left">
               <Sparkles className="w-5 h-5 text-premium-accent shrink-0 mt-0.5" />
               <div>
-                <h4 className="text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-wider">Mentor Reminders</h4>
-                <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 leading-normal">
+                <h4 className="text-[11px] font-black text-slate-200 text-white uppercase tracking-wider">Mentor Reminders</h4>
+                <p className="text-[10px] text-slate-500 text-slate-400 mt-1 leading-normal">
                   Mentors receive automatic SMS pings 15 minutes before going live. Direct Zoom room access keys are generated via the active broadcast room.
                 </p>
               </div>
@@ -903,7 +903,7 @@ export default function AdminLiveClasses() {
       {/* Main Webinar Scheduler Table */}
       <div className="space-y-4">
         <div className="flex items-center justify-between border-b border-premium-border/40 dark:border-slate-850 pb-2">
-          <h2 className="text-lg font-black uppercase tracking-tight text-slate-800 dark:text-white flex items-center gap-2">
+          <h2 className="text-lg font-black uppercase tracking-tight text-slate-200 text-white flex items-center gap-2">
             <Video className="w-5 h-5 text-premium-accent" /> Masterclass Logs & Configuration
           </h2>
         </div>
@@ -927,42 +927,42 @@ export default function AdminLiveClasses() {
       </div>
 
       {/* Advanced UI: Recent Webinar Performance & Analytics log */}
-      <div className="space-y-4 bg-white dark:bg-slate-900 border border-premium-border/80 dark:border-slate-800 p-6 rounded-2xl shadow-sm">
+      <div className="space-y-4 bg-[#0b0b0d] bg-[#0b0b0d] border border-[#1a1a1c] border-[#1a1a1c] p-6 rounded-2xl shadow-sm">
         <div>
-          <h3 className="text-base font-black text-premium-heading dark:text-white uppercase tracking-tight">Recent Broadcast Performance Metrics</h3>
-          <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 mt-1">Review peak concurrent attendance statistics and student rating distributions for recently completed sessions.</p>
+          <h3 className="text-base font-black text-white text-white uppercase tracking-tight">Recent Broadcast Performance Metrics</h3>
+          <p className="text-xs font-semibold text-slate-400 text-slate-500 mt-1">Review peak concurrent attendance statistics and student rating distributions for recently completed sessions.</p>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-slate-100 dark:border-slate-800 pb-3">
-                <th className="py-3 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Completed Webinar</th>
-                <th className="py-3 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Instructor</th>
-                <th className="py-3 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 text-center">Peak Views</th>
-                <th className="py-3 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 text-center">Attendance %</th>
-                <th className="py-3 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 text-center">Avg Rating</th>
-                <th className="py-3 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 text-right">Archived Recording</th>
+              <tr className="border-b border-[#1a1a1c] border-[#1a1a1c] pb-3">
+                <th className="py-3 text-[10px] font-black uppercase tracking-wider text-slate-400 text-slate-500">Completed Webinar</th>
+                <th className="py-3 text-[10px] font-black uppercase tracking-wider text-slate-400 text-slate-500">Instructor</th>
+                <th className="py-3 text-[10px] font-black uppercase tracking-wider text-slate-400 text-slate-500 text-center">Peak Views</th>
+                <th className="py-3 text-[10px] font-black uppercase tracking-wider text-slate-400 text-slate-500 text-center">Attendance %</th>
+                <th className="py-3 text-[10px] font-black uppercase tracking-wider text-slate-400 text-slate-500 text-center">Avg Rating</th>
+                <th className="py-3 text-[10px] font-black uppercase tracking-wider text-slate-400 text-slate-500 text-right">Archived Recording</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100/50 dark:divide-slate-800/50">
               {performance.map((item) => {
                 const attendanceRate = Math.round((item.peakViewers / item.registered) * 100);
                 return (
-                  <tr key={item.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-850/20 transition-colors">
-                    <td className="py-3.5 pr-4 text-xs font-black text-premium-heading dark:text-white uppercase max-w-[280px] truncate">{item.topic}</td>
-                    <td className="py-3.5 text-xs text-slate-600 dark:text-slate-400 font-bold">{item.instructor}</td>
-                    <td className="py-3.5 text-xs font-mono font-black text-center text-slate-700 dark:text-slate-300">{item.peakViewers}</td>
+                  <tr key={item.id} className="hover:bg-[#0f0f12]/50 dark:hover:bg-slate-850/20 transition-colors">
+                    <td className="py-3.5 pr-4 text-xs font-black text-white text-white uppercase max-w-[280px] truncate">{item.topic}</td>
+                    <td className="py-3.5 text-xs text-slate-600 text-slate-400 font-bold">{item.instructor}</td>
+                    <td className="py-3.5 text-xs font-mono font-black text-center text-slate-700 text-slate-300">{item.peakViewers}</td>
                     <td className="py-3.5 text-center">
                       <div className="flex items-center justify-center gap-2">
-                        <span className="text-xs font-mono font-black text-slate-700 dark:text-slate-300">{attendanceRate}%</span>
-                        <div className="w-16 h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden hidden sm:block">
+                        <span className="text-xs font-mono font-black text-slate-700 text-slate-300">{attendanceRate}%</span>
+                        <div className="w-16 h-1.5 rounded-full bg-[#111114] bg-[#111114] overflow-hidden hidden sm:block">
                           <div className="bg-premium-accent h-full rounded-full" style={{ width: `${attendanceRate}%` }}></div>
                         </div>
                       </div>
                     </td>
                     <td className="py-3.5 text-center">
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-amber-50 text-amber-600 border border-amber-100 text-[10px] font-black">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-amber-500/10 text-amber-600 border border-amber-500/20 text-[10px] font-black">
                         <Star className="w-3 h-3 fill-current" /> {item.rating}
                       </span>
                     </td>
@@ -1001,7 +1001,7 @@ export default function AdminLiveClasses() {
               placeholder="e.g. Zoning Codes & High-Ticket Commercial Lease Contracts"
               value={formState.topic}
               onChange={(e) => setFormState({ ...formState, topic: e.target.value })}
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
+              className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-3 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
             />
           </div>
 
@@ -1012,7 +1012,7 @@ export default function AdminLiveClasses() {
               value={formState.description}
               onChange={(e) => setFormState({ ...formState, description: e.target.value })}
               rows={2}
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
+              className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-2.5 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
             />
           </div>
 
@@ -1022,7 +1022,7 @@ export default function AdminLiveClasses() {
               <select
                 value={formState.instructor}
                 onChange={(e) => setFormState({ ...formState, instructor: e.target.value })}
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 cursor-pointer"
+                className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-2.5 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20 cursor-pointer"
               >
                 {MENTORS.map(mentor => (
                   <option key={mentor.name} value={mentor.name}>{mentor.name} ({mentor.role})</option>
@@ -1036,7 +1036,7 @@ export default function AdminLiveClasses() {
                 required
                 value={formState.date}
                 onChange={(e) => setFormState({ ...formState, date: e.target.value })}
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
+                className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-2.5 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
               />
             </div>
           </div>
@@ -1049,7 +1049,7 @@ export default function AdminLiveClasses() {
                 required
                 value={formState.time}
                 onChange={(e) => setFormState({ ...formState, time: e.target.value })}
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
+                className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-2.5 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
               />
             </div>
             <div className="space-y-1.5">
@@ -1059,7 +1059,7 @@ export default function AdminLiveClasses() {
                 required
                 value={formState.endTime}
                 onChange={(e) => setFormState({ ...formState, endTime: e.target.value })}
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
+                className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-2.5 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
               />
             </div>
           </div>
@@ -1072,7 +1072,7 @@ export default function AdminLiveClasses() {
               placeholder="https://zoom.us/j/..."
               value={formState.link}
               onChange={(e) => setFormState({ ...formState, link: e.target.value })}
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-premium-border dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs font-bold text-premium-heading dark:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
+              className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-2.5 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
             />
           </div>
 
@@ -1081,9 +1081,9 @@ export default function AdminLiveClasses() {
             <label className="text-[10px] font-black uppercase text-slate-400 tracking-wider block">Webinar Banner Cover</label>
             
             {/* Visual File Uploader Zone */}
-            <div className="border-2 border-dashed border-premium-border dark:border-slate-800 rounded-xl p-4 flex flex-col items-center justify-center bg-slate-50/50 dark:bg-slate-900/50 hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-all cursor-pointer">
+            <div className="border-2 border-dashed border-premium-border border-[#1a1a1c] rounded-xl p-4 flex flex-col items-center justify-center bg-[#0f0f12]/50 bg-[#0b0b0d]/50 hover:bg-[#0f0f12] hover:bg-[#111114]/80 transition-all cursor-pointer">
               <UploadCloud className="w-8 h-8 text-slate-400 mb-2" />
-              <p className="text-[11px] font-bold text-slate-600 dark:text-slate-300">Drag and drop banner here or click to upload</p>
+              <p className="text-[11px] font-bold text-slate-600 text-slate-300">Drag and drop banner here or click to upload</p>
               <p className="text-[9px] text-slate-400 mt-1 uppercase tracking-wide">PNG, JPG, WEBP (Recommended ratio 16:9)</p>
             </div>
 
@@ -1099,7 +1099,7 @@ export default function AdminLiveClasses() {
                       type="button"
                       onClick={() => setFormState({ ...formState, banner: preset.url })}
                       className={`h-11 rounded-lg overflow-hidden border relative transition-all cursor-pointer ${
-                        isSelected ? 'border-premium-accent ring-2 ring-premium-accent/20' : 'border-slate-200 dark:border-slate-800 opacity-60 hover:opacity-100'
+                        isSelected ? 'border-premium-accent ring-2 ring-premium-accent/20' : 'border-[#1e1e22] border-[#1a1a1c] opacity-60 hover:opacity-100'
                       }`}
                       title={preset.label}
                     >
@@ -1116,7 +1116,7 @@ export default function AdminLiveClasses() {
             </div>
           </div>
 
-          <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-end gap-2.5">
+          <div className="pt-4 border-t border-[#1a1a1c] border-[#1a1a1c]/80 flex items-center justify-end gap-2.5">
             <Button variant="outline" size="sm" type="button" onClick={() => { setModalOpen(false); resetForm(); }}>
               Cancel
             </Button>
