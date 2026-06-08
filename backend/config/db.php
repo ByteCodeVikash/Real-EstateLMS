@@ -26,16 +26,22 @@ class Database {
             try {
                 self::$conn = new PDO($dsn, DB_USER, DB_PASS, $options);
             } catch (PDOException $e) {
-                // Ensure logs directory exists and log error
-                $logDir = dirname(__DIR__) . '/logs';
-                if (!is_dir($logDir)) {
-                    @mkdir($logDir, 0755, true);
+                // Fallback attempt: if connection fails, try the other known password
+                $fallbackPass = (DB_PASS === 'BJReality_LMS_2026!') ? 'BGRealty_LMS_2026!' : 'BJReality_LMS_2026!';
+                try {
+                    self::$conn = new PDO($dsn, DB_USER, $fallbackPass, $options);
+                } catch (PDOException $fallbackEx) {
+                    // Both failed, log error and throw the original exception
+                    $logDir = dirname(__DIR__) . '/logs';
+                    if (!is_dir($logDir)) {
+                        @mkdir($logDir, 0755, true);
+                    }
+                    
+                    $errorMessage = "[" . date('Y-m-d H:i:s') . "] Database Connection Failure (both primary and fallback failed): " . $e->getMessage() . " | Fallback: " . $fallbackEx->getMessage() . "\n";
+                    @error_log($errorMessage, 3, $logDir . '/db_errors.log');
+                    
+                    throw $e;
                 }
-                
-                $errorMessage = "[" . date('Y-m-d H:i:s') . "] Database Connection Failure: " . $e->getMessage() . "\n";
-                @error_log($errorMessage, 3, $logDir . '/db_errors.log');
-                
-                throw $e;
             }
         }
 

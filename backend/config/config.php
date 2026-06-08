@@ -32,12 +32,12 @@ if (APP_ENV === 'development') {
     define('DB_HOST', 'localhost');
     define('DB_NAME', 'u834013214_u834013214_lms');
     define('DB_USER', 'u834013214_u834013214_lms');
-    define('DB_PASS', 'BGRealty_LMS_2026!');
+    define('DB_PASS', 'BJReality_LMS_2026!');
     define('DB_PORT', '3306');
     define('BASE_URL', 'https://ivory-flamingo-965498.hostingersite.com/backend');
 }
 
 // Security & Authentication keys
-define('JWT_SECRET', 'bg_realty_academy_secure_key_2026');
+define('JWT_SECRET', 'bj_reality_academy_secure_key_2026');
 define('GOOGLE_CLIENT_ID', '476678466295-8pj5ao3k65gc35grt1o31m7uk60rqvnn.apps.googleusercontent.com');
 

@@ -28,6 +28,7 @@ try {
 
     // 4. Seed admin/superadmin accounts if they don't exist
     $mockUsers = [
+        // bgrealtyacademy.com accounts
         [
             'full_name' => 'Super Admin User',
             'email' => 'superadmin@bgrealtyacademy.com',
@@ -49,6 +50,31 @@ try {
         [
             'full_name' => 'LMS Student User',
             'email' => 'student@bgrealtyacademy.com',
+            'password' => 'password123',
+            'role' => 'student'
+        ],
+        // bjrealty.com accounts (matching frontend presets)
+        [
+            'full_name' => 'Super Admin User (BJ)',
+            'email' => 'superadmin@bjreality.com',
+            'password' => 'password123',
+            'role' => 'super_admin'
+        ],
+        [
+            'full_name' => 'System Admin User (BJ)',
+            'email' => 'admin@bjreality.com',
+            'password' => 'password123',
+            'role' => 'admin'
+        ],
+        [
+            'full_name' => 'Expert Instructor User (BJ)',
+            'email' => 'instructor@bjreality.com',
+            'password' => 'password123',
+            'role' => 'instructor'
+        ],
+        [
+            'full_name' => 'LMS Student User (BJ)',
+            'email' => 'student@bjreality.com',
             'password' => 'password123',
             'role' => 'student'
         ]
