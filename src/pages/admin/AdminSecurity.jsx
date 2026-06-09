@@ -12,7 +12,7 @@ const initialStaff = [
 const initialAuditLogs = [
   { id: 1029, action: "Student status suspended", executor: "Vikash Sharma", ip: "192.168.1.45", date: "2026-05-23 13:40", details: "Ronald Richards suspended due to payment failure" },
   { id: 1028, action: "Course Published", executor: "Sarah Jenkins", ip: "192.168.1.92", date: "2026-05-23 11:15", details: "Zoning Codes catalog status changed to Published" },
-  { id: 1027, action: "Invoice Refund Approved", executor: "Vikash Sharma", ip: "192.168.1.45", date: "2026-05-22 14:02", details: "Refund $1,200 issued for TXN-89173" },
+  { id: 1027, action: "Invoice Refund Approved", executor: "Vikash Sharma", ip: "192.168.1.45", date: "2026-05-22 14:02", details: "Refund ₹1,200 issued for TXN-89173" },
   { id: 1026, action: "New Admin Key generated", executor: "Vikash Sharma", ip: "192.168.1.45", date: "2026-05-21 09:30", details: "Created API Token for reporting servers" }
 ];
 

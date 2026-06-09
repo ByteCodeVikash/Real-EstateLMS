@@ -31,7 +31,7 @@ const Portal = ({ children }) => {
 };
 
 const MOCK_MENTORS = [
-  { name: 'Sarah Jenkins', role: 'Premium Broker', avatar: 'SJ', bio: 'Former Sotheby\'s director with $2B+ in lifetime residential volume.' },
+  { name: 'Sarah Jenkins', role: 'Premium Broker', avatar: 'SJ', bio: 'Former Sotheby\'s director with ₹2B+ in lifetime residential volume.' },
   { name: 'Alex Mercer', role: 'Lead Underwriting Analyst', avatar: 'AM', bio: 'Ex-Wall Street commercial modeler specializing in syndication mathematics.' },
   { name: 'Michael Chang', role: 'Real Estate Attorney', avatar: 'MC', bio: 'Author of "Zoning Codes Decoded" and compliance expert for multifamily developments.' }
 ];
@@ -197,7 +197,7 @@ const CustomTooltip = ({ active, payload, label }) => {
           {payload.map((p, idx) => (
             <div key={idx} className="flex items-center gap-2 text-xs font-bold text-white">
               <span className="h-2 w-2 rounded-full" style={{ backgroundColor: p.color || p.fill }}></span>
-              <span>{p.name}: <span className="font-extrabold text-slate-200">{typeof p.value === 'number' && p.name.includes('$') ? `$${p.value.toLocaleString()}` : p.value.toLocaleString()}</span></span>
+              <span>{p.name}: <span className="font-extrabold text-slate-200">{typeof p.value === 'number' && p.name.includes('₹') ? `₹${p.value.toLocaleString()}` : p.value.toLocaleString()}</span></span>
             </div>
           ))}
         </div>
@@ -678,7 +678,7 @@ export default function AdminCourses() {
               />
               <AdminStatCard 
                 title="Catalog Gross Revenue" 
-                value={`$${totalRevenue.toLocaleString()}`} 
+                value={`₹${totalRevenue.toLocaleString()}`} 
                 change="+18.9%" 
                 isPositive={true} 
                 icon={DollarSign}
@@ -698,7 +698,7 @@ export default function AdminCourses() {
                       <XAxis dataKey="name" stroke="#94a3b8" fontSize={9} fontWeight="bold" tickFormatter={(t) => t.length > 15 ? `${t.slice(0, 15)}...` : t} />
                       <YAxis stroke="#94a3b8" fontSize={10} fontWeight="bold" />
                       <Tooltip content={<CustomTooltip />} />
-                      <Bar name="Total Revenue ($)" dataKey="Revenue" fill="#2563eb" radius={[6, 6, 0, 0]} />
+                      <Bar name="Total Revenue (₹)" dataKey="Revenue" fill="#2563eb" radius={[6, 6, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -861,7 +861,7 @@ export default function AdminCourses() {
                   {/* Pricing Tag */}
                   <div className="self-end z-10">
                     <span className="px-3 py-1.5 rounded-xl text-xs font-black bg-[#0b0b0d]/10 bg-[#0b0b0d]/40 backdrop-blur-md border border-white/20 text-white shadow-sm">
-                      ${course.price.toLocaleString()}
+                      ₹{course.price.toLocaleString()}
                     </span>
                   </div>
                 </div>
@@ -899,7 +899,7 @@ export default function AdminCourses() {
                     </div>
                     <div className="flex items-center gap-1.5">
                       <DollarSign className="w-3.5 h-3.5 text-slate-400" />
-                      <span className="text-white text-white font-black">${course.revenue.toLocaleString()} Rev</span>
+                      <span className="text-white text-white font-black">₹{course.revenue.toLocaleString()} Rev</span>
                     </div>
                   </div>
 
@@ -1008,7 +1008,7 @@ export default function AdminCourses() {
 
                       {/* Price */}
                       <td className="px-6 py-4 text-xs font-black text-white text-white">
-                        ${course.price.toLocaleString()}
+                        ₹{course.price.toLocaleString()}
                       </td>
 
                       {/* Duration */}
@@ -1033,7 +1033,7 @@ export default function AdminCourses() {
 
                       {/* Gross revenue */}
                       <td className="px-6 py-4 text-xs font-black text-white text-white">
-                        ${course.revenue.toLocaleString()}
+                        ₹{course.revenue.toLocaleString()}
                       </td>
 
                       {/* Status */}
@@ -1243,7 +1243,7 @@ export default function AdminCourses() {
                         </div>
 
                         <div className="space-y-1.5">
-                          <label className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Tuition Fees ($ USD) *</label>
+                          <label className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Tuition Fees (₹ INR) *</label>
                           <input
                             type="number"
                             required
@@ -1525,7 +1525,7 @@ export default function AdminCourses() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <span className="text-xs text-slate-500 font-bold hidden sm:inline">Tuition Gate: <span className="text-emerald-400 font-extrabold">${previewCourse.price}</span></span>
+                  <span className="text-xs text-slate-500 font-bold hidden sm:inline">Tuition Gate: <span className="text-emerald-400 font-extrabold">₹{previewCourse.price}</span></span>
                   <button 
                     onClick={() => setPreviewCourse(null)}
                     className="h-8 px-3 rounded-lg bg-red-500/100/10 text-red-400 hover:bg-red-500/100/100 hover:text-white transition-all text-xs font-black uppercase cursor-pointer"

@@ -29,24 +29,24 @@ const dataset30Days = {
     { name: 'Zoning & Permits', value: 33000, percentage: 8, fill: '#f43f5e' },
   ],
   kpi: {
-    gross: "$428,950",
+    gross: "₹428,950",
     grossTrend: "+14.2%",
-    netGrowth: "$93,600",
+    netGrowth: "₹93,600",
     netTrend: "+22.4%",
-    cartSize: "$1,850",
+    cartSize: "₹1,850",
     cartTrend: "+5.1%",
     refundRate: "0.8% Net",
     refundTrend: "-0.3%"
   },
   transactions: [
     { id: "TXN-89201", student: "Cody Fisher", email: "cody.f@realestate.com", plan: "Luxury Flipping Class", amount: 1499, coupon: "NONE", type: "Course Sale", gateway: "Stripe", status: "Completed", date: "2026-05-23" },
-    { id: "TXN-89190", student: "Albert Flores", email: "albert.flores@century21.com", plan: "REIT Modeling Guide", amount: 2100, coupon: "WELCOME50 (-$50)", type: "Course Sale", gateway: "Stripe", status: "Completed", date: "2026-05-22" },
-    { id: "TXN-89182", student: "Dianne Russell", email: "dianne.r@gmail.com", plan: "Negotiation Crashcourse", amount: 999, coupon: "RESTART20 (-$250)", type: "Course Sale", gateway: "PayPal", status: "Completed", date: "2026-05-20" },
+    { id: "TXN-89190", student: "Albert Flores", email: "albert.flores@century21.com", plan: "REIT Modeling Guide", amount: 2100, coupon: "WELCOME50 (-₹50)", type: "Course Sale", gateway: "Stripe", status: "Completed", date: "2026-05-22" },
+    { id: "TXN-89182", student: "Dianne Russell", email: "dianne.r@gmail.com", plan: "Negotiation Crashcourse", amount: 999, coupon: "RESTART20 (-₹250)", type: "Course Sale", gateway: "PayPal", status: "Completed", date: "2026-05-20" },
     { id: "TXN-89173", student: "Ronald Richards", email: "ronald.r@richardsprops.com", plan: "Zoning Codes Guide", amount: 1200, coupon: "NONE", type: "Refund Credit", gateway: "Stripe", status: "Refunded", date: "2026-05-18" },
-    { id: "TXN-89164", student: "Kristin Watson", email: "kristin.w@watsongroup.org", plan: "Premium Academy Pass", amount: 4999, coupon: "VIPREALTOR (-$1000)", type: "Subscription", gateway: "Wire Transfer", status: "Completed", date: "2026-05-15" },
+    { id: "TXN-89164", student: "Kristin Watson", email: "kristin.w@watsongroup.org", plan: "Premium Academy Pass", amount: 4999, coupon: "VIPREALTOR (-₹1000)", type: "Subscription", gateway: "Wire Transfer", status: "Completed", date: "2026-05-15" },
     { id: "TXN-89155", student: "Bessie Cooper", email: "bessie.c@gmail.com", plan: "Multifamily Deal Underwriting", amount: 1499, coupon: "NONE", type: "Course Sale", gateway: "Apple Pay", status: "Completed", date: "2026-05-12" },
     { id: "TXN-89142", student: "Wade Warren", email: "wade.w@warrenhomes.co", plan: "Premium Academy Pass", amount: 5999, coupon: "NONE", type: "Subscription", gateway: "Stripe", status: "Pending", date: "2026-05-09" },
-    { id: "TXN-89131", student: "Jenny Wilson", email: "jenny.w@sothebys.com", plan: "Negotiation Crashcourse", amount: 999, coupon: "WELCOME50 (-$50)", type: "Course Sale", gateway: "PayPal", status: "Failed", date: "2026-05-05" }
+    { id: "TXN-89131", student: "Jenny Wilson", email: "jenny.w@sothebys.com", plan: "Negotiation Crashcourse", amount: 999, coupon: "WELCOME50 (-₹50)", type: "Course Sale", gateway: "PayPal", status: "Failed", date: "2026-05-05" }
   ]
 };
 
@@ -67,19 +67,19 @@ const dataset7Days = {
     { name: 'Zoning & Permits', value: 6500, percentage: 7, fill: '#f43f5e' },
   ],
   kpi: {
-    gross: "$91,500",
+    gross: "₹91,500",
     grossTrend: "+8.3%",
-    netGrowth: "$24,850",
+    netGrowth: "₹24,850",
     netTrend: "+12.1%",
-    cartSize: "$1,720",
+    cartSize: "₹1,720",
     cartTrend: "+1.8%",
     refundRate: "1.2% Net",
     refundTrend: "+0.2%"
   },
   transactions: [
     { id: "TXN-89201", student: "Cody Fisher", email: "cody.f@realestate.com", plan: "Luxury Flipping Class", amount: 1499, coupon: "NONE", type: "Course Sale", gateway: "Stripe", status: "Completed", date: "2026-05-23" },
-    { id: "TXN-89190", student: "Albert Flores", email: "albert.flores@century21.com", plan: "REIT Modeling Guide", amount: 2100, coupon: "WELCOME50 (-$50)", type: "Course Sale", gateway: "Stripe", status: "Completed", date: "2026-05-22" },
-    { id: "TXN-89182", student: "Dianne Russell", email: "dianne.r@gmail.com", plan: "Negotiation Crashcourse", amount: 999, coupon: "RESTART20 (-$250)", type: "Course Sale", gateway: "PayPal", status: "Completed", date: "2026-05-20" }
+    { id: "TXN-89190", student: "Albert Flores", email: "albert.flores@century21.com", plan: "REIT Modeling Guide", amount: 2100, coupon: "WELCOME50 (-₹50)", type: "Course Sale", gateway: "Stripe", status: "Completed", date: "2026-05-22" },
+    { id: "TXN-89182", student: "Dianne Russell", email: "dianne.r@gmail.com", plan: "Negotiation Crashcourse", amount: 999, coupon: "RESTART20 (-₹250)", type: "Course Sale", gateway: "PayPal", status: "Completed", date: "2026-05-20" }
   ]
 };
 
@@ -97,21 +97,21 @@ const dataset90Days = {
     { name: 'Zoning & Permits', value: 110000, percentage: 9, fill: '#f43f5e' },
   ],
   kpi: {
-    gross: "$1,280,450",
+    gross: "₹1,280,450",
     grossTrend: "+19.4%",
-    netGrowth: "$212,800",
+    netGrowth: "₹212,800",
     netTrend: "+28.2%",
-    cartSize: "$1,910",
+    cartSize: "₹1,910",
     cartTrend: "+8.3%",
     refundRate: "0.7% Net",
     refundTrend: "-0.5%"
   },
   transactions: [
     { id: "TXN-89201", student: "Cody Fisher", email: "cody.f@realestate.com", plan: "Luxury Flipping Class", amount: 1499, coupon: "NONE", type: "Course Sale", gateway: "Stripe", status: "Completed", date: "2026-05-23" },
-    { id: "TXN-89190", student: "Albert Flores", email: "albert.flores@century21.com", plan: "REIT Modeling Guide", amount: 2100, coupon: "WELCOME50 (-$50)", type: "Course Sale", gateway: "Stripe", status: "Completed", date: "2026-05-22" },
-    { id: "TXN-89182", student: "Dianne Russell", email: "dianne.r@gmail.com", plan: "Negotiation Crashcourse", amount: 999, coupon: "RESTART20 (-$250)", type: "Course Sale", gateway: "PayPal", status: "Completed", date: "2026-05-20" },
+    { id: "TXN-89190", student: "Albert Flores", email: "albert.flores@century21.com", plan: "REIT Modeling Guide", amount: 2100, coupon: "WELCOME50 (-₹50)", type: "Course Sale", gateway: "Stripe", status: "Completed", date: "2026-05-22" },
+    { id: "TXN-89182", student: "Dianne Russell", email: "dianne.r@gmail.com", plan: "Negotiation Crashcourse", amount: 999, coupon: "RESTART20 (-₹250)", type: "Course Sale", gateway: "PayPal", status: "Completed", date: "2026-05-20" },
     { id: "TXN-89173", student: "Ronald Richards", email: "ronald.r@richardsprops.com", plan: "Zoning Codes Guide", amount: 1200, coupon: "NONE", type: "Refund Credit", gateway: "Stripe", status: "Refunded", date: "2026-05-18" },
-    { id: "TXN-89164", student: "Kristin Watson", email: "kristin.w@watsongroup.org", plan: "Premium Academy Pass", amount: 4999, coupon: "VIPREALTOR (-$1000)", type: "Subscription", gateway: "Wire Transfer", status: "Completed", date: "2026-05-15" }
+    { id: "TXN-89164", student: "Kristin Watson", email: "kristin.w@watsongroup.org", plan: "Premium Academy Pass", amount: 4999, coupon: "VIPREALTOR (-₹1000)", type: "Subscription", gateway: "Wire Transfer", status: "Completed", date: "2026-05-15" }
   ]
 };
 
@@ -183,7 +183,7 @@ export default function AdminRevenue() {
       accessor: "amount",
       render: (row) => (
         <span className="font-black text-white text-white">
-          ${row.amount.toLocaleString()}
+          ₹{row.amount.toLocaleString()}
         </span>
       )
     },
@@ -224,7 +224,7 @@ export default function AdminRevenue() {
           {row.status === "Completed" && (
             <button
               onClick={() => {
-                if (confirm(`Process full refund of $${row.amount} for txn: ${row.id}?`)) {
+                if (confirm(`Process full refund of ₹${row.amount} for txn: ${row.id}?`)) {
                   alert(`Transaction ${row.id} credited. Gateway refund request dispatched.`);
                 }
               }}
@@ -384,8 +384,8 @@ export default function AdminRevenue() {
                     fontSize: '11px'
                   }} 
                 />
-                <Area type="monotone" dataKey="grossSales" name="Gross Sales ($)" stroke="#2563eb" strokeWidth={3} fillOpacity={1} fill="url(#colorSales)" />
-                <Area type="monotone" dataKey="netSales" name="Net Sales ($)" stroke="#7c3aed" strokeWidth={2} fillOpacity={1} fill="url(#colorNet)" />
+                <Area type="monotone" dataKey="grossSales" name="Gross Sales (₹)" stroke="#2563eb" strokeWidth={3} fillOpacity={1} fill="url(#colorSales)" />
+                <Area type="monotone" dataKey="netSales" name="Net Sales (₹)" stroke="#7c3aed" strokeWidth={2} fillOpacity={1} fill="url(#colorNet)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -414,14 +414,14 @@ export default function AdminRevenue() {
                     <Cell key={`cell-${index}`} fill={entry.fill} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value) => `$${value.toLocaleString()}`} />
+                <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
               </PieChart>
             </ResponsiveContainer>
             
             {/* Center label */}
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none mt-1">
               <span className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-none">Net Sales</span>
-              <span className="text-lg font-black text-white text-white mt-1">$415K</span>
+              <span className="text-lg font-black text-white text-white mt-1">₹415K</span>
             </div>
           </div>
 
@@ -434,7 +434,7 @@ export default function AdminRevenue() {
                   <span className="text-slate-650 dark:text-slate-450 line-clamp-1">{course.name}</span>
                 </div>
                 <span className="font-mono text-slate-700 dark:text-slate-350 shrink-0 font-black">
-                  ${(course.value / 1000).toFixed(0)}k ({course.percentage}%)
+                  ₹{(course.value / 1000).toFixed(0)}k ({course.percentage}%)
                 </span>
               </div>
             ))}

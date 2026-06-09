@@ -198,7 +198,7 @@ const Login = () => {
           <div className="flex gap-3">
             <StatPill value="2,400+" label="Active Students" />
             <StatPill value="98%" label="Completion Rate" />
-            <StatPill value="$4.2B" label="Deals Closed" />
+            <StatPill value="₹4.2B" label="Deals Closed" />
           </div>
 
           {/* Testimonial */}

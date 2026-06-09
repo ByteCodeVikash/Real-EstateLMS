@@ -65,10 +65,10 @@ export default function AdminDashboard() {
   const [totalRevenue,        setTotalRevenue]         = useState(128450);
 
   const [enrollments, setEnrollments] = useState([
-    { id: 1, name: 'Robert Fox',     email: 'robert@foxrealestate.com', course: 'Luxury Flipping Masterclass',      amount: '$1,499', status: 'Success', date: 'Just now',   avatar: 'RF' },
-    { id: 2, name: 'Jane Cooper',    email: 'jane.cooper@realty.io',    course: 'Commercial Underwriting',          amount: '$2,100', status: 'Success', date: '12 mins ago',avatar: 'JC' },
-    { id: 3, name: 'Wade Warren',    email: 'wade.warren@century21.com',course: 'High-Ticket Real Estate Sales',    amount: '$999',   status: 'Pending', date: '1 hr ago',   avatar: 'WW' },
-    { id: 4, name: 'Esther Howard',  email: 'esther.h@gmail.com',       course: 'Luxury Flipping Masterclass',      amount: '$1,499', status: 'Success', date: '3 hrs ago',  avatar: 'EH' },
+    { id: 1, name: 'Robert Fox',     email: 'robert@foxrealestate.com', course: 'Luxury Flipping Masterclass',      amount: '₹1,499', status: 'Success', date: 'Just now',   avatar: 'RF' },
+    { id: 2, name: 'Jane Cooper',    email: 'jane.cooper@realty.io',    course: 'Commercial Underwriting',          amount: '₹2,100', status: 'Success', date: '12 mins ago',avatar: 'JC' },
+    { id: 3, name: 'Wade Warren',    email: 'wade.warren@century21.com',course: 'High-Ticket Real Estate Sales',    amount: '₹999',   status: 'Pending', date: '1 hr ago',   avatar: 'WW' },
+    { id: 4, name: 'Esther Howard',  email: 'esther.h@gmail.com',       course: 'Luxury Flipping Masterclass',      amount: '₹1,499', status: 'Success', date: '3 hrs ago',  avatar: 'EH' },
   ]);
 
   const [submissions, setSubmissions] = useState([
@@ -84,9 +84,9 @@ export default function AdminDashboard() {
   ]);
 
   const [payments, setPayments] = useState([
-    { id: 1, invoice: 'INV-9021', student: 'Albert Flores',    course: 'Luxury Flipping Masterclass', gateway: 'Stripe', amount: '$1,499', status: 'Succeeded', date: '8 mins ago',  avatar: 'AF' },
-    { id: 2, invoice: 'INV-9020', student: 'Eleanor Pena',     course: 'Commercial Underwriting',     gateway: 'PayPal', amount: '$2,100', status: 'Succeeded', date: '1 hr ago',    avatar: 'EP' },
-    { id: 3, invoice: 'INV-9019', student: 'Marvin McKinney',  course: 'BRRRR Strategy Secrets',      gateway: 'Stripe', amount: '$1,299', status: 'Failed',    date: '3 hrs ago',   avatar: 'MM' },
+    { id: 1, invoice: 'INV-9021', student: 'Albert Flores',    course: 'Luxury Flipping Masterclass', gateway: 'Stripe', amount: '₹1,499', status: 'Succeeded', date: '8 mins ago',  avatar: 'AF' },
+    { id: 2, invoice: 'INV-9020', student: 'Eleanor Pena',     course: 'Commercial Underwriting',     gateway: 'PayPal', amount: '₹2,100', status: 'Succeeded', date: '1 hr ago',    avatar: 'EP' },
+    { id: 3, invoice: 'INV-9019', student: 'Marvin McKinney',  course: 'BRRRR Strategy Secrets',      gateway: 'Stripe', amount: '₹1,299', status: 'Failed',    date: '3 hrs ago',   avatar: 'MM' },
   ]);
 
   const [logins, setLogins] = useState([
@@ -115,7 +115,7 @@ export default function AdminDashboard() {
   const handleCourseSubmit = (e) => {
     e.preventDefault();
     setCoursesCount(p => p + 1);
-    setEnrollments(p => [{ id: Date.now(), name: 'New Student', email: 'student@bgrealtyacademy.com', course: courseForm.title, amount: `$${parseFloat(courseForm.price).toLocaleString()}`, status: 'Success', date: 'Just now', avatar: 'NS' }, ...p]);
+    setEnrollments(p => [{ id: Date.now(), name: 'New Student', email: 'student@bgrealtyacademy.com', course: courseForm.title, amount: `₹${parseFloat(courseForm.price).toLocaleString()}`, status: 'Success', date: 'Just now', avatar: 'NS' }, ...p]);
     alert(`Masterclass "${courseForm.title}" published successfully!`);
     setCourseDrawerOpen(false);
   };
@@ -218,7 +218,7 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           <AdminStatCard title="Total Students"           value={totalStudentsCount.toLocaleString()} change="+8.2%"  isPositive={true}  icon={Users}     gradient="from-[#0A66C2]/15 to-[#1E88E5]/5" />
           <AdminStatCard title="Active Courses"           value={coursesCount.toString()}             change="+12.0%" isPositive={true}  icon={BookOpen}  gradient="from-premium-accent/15 to-premium-accent/5" />
-          <AdminStatCard title="Gross Revenue"            value={`$${totalRevenue.toLocaleString()}`} change="+18.4%" isPositive={true}  icon={DollarSign}gradient="from-emerald-500/12 to-emerald-500/4" />
+          <AdminStatCard title="Gross Revenue"            value={`₹${totalRevenue.toLocaleString()}`} change="+18.4%" isPositive={true}  icon={DollarSign}gradient="from-emerald-500/12 to-emerald-500/4" />
           <AdminStatCard title="Live Classes Scheduled"   value={webinarsCount.toString()}            change="-2.3%"  isPositive={false} icon={Calendar}  gradient="from-amber-500/12 to-amber-500/4" timeframe="vs last week" />
           <AdminStatCard title="Assignment Completion"    value="84.2%"                               change="+1.8%"  isPositive={true}  icon={FileText}  gradient="from-rose-500/12 to-rose-500/4" />
           <AdminStatCard title="Monthly Growth"           value="+14.5%"                              change="+3.1%"  isPositive={true}  icon={TrendingUp} gradient="from-cyan-500/12 to-cyan-500/4" />
@@ -273,8 +273,8 @@ export default function AdminDashboard() {
                     <XAxis dataKey="name" stroke="none" tick={axTick} />
                     <YAxis stroke="none" tick={axTick} />
                     <Tooltip content={<DarkTooltip />} />
-                    <Area name="Gross Revenue ($)" type="monotone" dataKey="revenue"  stroke="#D4AF37" strokeWidth={2.5} fillOpacity={1} fill="url(#revGlow)" />
-                    <Area name="Expenses ($)"       type="monotone" dataKey="expenses" stroke="#0A66C2" strokeWidth={2}   fillOpacity={1} fill="url(#expGlow)" />
+                    <Area name="Gross Revenue (₹)" type="monotone" dataKey="revenue"  stroke="#D4AF37" strokeWidth={2.5} fillOpacity={1} fill="url(#revGlow)" />
+                    <Area name="Expenses (₹)"       type="monotone" dataKey="expenses" stroke="#0A66C2" strokeWidth={2}   fillOpacity={1} fill="url(#expGlow)" />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -668,7 +668,7 @@ export default function AdminDashboard() {
               </select>
             </div>
             <div className="space-y-1.5">
-              <label className="text-[9px] font-black uppercase text-slate-500 tracking-wider">Tuition Fee ($)</label>
+              <label className="text-[9px] font-black uppercase text-slate-500 tracking-wider">Tuition Fee (₹)</label>
               <input type="number" value={courseForm.price} onChange={e => setCourseForm({ ...courseForm, price: e.target.value })} className={DI} />
             </div>
           </div>

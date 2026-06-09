@@ -4,7 +4,7 @@ import { Button } from '../../components/UI';
 
 export default function AdminSettings() {
   const [activeTab, setActiveTab] = useState('general');
-  const [generalForm, setGeneralForm] = useState({ siteName: 'BG Realty Training Academy', supportEmail: 'support@bgrealtyacademy.com', platformFee: '0.00', currency: 'USD' });
+  const [generalForm, setGeneralForm] = useState({ siteName: 'BG Realty Training Academy', supportEmail: 'support@bgrealtyacademy.com', platformFee: '0.00', currency: 'INR' });
   const [brandingForm, setBrandingForm] = useState({ primaryColor: '#2563eb', fontStyle: 'Plus Jakarta Sans', darkModeDefault: true });
   const [paymentForm, setPaymentForm] = useState({ stripePublicKey: 'pk_test_51Nx...', stripeSecretKey: 'sk_test_51Nx...', sandboxMode: true });
   const [smtpForm, setSmtpForm] = useState({ smtpHost: 'smtp.sendgrid.net', smtpPort: '587', smtpUser: 'apikey', encryption: 'TLS' });
