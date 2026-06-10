@@ -260,3 +260,88 @@ function validateGrading(array $data, int $maxMarks): array {
 
     return $errors;
 }
+
+/**
+ * Validates category data (for creation or update)
+ * 
+ * @param array $data Input request data
+ * @param bool $isUpdate True if editing an existing category
+ * @param int|null $categoryId The ID of the category being updated (needed for uniqueness check)
+ * @return array Array of errors. Empty if data is valid.
+ */
+function validateCategory(array $data, bool $isUpdate = false, ?int $categoryId = null): array {
+    $errors = [];
+    $db = Database::getConnection();
+
+    // 1. Name validation
+    if (!$isUpdate || isset($data['name'])) {
+        $name = isset($data['name']) ? trim(strip_tags((string)$data['name'])) : '';
+        if (empty($name)) {
+            $errors['name'] = "Category name is required and cannot be empty.";
+        } elseif (strlen($name) > 100) {
+            $errors['name'] = "Category name cannot exceed 100 characters.";
+        }
+    }
+
+    // 2. Slug validation
+    if (isset($data['slug'])) {
+        $slug = trim((string)$data['slug']);
+        if (empty($slug) && !$isUpdate) {
+            $errors['slug'] = "Category slug cannot be empty.";
+        } elseif (!empty($slug)) {
+            if (strlen($slug) > 100) {
+                $errors['slug'] = "Category slug cannot exceed 100 characters.";
+            } elseif (!preg_match('/^[a-z0-9\-]+$/', $slug)) {
+                $errors['slug'] = "Category slug must contain only lowercase letters, numbers, and hyphens.";
+            } else {
+                // Check slug uniqueness
+                $sql = "SELECT id FROM categories WHERE slug = ?";
+                $params = [$slug];
+                if ($isUpdate && $categoryId) {
+                    $sql .= " AND id != ?";
+                    $params[] = $categoryId;
+                }
+                $stmt = $db->prepare($sql);
+                $stmt->execute($params);
+                if ($stmt->fetch()) {
+                    $errors['slug'] = "A category with this slug already exists.";
+                }
+            }
+        }
+    }
+
+    // 3. Icon validation
+    if (isset($data['icon'])) {
+        $icon = trim(strip_tags((string)$data['icon']));
+        if (strlen($icon) > 50) {
+            $errors['icon'] = "Icon class name cannot exceed 50 characters.";
+        }
+    }
+
+    // 4. Image validation
+    if (isset($data['image']) && $data['image'] !== null) {
+        $image = trim((string)$data['image']);
+        if (strlen($image) > 255) {
+            $errors['image'] = "Image path/URL cannot exceed 255 characters.";
+        }
+    }
+
+    // 5. Status validation
+    if (isset($data['status'])) {
+        $status = trim((string)$data['status']);
+        if (!in_array($status, ['Active', 'Inactive'])) {
+            $errors['status'] = "Status must be 'Active' or 'Inactive'.";
+        }
+    }
+
+    // 6. Sort Order validation
+    if (isset($data['sort_order'])) {
+        $sortOrder = $data['sort_order'];
+        if (!is_numeric($sortOrder) || (int)$sortOrder < 0) {
+            $errors['sort_order'] = "Sort order must be a non-negative integer.";
+        }
+    }
+
+    return $errors;
+}
+

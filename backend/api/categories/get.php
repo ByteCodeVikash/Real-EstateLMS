@@ -7,6 +7,7 @@
 require_once __DIR__ . '/../../config/db.php';
 require_once __DIR__ . '/../../helpers/response.php';
 require_once __DIR__ . '/../../middleware/auth_middleware.php';
+require_once __DIR__ . '/../../models/Category.php';
 
 // Require authenticated session
 $user = requireAuth();
@@ -18,11 +19,7 @@ if ($id <= 0) {
 }
 
 try {
-    $db = Database::getConnection();
-    
-    $stmt = $db->prepare("SELECT id, name, slug, description, icon, status, created_at, updated_at FROM categories WHERE id = ?");
-    $stmt->execute([$id]);
-    $category = $stmt->fetch(PDO::FETCH_ASSOC);
+    $category = Category::findById($id);
     
     if (!$category) {
         sendResponse(404, null, "Category not found.");

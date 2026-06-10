@@ -7,6 +7,7 @@
 require_once __DIR__ . '/../../config/db.php';
 require_once __DIR__ . '/../../helpers/response.php';
 require_once __DIR__ . '/../../middleware/auth_middleware.php';
+require_once __DIR__ . '/../../models/Category.php';
 
 // Require Admin role
 $user = requireAdmin();
@@ -18,16 +19,13 @@ if ($id <= 0) {
 }
 
 try {
-    $db = Database::getConnection();
-    
-    // Retrieve category to get its name
-    $stmt = $db->prepare("SELECT id, name FROM categories WHERE id = ?");
-    $stmt->execute([$id]);
-    $category = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+    // Retrieve category
+    $category = Category::findById($id);
     if (!$category) {
         sendResponse(404, null, "Category not found.");
     }
+    
+    $db = Database::getConnection();
     
     // Check if courses are linked to this category ID
     $stmtCourse = $db->prepare("SELECT COUNT(*) FROM courses WHERE category_id = ?");
@@ -39,8 +37,7 @@ try {
     }
     
     // Delete the category
-    $stmt = $db->prepare("DELETE FROM categories WHERE id = ?");
-    $stmt->execute([$id]);
+    Category::delete($id);
     
     sendResponse(200, ['id' => $id], "Category deleted successfully.");
 } catch (PDOException $e) {

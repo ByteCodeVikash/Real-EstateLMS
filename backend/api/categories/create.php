@@ -7,58 +7,49 @@
 require_once __DIR__ . '/../../config/db.php';
 require_once __DIR__ . '/../../helpers/request.php';
 require_once __DIR__ . '/../../helpers/response.php';
+require_once __DIR__ . '/../../helpers/validation.php';
 require_once __DIR__ . '/../../middleware/auth_middleware.php';
+require_once __DIR__ . '/../../models/Category.php';
 
 // Require Admin role
 $user = requireAdmin();
 
 $data = getRequestData();
 
-$name = trim(strip_tags($data['name'] ?? ''));
-$description = trim(strip_tags($data['description'] ?? ''));
-$icon = trim(strip_tags($data['icon'] ?? 'Layers'));
-$status = trim(strip_tags($data['status'] ?? 'Active'));
-
-if (empty($name)) {
-    sendResponse(400, null, "Validation Error: Category name is required.");
+// Extract and prepare fields
+$name = isset($data['name']) ? trim(strip_tags((string)$data['name'])) : '';
+$slug = isset($data['slug']) ? trim((string)$data['slug']) : '';
+if (empty($slug) && !empty($name)) {
+    // Slugify name if slug not provided
+    $slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9\-]+/', '-', $name), '-'));
+} else {
+    // Sanitize slug
+    $slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9\-]+/', '-', $slug), '-'));
 }
 
-if (!in_array($status, ['Active', 'Inactive'])) {
-    sendResponse(400, null, "Validation Error: Status must be either 'Active' or 'Inactive'.");
-}
+$data['name'] = $name;
+$data['slug'] = $slug;
 
-// Generate/sanitize slug
-$slug = $data['slug'] ?? '';
-if (empty($slug)) {
-    $slug = $name;
-}
-// Slugify function
-$slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9\-]+/', '-', $slug), '-'));
-
-if (empty($slug)) {
-    sendResponse(400, null, "Validation Error: Category slug could not be determined.");
+// Run validation helper
+$errors = validateCategory($data, false);
+if (!empty($errors)) {
+    // Map code 409 Conflict if slug conflict error exists
+    if (isset($errors['slug']) && $errors['slug'] === "A category with this slug already exists.") {
+        sendResponse(409, $errors, "Conflict: A category with this slug already exists.");
+    }
+    sendResponse(400, $errors, "Validation Error: " . implode(" ", $errors));
 }
 
 try {
-    $db = Database::getConnection();
+    // Insert new category
+    $newId = Category::create($data);
     
-    // Check for unique slug
-    $stmt = $db->prepare("SELECT id FROM categories WHERE slug = ?");
-    $stmt->execute([$slug]);
-    if ($stmt->fetch()) {
-        sendResponse(409, null, "Conflict: A category with this slug already exists.");
+    if (!$newId) {
+        sendResponse(500, null, "Internal Server Error: Failed to create category.");
     }
     
-    // Insert category
-    $stmt = $db->prepare("INSERT INTO categories (name, slug, description, icon, status) VALUES (?, ?, ?, ?, ?)");
-    $stmt->execute([$name, $slug, $description, $icon, $status]);
-    
-    $newId = $db->lastInsertId();
-    
-    // Retrieve the newly created category
-    $stmt = $db->prepare("SELECT id, name, slug, description, icon, status, created_at, updated_at FROM categories WHERE id = ?");
-    $stmt->execute([$newId]);
-    $category = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Retrieve and return the newly created category
+    $category = Category::findById($newId);
     
     sendResponse(201, $category, "Category created successfully.");
 } catch (PDOException $e) {
