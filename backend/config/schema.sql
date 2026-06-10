@@ -194,10 +194,13 @@ CREATE TABLE IF NOT EXISTS `categories` (
     `name` VARCHAR(100) NOT NULL,
     `slug` VARCHAR(100) NOT NULL UNIQUE,
     `description` TEXT DEFAULT NULL,
+    `image` VARCHAR(255) DEFAULT NULL,
     `icon` VARCHAR(50) DEFAULT 'Layers',
     `status` ENUM('Active', 'Inactive') DEFAULT 'Active',
+    `sort_order` INT NOT NULL DEFAULT 0,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX `idx_categories_slug` (`slug`),
     INDEX `idx_categories_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
