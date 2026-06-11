@@ -1,5 +1,6 @@
 <?php
 /**
+ * DELETE /api/lectures/{id}
  * DELETE /api/modules/{module_id}/lectures/{id}
  * Delete a lecture and re-index subsequent sort orders within the module
  */
@@ -11,17 +12,17 @@ require_once __DIR__ . '/../../middleware/auth_middleware.php';
 // Authenticate user (Admins, Super Admins, and Instructors only)
 $user = requireRole(['admin', 'super_admin', 'instructor']);
 
-$moduleId = isset($_GET['module_id']) ? (int)$_GET['module_id'] : 0;
+$pathModuleId = isset($_GET['module_id']) ? (int)$_GET['module_id'] : 0;
 $lectureId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-if ($moduleId <= 0 || $lectureId <= 0) {
-    sendResponse(400, null, "Invalid module ID or lecture ID.");
+if ($lectureId <= 0) {
+    sendResponse(400, null, "Invalid lecture ID.");
 }
 
 try {
     $db = Database::getConnection();
 
-    // Verify lecture exists and belongs to specified module
+    // Verify lecture exists
     $lectureStmt = $db->prepare("SELECT * FROM lectures WHERE id = ?");
     $lectureStmt->execute([$lectureId]);
     $lecture = $lectureStmt->fetch(PDO::FETCH_ASSOC);
@@ -30,7 +31,9 @@ try {
         sendResponse(404, null, "Lecture not found.");
     }
 
-    if ((int)$lecture['module_id'] !== $moduleId) {
+    $moduleId = (int)$lecture['module_id'];
+
+    if ($pathModuleId > 0 && $moduleId !== $pathModuleId) {
         sendResponse(400, null, "Conflict: Lecture does not belong to the specified module.");
     }
 

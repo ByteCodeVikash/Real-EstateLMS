@@ -35,6 +35,11 @@ return [
     'POST /api/courses/{course_id}/modules/reorder' => 'api/modules/reorder.php',
 
     // Lecture APIs
+    'GET /api/lectures' => 'api/lectures/list.php',
+    'GET /api/lectures/{id}' => 'api/lectures/get.php',
+    'POST /api/lectures' => 'api/lectures/create.php',
+    'PUT /api/lectures/{id}' => 'api/lectures/update.php',
+    'DELETE /api/lectures/{id}' => 'api/lectures/delete.php',
     'POST /api/modules/{module_id}/lectures' => 'api/lectures/create.php',
     'PUT /api/modules/{module_id}/lectures/{id}' => 'api/lectures/update.php',
     'DELETE /api/modules/{module_id}/lectures/{id}' => 'api/lectures/delete.php',
