@@ -27,8 +27,10 @@ return [
     'DELETE /api/courses/{id}' => 'api/courses/delete.php',
 
     // Course Modules APIs
-    'POST /api/courses/{course_id}/modules' => 'api/modules/create.php',
-    'PUT /api/courses/{course_id}/modules/{id}' => 'api/modules/update.php',
+    'GET /api/courses/{course_id}/modules'       => 'api/modules/list.php',
+    'GET /api/courses/{course_id}/modules/{id}'  => 'api/modules/get.php',
+    'POST /api/courses/{course_id}/modules'      => 'api/modules/create.php',
+    'PUT /api/courses/{course_id}/modules/{id}'  => 'api/modules/update.php',
     'DELETE /api/courses/{course_id}/modules/{id}' => 'api/modules/delete.php',
     'POST /api/courses/{course_id}/modules/reorder' => 'api/modules/reorder.php',
 

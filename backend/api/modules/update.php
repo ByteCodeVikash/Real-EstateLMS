@@ -44,6 +44,12 @@ try {
     // Assemble fields to update
     $title = isset($data['title']) ? trim(strip_tags($data['title'])) : $module['title'];
     $description = isset($data['description']) ? trim(strip_tags($data['description'])) : $module['description'];
+    $status = isset($data['status']) ? trim($data['status']) : $module['status'];
+
+    $allowedStatuses = ['Draft', 'Published', 'Archived'];
+    if (!in_array($status, $allowedStatuses)) {
+        sendResponse(400, null, "Validation Error: Invalid status. Allowed: Draft, Published, Archived.");
+    }
     
     if (isset($data['lectures'])) {
         $lectures = is_array($data['lectures']) ? json_encode($data['lectures']) : $module['lectures'];
@@ -57,12 +63,12 @@ try {
 
     // Perform update
     $updateStmt = $db->prepare("UPDATE course_modules 
-                                SET title = ?, description = ?, lectures = ? 
+                                SET title = ?, description = ?, status = ?, lectures = ? 
                                 WHERE id = ?");
-    $updateStmt->execute([$title, $description, $lectures, $moduleId]);
+    $updateStmt->execute([$title, $description, $status, $lectures, $moduleId]);
 
     // Fetch and return updated module
-    $fetchStmt = $db->prepare("SELECT id, course_id, title, description, sort_order, lectures 
+    $fetchStmt = $db->prepare("SELECT id, course_id, title, description, sort_order, status, created_at, updated_at 
                                FROM course_modules 
                                WHERE id = ?");
     $fetchStmt->execute([$moduleId]);

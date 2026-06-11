@@ -283,11 +283,15 @@ try {
         `title` VARCHAR(255) NOT NULL,
         `description` TEXT DEFAULT NULL,
         `sort_order` INT NOT NULL DEFAULT 0,
+        `status` ENUM('Draft', 'Published', 'Archived') NOT NULL DEFAULT 'Draft',
         `lectures` LONGTEXT DEFAULT NULL,
         `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         CONSTRAINT `fk_modules_course` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`) ON DELETE CASCADE,
         INDEX `idx_modules_course` (`course_id`),
-        INDEX `idx_modules_sort` (`sort_order`)
+        INDEX `idx_modules_sort` (`sort_order`),
+        INDEX `idx_modules_course_sort` (`course_id`, `sort_order`),
+        INDEX `idx_modules_course_status` (`course_id`, `status`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
     echo "Table 'course_modules' created/verified.\n";
 
