@@ -189,9 +189,81 @@ try {
 
 
 // -----------------------------------------------------------------------------
-// 5. Hostinger Shared Hosting Compatibility
+// 5. Rate Limiting, Brute Force & API Security Headers
 // -----------------------------------------------------------------------------
-echo "\n" . YELLOW . "--- 5. Hostinger Compatibility Verification ---" . NC . "\n";
+echo "\n" . YELLOW . "--- 5. Rate Limiting, Brute Force & Security Headers ---" . NC . "\n";
+
+$securityHelperPath = __DIR__ . '/../helpers/security.php';
+$securityHelperExists = file_exists($securityHelperPath);
+auditTest("security.php helper file exists", $securityHelperExists);
+
+if ($securityHelperExists) {
+    require_once $securityHelperPath;
+    auditTest("checkRateLimit function exists", function_exists('checkRateLimit'));
+    auditTest("checkBruteForce function exists", function_exists('checkBruteForce'));
+    auditTest("recordFailedLogin function exists", function_exists('recordFailedLogin'));
+    auditTest("clearFailedLogins function exists", function_exists('clearFailedLogins'));
+
+    // Test self-healing DB tables creation
+    try {
+        $db = Database::getConnection();
+        
+        // Call security functions to trigger self-healing table creation
+        recordFailedLogin('test_security_audit@example.com');
+        
+        $rateLimitsTableExists = $db->query("SHOW TABLES LIKE 'rate_limits'")->rowCount() > 0;
+        $failedLoginsTableExists = $db->query("SHOW TABLES LIKE 'failed_logins'")->rowCount() > 0;
+        
+        auditTest("Rate limiting database table 'rate_limits' created/exists", $rateLimitsTableExists);
+        auditTest("Brute force database table 'failed_logins' created/exists", $failedLoginsTableExists);
+        
+        // Test recording and clearing failed logins
+        $stmt = $db->prepare("SELECT COUNT(*) FROM failed_logins WHERE email = ?");
+        $stmt->execute(['test_security_audit@example.com']);
+        $countBefore = (int)$stmt->fetchColumn();
+        auditTest("recordFailedLogin inserts attempt into database", $countBefore > 0);
+        
+        clearFailedLogins('test_security_audit@example.com');
+        $stmt->execute(['test_security_audit@example.com']);
+        $countAfter = (int)$stmt->fetchColumn();
+        auditTest("clearFailedLogins removes attempts from database", $countAfter === 0);
+        
+        // Clean up rate_limits test entries
+        $db->query("DELETE FROM rate_limits WHERE ip_address = '127.0.0.1'");
+    } catch (Exception $e) {
+        auditTest("Security database operations succeeded", false, $e->getMessage());
+    }
+}
+
+// Test CORS and Security Headers via curl request to local development port
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, "http://127.0.0.1:8282/api/health");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HEADER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, ["Origin: http://localhost:5173"]);
+curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+$response = curl_exec($ch);
+curl_close($ch);
+
+if ($response) {
+    $hasCorsHeader = strpos($response, "Access-Control-Allow-Origin: http://localhost:5173") !== false;
+    $hasNosniffHeader = strpos($response, "X-Content-Type-Options: nosniff") !== false;
+    $hasFrameHeader = strpos($response, "X-Frame-Options: DENY") !== false;
+    
+    auditTest("CORS middleware allows whitelisted origin http://localhost:5173", $hasCorsHeader);
+    auditTest("API responses include X-Content-Type-Options: nosniff", $hasNosniffHeader);
+    auditTest("API responses include X-Frame-Options: DENY", $hasFrameHeader);
+} else {
+    // Fallback: static analysis verification of cors file
+    $corsContent = file_get_contents(__DIR__ . '/../middleware/cors.php');
+    $hasCorsAudit = strpos($corsContent, "X-Content-Type-Options: nosniff") !== false && strpos($corsContent, "\$allowedOrigins") !== false;
+    auditTest("CORS whitelist and security headers verified in cors.php", $hasCorsAudit);
+}
+
+// -----------------------------------------------------------------------------
+// 6. Hostinger Shared Hosting Compatibility
+// -----------------------------------------------------------------------------
+echo "\n" . YELLOW . "--- 6. Hostinger Compatibility Verification ---" . NC . "\n";
 
 // PHP Version
 $phpVersion = PHP_VERSION;

@@ -467,6 +467,44 @@ $escalateCertOnly = makeRequest('PUT', "/api/enrollments/{$newEnrollmentId}", [
 ], $studentToken);
 assertTest("Student Privilege Escalation Check: Certificate modification alone returns 403", $escalateCertOnly['code'] === 403);
 
+// G. New API Endpoint Tests (GET /api/enrollments and DELETE /api/enrollments/{id})
+// 1. GET /api/enrollments by Student
+$studentEnrollList = makeRequest('GET', '/api/enrollments', null, $studentToken);
+assertTest("GET /api/enrollments (Student): Successful list retrieval", $studentEnrollList['code'] === 200 && isset($studentEnrollList['body']['data']['enrollments']), "Failed to retrieve student enrollments list");
+
+// 2. GET /api/enrollments by Student filtering other user_id (should return 403)
+$studentEnrollListForbidden = makeRequest('GET', '/api/enrollments?user_id=' . $adminId, null, $studentToken);
+assertTest("GET /api/enrollments (Student - filter other user): Returns 403 Forbidden", $studentEnrollListForbidden['code'] === 403, "Allowed student to filter list by other user_id: " . $studentEnrollListForbidden['code']);
+
+// 3. GET /api/enrollments by Admin (unrestricted, pagination, filtering by user)
+$adminEnrollList = makeRequest('GET', '/api/enrollments?user_id=' . $studentId . '&course_id=' . $newCourseId . '&limit=5&page=1', null, $adminToken);
+$hasEnrollmentInList = false;
+if (isset($adminEnrollList['body']['data']['enrollments'])) {
+    foreach ($adminEnrollList['body']['data']['enrollments'] as $e) {
+        if ((int)$e['id'] === (int)$newEnrollmentId) {
+            $hasEnrollmentInList = true;
+            break;
+        }
+    }
+}
+assertTest("GET /api/enrollments (Admin - user & course filters & pagination): Successful list retrieval", $adminEnrollList['code'] === 200 && $hasEnrollmentInList && isset($adminEnrollList['body']['data']['pagination']['total_items']), "Failed to retrieve filtered/paginated enrollments list for Admin");
+
+// 4. DELETE /api/enrollments/{id} by Student (should return 403)
+$studentDeleteEnroll = makeRequest('DELETE', "/api/enrollments/{$newEnrollmentId}", null, $studentToken);
+assertTest("DELETE /api/enrollments (Student): Returns 403 Forbidden", $studentDeleteEnroll['code'] === 403, "Allowed student to delete enrollment: " . $studentDeleteEnroll['code']);
+
+// 5. DELETE /api/enrollments/{id} by Instructor on course not owned (should return 403)
+$instructorDeleteEnroll = makeRequest('DELETE', "/api/enrollments/{$newEnrollmentId}", null, $instructorToken);
+assertTest("DELETE /api/enrollments (Instructor - other course): Returns 403 Forbidden", $instructorDeleteEnroll['code'] === 403, "Allowed instructor to delete enrollment in other course: " . $instructorDeleteEnroll['code']);
+
+// 6. DELETE /api/enrollments/{id} by Admin (should succeed 200)
+$adminDeleteEnroll = makeRequest('DELETE', "/api/enrollments/{$newEnrollmentId}", null, $adminToken);
+assertTest("DELETE /api/enrollments (Admin): Successful deletion", $adminDeleteEnroll['code'] === 200, "Admin failed to delete enrollment: " . $adminDeleteEnroll['code']);
+
+// 7. Verify deleted enrollment is not found
+$deletedEnrollGet = makeRequest('GET', "/api/enrollments/{$newEnrollmentId}", null, $adminToken);
+assertTest("DELETE /api/enrollments verification: Get returns 404", $deletedEnrollGet['code'] === 404, "Deleted enrollment still accessible: " . $deletedEnrollGet['code']);
+
 // -----------------------------------------------------------------------------
 // MODULE 6: API SECURITY AUDIT (IDOR / SQL INJECTION)
 // -----------------------------------------------------------------------------
