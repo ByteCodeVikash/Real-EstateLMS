@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
@@ -28,13 +28,22 @@ const BGLogo = ({ className = "w-12 h-12" }) => (
 const IC = "w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 focus:border-[#0A66C2]/60 focus:ring-1 focus:ring-[#0A66C2]/30 outline-none transition-all placeholder:text-white/20 rounded-xl text-white font-medium text-sm";
 
 const AdminLogin = () => {
-  const { login, logout } = useAuth();
+  const { login, logout, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Auto-login redirection if administrator is already authenticated
+  useEffect(() => {
+    if (!authLoading && user) {
+      if (user.role === 'admin' || user.role === 'super_admin') {
+        navigate('/admin/dashboard', { replace: true });
+      }
+    }
+  }, [user, authLoading, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

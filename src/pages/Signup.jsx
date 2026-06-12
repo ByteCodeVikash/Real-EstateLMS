@@ -37,7 +37,7 @@ const Benefit = ({ text }) => (
 const IC = "w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 focus:border-[#D4AF37]/60 focus:ring-1 focus:ring-[#D4AF37]/30 outline-none transition-all placeholder:text-white/20 rounded-xl text-white font-medium text-sm";
 
 const Signup = () => {
-  const { signup, loginWithGoogle } = useAuth();
+  const { signup, loginWithGoogle, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -50,6 +50,13 @@ const Signup = () => {
   const [info, setInfo] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Auto-login redirection if user is already authenticated
+  useEffect(() => {
+    if (!authLoading && user) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [user, authLoading, navigate]);
 
   useEffect(() => {
     const handleMessage = async (event) => {

@@ -14,6 +14,7 @@ require_once __DIR__ . '/../../config/db.php';
 require_once __DIR__ . '/../../helpers/request.php';
 require_once __DIR__ . '/../../helpers/response.php';
 require_once __DIR__ . '/../../helpers/jwt.php';
+require_once __DIR__ . '/../../helpers/security.php';
 
 // Parse POST input data payload
 $data = getRequestData();
@@ -25,6 +26,18 @@ $remember = (bool)($data['remember'] ?? false);
 if (empty($email) || empty($password)) {
     sendResponse(400, null, "Validation Error: Email and password fields are required.");
 }
+
+if (strlen($email) > 254) {
+    sendResponse(400, null, "Validation Error: Email address exceeds maximum length.");
+}
+
+if (strlen($password) > 72) {
+    sendResponse(400, null, "Validation Error: Password is too long (maximum 72 characters).");
+}
+
+// Security validations
+checkRateLimit('login', 20, 60);
+checkBruteForce($email);
 
 try {
     $db = Database::getConnection();
@@ -62,8 +75,12 @@ try {
     }
     
     if (!$isAuthenticated) {
+        recordFailedLogin($email);
         sendResponse(401, null, "Unauthorized: Invalid email or password.");
     }
+
+    // Clear failed login attempts on successful login
+    clearFailedLogins($email);
     
     // Calculate expiration window: 30 days if remember me is set, else 24 hours
     $expiration = time() + ($remember ? 30 * 24 * 60 * 60 : 24 * 60 * 60);

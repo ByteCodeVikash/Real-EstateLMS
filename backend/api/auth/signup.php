@@ -13,9 +13,13 @@ if (!defined('SECURE_ENTRY')) {
 require_once __DIR__ . '/../../config/db.php';
 require_once __DIR__ . '/../../helpers/request.php';
 require_once __DIR__ . '/../../helpers/response.php';
+require_once __DIR__ . '/../../helpers/security.php';
 
 // Parse POST input data payload
 $data = getRequestData();
+
+// Enforce rate limiting
+checkRateLimit('signup', 10, 60);
 
 $fullName        = trim(strip_tags($data['full_name'] ?? ''));
 $email           = trim(filter_var($data['email'] ?? '', FILTER_SANITIZE_EMAIL));
@@ -28,12 +32,24 @@ if (empty($fullName) || empty($email) || empty($password)) {
     sendResponse(400, null, "Validation Error: Full name, email, and password fields are required.");
 }
 
+if (strlen($fullName) > 100) {
+    sendResponse(400, null, "Validation Error: Full name is too long.");
+}
+
+if (strlen($email) > 254) {
+    sendResponse(400, null, "Validation Error: Email address exceeds maximum length.");
+}
+
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     sendResponse(400, null, "Validation Error: Please enter a valid email address.");
 }
 
 if (strlen($password) < 6) {
     sendResponse(400, null, "Validation Error: Password must be at least 6 characters long.");
+}
+
+if (strlen($password) > 72) {
+    sendResponse(400, null, "Validation Error: Password is too long (maximum 72 characters).");
 }
 
 if ($password !== $confirmPassword) {

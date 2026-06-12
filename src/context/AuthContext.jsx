@@ -9,7 +9,9 @@ const API_BASE_URL = window.location.hostname === 'localhost' || window.location
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('relms_token'));
+  const [token, setToken] = useState(
+    localStorage.getItem('relms_token') || sessionStorage.getItem('relms_token')
+  );
   const [loading, setLoading] = useState(true);
 
   // Restore session on mount
@@ -61,7 +63,11 @@ export const AuthProvider = ({ children }) => {
 
       if (response.ok && data.status === 'success') {
         const { token: newToken, user: newUser } = data.data;
-        localStorage.setItem('relms_token', newToken);
+        if (remember) {
+          localStorage.setItem('relms_token', newToken);
+        } else {
+          sessionStorage.setItem('relms_token', newToken);
+        }
         setToken(newToken);
         setUser(newUser);
         return { success: true, user: newUser };
@@ -117,7 +123,11 @@ export const AuthProvider = ({ children }) => {
 
       if (response.ok && data.status === 'success') {
         const { token: newToken, user: newUser } = data.data;
-        localStorage.setItem('relms_token', newToken);
+        if (remember) {
+          localStorage.setItem('relms_token', newToken);
+        } else {
+          sessionStorage.setItem('relms_token', newToken);
+        }
         setToken(newToken);
         setUser(newUser);
         return { success: true, user: newUser };
@@ -144,6 +154,7 @@ export const AuthProvider = ({ children }) => {
       console.error('Logout error:', error);
     } finally {
       localStorage.removeItem('relms_token');
+      sessionStorage.removeItem('relms_token');
       setToken(null);
       setUser(null);
     }

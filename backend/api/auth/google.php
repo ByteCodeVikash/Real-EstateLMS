@@ -14,12 +14,16 @@ require_once __DIR__ . '/../../config/db.php';
 require_once __DIR__ . '/../../helpers/request.php';
 require_once __DIR__ . '/../../helpers/response.php';
 require_once __DIR__ . '/../../helpers/jwt.php';
+require_once __DIR__ . '/../../helpers/security.php';
 
 // Parse POST input data payload
 $data = getRequestData();
 
 $idToken  = trim($data['id_token'] ?? $data['credential'] ?? '');
 $remember = (bool)($data['remember'] ?? false);
+
+// Enforce rate limiting
+checkRateLimit('google_login', 20, 60);
 
 if (empty($idToken)) {
     sendResponse(400, null, "Validation Error: Google ID token is required.");
@@ -81,7 +85,7 @@ if (!$googlePayload) {
 
 // 2. Security validation: check audience claim
 $aud = $googlePayload['aud'] ?? '';
-if (APP_ENV !== 'development' && $aud !== GOOGLE_CLIENT_ID) {
+if ($aud !== GOOGLE_CLIENT_ID) {
     sendResponse(401, null, "Unauthorized: Client ID mismatch.");
 }
 

@@ -38,7 +38,7 @@ const StatPill = ({ value, label }) => (
 );
 
 const Login = () => {
-  const { login, loginWithGoogle } = useAuth();
+  const { login, loginWithGoogle, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -51,6 +51,15 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const from = location.state?.from?.pathname || '/dashboard';
+
+  // Auto-login redirection if user is already authenticated
+  useEffect(() => {
+    if (!authLoading && user) {
+      const redirectPath = (user.role === 'admin' || user.role === 'super_admin') && from === '/dashboard'
+        ? '/admin/dashboard' : from;
+      navigate(redirectPath, { replace: true });
+    }
+  }, [user, authLoading, navigate, from]);
 
   useEffect(() => {
     const handleMessage = async (event) => {

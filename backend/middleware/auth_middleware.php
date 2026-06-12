@@ -131,3 +131,79 @@ function requireRole(array $allowedRoles): array {
 function requireAdmin(): array {
     return requireRole(['admin', 'super_admin']);
 }
+
+/**
+ * Checks if the user has a specific permission.
+ * @param array $user The user array returned by requireAuth()
+ * @param string $permissionName The permission name (e.g. 'courses:create')
+ * @return bool
+ */
+function hasPermission(array $user, string $permissionName): bool {
+    if (empty($user['role'])) {
+        return false;
+    }
+    
+    $role = $user['role'];
+    
+    // Super admin has all permissions
+    if ($role === 'super_admin') {
+        return true;
+    }
+    
+    try {
+        $db = Database::getConnection();
+        $stmt = $db->prepare("
+            SELECT COUNT(*) 
+            FROM role_permissions rp
+            INNER JOIN roles r ON rp.role_id = r.id
+            INNER JOIN permissions p ON rp.permission_id = p.id
+            WHERE r.name = ? AND p.name = ?
+        ");
+        $stmt->execute([$role, $permissionName]);
+        $count = (int)$stmt->fetchColumn();
+        return $count > 0;
+    } catch (Exception $e) {
+        // Fallback to static mapping in case database is offline or not configured
+        $roleToPermissions = [
+            'admin' => [
+                'users:create', 'users:read', 'users:update',
+                'courses:create', 'courses:read', 'courses:update', 'courses:delete',
+                'enrollments:create', 'enrollments:read', 'enrollments:update',
+                'assignments:create', 'assignments:read', 'assignments:update', 'assignments:delete',
+                'submissions:grade', 'submissions:read'
+            ],
+            'instructor' => [
+                'users:read',
+                'courses:read', 'courses:update',
+                'enrollments:read',
+                'assignments:create', 'assignments:read', 'assignments:update',
+                'submissions:grade', 'submissions:read'
+            ],
+            'student' => [
+                'courses:read',
+                'enrollments:read',
+                'assignments:read',
+                'submissions:create', 'submissions:read'
+            ]
+        ];
+        
+        if (isset($roleToPermissions[$role])) {
+            return in_array($permissionName, $roleToPermissions[$role]);
+        }
+        return false;
+    }
+}
+
+/**
+ * Permission-based authorization gate.
+ * Verifies if the authenticated user has the specified permission.
+ * @param string $permissionName The required permission
+ * @return array The authenticated user details
+ */
+function requirePermission(string $permissionName): array {
+    $user = requireAuth();
+    if (!hasPermission($user, $permissionName)) {
+        sendResponse(403, null, "Forbidden: You do not have the required access permissions.");
+    }
+    return $user;
+}
