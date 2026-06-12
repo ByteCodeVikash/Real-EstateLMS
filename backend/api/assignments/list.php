@@ -15,9 +15,12 @@ $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
 if ($page < 1) $page = 1;
 if ($limit < 1) $limit = 10;
+if ($limit > 100) $limit = 100; // Cap limit at 100 to prevent DoS
 $offset = ($page - 1) * $limit;
 
 $courseIdFilter = isset($_GET['course_id']) ? (int)$_GET['course_id'] : 0;
+$statusFilter = isset($_GET['status']) ? trim((string)$_GET['status']) : '';
+$searchFilter = isset($_GET['search']) ? trim((string)$_GET['search']) : '';
 
 try {
     $db = Database::getConnection();
@@ -48,6 +51,40 @@ try {
     if ($courseIdFilter > 0) {
         $conditions[] = "a.course_id = ?";
         $params[] = $courseIdFilter;
+    }
+
+    // 4. Optional status filter
+    if ($statusFilter !== '') {
+        if ($user['role'] === 'student') {
+            // Students can only see Published assignments. If they filter by something else, they see nothing.
+            if (strtolower($statusFilter) === 'published') {
+                // Already handled by role-based logic
+            } else {
+                $conditions[] = "1=0"; // Force empty result securely
+            }
+        } else {
+            // Admin/Instructor can filter by status
+            $validStatuses = ['Draft', 'Published', 'Archived'];
+            $matchedStatus = null;
+            foreach ($validStatuses as $vs) {
+                if (strcasecmp($vs, $statusFilter) === 0) {
+                    $matchedStatus = $vs;
+                    break;
+                }
+            }
+            if ($matchedStatus !== null) {
+                $conditions[] = "a.status = ?";
+                $params[] = $matchedStatus;
+            } else {
+                $conditions[] = "1=0"; // Force empty result securely for invalid status
+            }
+        }
+    }
+
+    // 5. Optional search filter
+    if ($searchFilter !== '') {
+        $conditions[] = "a.title LIKE ?";
+        $params[] = "%{$searchFilter}%";
     }
     
     // Combine conditions

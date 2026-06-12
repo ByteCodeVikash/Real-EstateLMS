@@ -33,6 +33,10 @@ if (!$courseId) {
     exit(1);
 }
 
+// Ensure mock user ID 1 exists for testing
+$db->query("INSERT IGNORE INTO users (id, full_name, email, password_hash, role, status) VALUES 
+    (1, 'Sarah Jenkins', 'sarah.j@realtypro.com', 'dummy_pass', 'student', 'Active')");
+
 // Save original role of user 1 to restore later
 $originalUser1Role = $db->query("SELECT role FROM users WHERE id = 1")->fetchColumn() ?: 'student';
 
@@ -184,6 +188,58 @@ try {
         ];
         $res = makeRequest('PUT', '/api/assignments/' . $createdAssignmentId, $updatePayload, 'mock-instructor-token');
         assertAPI("PUT /api/assignments/{id} updates assignment details", $res['code'] === 200 && $res['body']['data']['max_marks'] === 80, "Code: " . $res['code']);
+
+        // Test 7b: GET /api/assignments (Limit ceiling)
+        $res = makeRequest('GET', '/api/assignments?limit=1000', null, 'mock-instructor-token');
+        assertAPI("GET /api/assignments caps limit to 100", $res['code'] === 200 && $res['body']['data']['pagination']['limit'] === 100, "Limit: " . ($res['body']['data']['pagination']['limit'] ?? ''));
+
+        // Test 7c: GET /api/assignments (Status filtering - Published)
+        $res = makeRequest('GET', '/api/assignments?status=Published', null, 'mock-instructor-token');
+        $hasMatch = false;
+        if ($res['code'] === 200 && isset($res['body']['data']['assignments'])) {
+            foreach ($res['body']['data']['assignments'] as $a) {
+                if ($a['id'] === $createdAssignmentId) {
+                    $hasMatch = true;
+                }
+            }
+        }
+        assertAPI("GET /api/assignments status=Published returns our assignment", $hasMatch, "Code: " . $res['code']);
+
+        // Test 7d: GET /api/assignments (Status filtering - Draft)
+        $res = makeRequest('GET', '/api/assignments?status=Draft', null, 'mock-instructor-token');
+        $hasMatch = false;
+        if ($res['code'] === 200 && isset($res['body']['data']['assignments'])) {
+            foreach ($res['body']['data']['assignments'] as $a) {
+                if ($a['id'] === $createdAssignmentId) {
+                    $hasMatch = true;
+                }
+            }
+        }
+        assertAPI("GET /api/assignments status=Draft does NOT return our Published assignment", !$hasMatch, "Code: " . $res['code']);
+
+        // Test 7e: GET /api/assignments (Search filtering - Matches)
+        $res = makeRequest('GET', '/api/assignments?search=REST', null, 'mock-instructor-token');
+        $hasMatch = false;
+        if ($res['code'] === 200 && isset($res['body']['data']['assignments'])) {
+            foreach ($res['body']['data']['assignments'] as $a) {
+                if ($a['id'] === $createdAssignmentId) {
+                    $hasMatch = true;
+                }
+            }
+        }
+        assertAPI("GET /api/assignments search=REST matches our assignment", $hasMatch, "Code: " . $res['code']);
+
+        // Test 7f: GET /api/assignments (Search filtering - No Match)
+        $res = makeRequest('GET', '/api/assignments?search=NoMatchTitleXYZ', null, 'mock-instructor-token');
+        $hasMatch = false;
+        if ($res['code'] === 200 && isset($res['body']['data']['assignments'])) {
+            foreach ($res['body']['data']['assignments'] as $a) {
+                if ($a['id'] === $createdAssignmentId) {
+                    $hasMatch = true;
+                }
+            }
+        }
+        assertAPI("GET /api/assignments search=NoMatchTitleXYZ does not return our assignment", !$hasMatch, "Code: " . $res['code']);
 
         // Set to student for student edit/delete test blocks
         $db->query("UPDATE users SET role = 'student' WHERE id = 1");

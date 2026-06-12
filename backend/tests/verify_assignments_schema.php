@@ -199,7 +199,21 @@ echo "\n" . YELLOW . "--- 3. Testing Validation Layer ---" . NC . "\n";
 
 // Retrieve valid Course, Module, and User IDs for tests
 $courseId = (int)$db->query("SELECT id FROM courses LIMIT 1")->fetchColumn();
+$tempCourseCreated = false;
+if (!$courseId) {
+    $db->exec("INSERT INTO courses (title, slug, mentor_name, status) VALUES ('Temp Audit Course', 'temp-audit-course-schema', 'Mentor', 'Published')");
+    $courseId = (int)$db->lastInsertId();
+    $tempCourseCreated = true;
+}
+
 $moduleId = (int)$db->query("SELECT id FROM course_modules WHERE course_id = $courseId LIMIT 1")->fetchColumn();
+$tempModuleCreated = false;
+if (!$moduleId) {
+    $db->prepare("INSERT INTO course_modules (course_id, title, sort_order, status) VALUES (?, 'Temp Audit Module', 1, 'Published')")->execute([$courseId]);
+    $moduleId = (int)$db->lastInsertId();
+    $tempModuleCreated = true;
+}
+
 $instructorId = (int)$db->query("SELECT id FROM users WHERE role = 'instructor' LIMIT 1")->fetchColumn();
 $studentId = (int)$db->query("SELECT id FROM users WHERE role = 'student' LIMIT 1")->fetchColumn();
 $adminId = (int)$db->query("SELECT id FROM users WHERE role = 'admin' LIMIT 1")->fetchColumn();
@@ -366,6 +380,12 @@ assertTest("Submission details mapped correctly",
 // D. Clean up temporary test data
 Assignment::delete($tempAssignId);
 Assignment::delete($draftAssignId);
+if ($tempModuleCreated) {
+    $db->exec("DELETE FROM course_modules WHERE id = $moduleId");
+}
+if ($tempCourseCreated) {
+    $db->exec("DELETE FROM courses WHERE id = $courseId");
+}
 
 echo "\n" . YELLOW . "==================================================" . NC . "\n";
 echo YELLOW . "VERIFICATION COMPLETED: {$testsPassed} / {$testsRun} PASSED" . NC . "\n";
