@@ -8,7 +8,12 @@ date_default_timezone_set('Asia/Kolkata');
 
 // Detect environment mode: 'development' or 'production'
 $isLocal = (php_sapi_name() === 'cli') || in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1']) || in_array($_SERVER['SERVER_NAME'] ?? '', ['localhost', '127.0.0.1']);
-define('APP_ENV', $isLocal ? 'development' : 'production');
+$env = getenv('APP_ENV');
+if ($env === 'production' || $env === 'development') {
+    define('APP_ENV', $env);
+} else {
+    define('APP_ENV', $isLocal ? 'development' : 'production');
+}
 
 // Error reporting settings based on environment
 if (APP_ENV === 'development') {
@@ -38,6 +43,6 @@ if (APP_ENV === 'development') {
 }
 
 // Security & Authentication keys
-define('JWT_SECRET', 'bj_reality_academy_secure_key_2026');
+define('JWT_SECRET', getenv('JWT_SECRET') ?: 'bj_reality_academy_secure_key_2026');
 define('GOOGLE_CLIENT_ID', '476678466295-8pj5ao3k65gc35grt1o31m7uk60rqvnn.apps.googleusercontent.com');
 

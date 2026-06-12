@@ -46,10 +46,12 @@ return [
     'POST /api/modules/{module_id}/lectures/reorder' => 'api/lectures/reorder.php',
 
     // Enrollment APIs
+    'GET /api/enrollments' => 'api/enrollments/list.php',
     'POST /api/enrollments' => 'api/enrollments/create.php',
     'GET /api/my-courses' => 'api/enrollments/my_courses.php',
     'GET /api/enrollments/{id}' => 'api/enrollments/get.php',
     'PUT /api/enrollments/{id}' => 'api/enrollments/update.php',
+    'DELETE /api/enrollments/{id}' => 'api/enrollments/delete.php',
 
     // Assignments APIs
     'POST /api/assignments' => 'api/assignments/create.php',

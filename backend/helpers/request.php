@@ -39,13 +39,20 @@ function getRequestData(): array {
  * @return string|null
  */
 function getBearerToken(): ?string {
-    $headers = getallheaders();
-    
     $authHeader = null;
-    if (isset($headers['Authorization'])) {
-        $authHeader = $headers['Authorization'];
-    } elseif (isset($headers['authorization'])) {
-        $authHeader = $headers['authorization'];
+    
+    // Check $_SERVER directly for HTTP_AUTHORIZATION or REDIRECT_HTTP_AUTHORIZATION (common in Apache/CGI setups)
+    if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'];
+    } elseif (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+        $authHeader = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+    } else {
+        $headers = getallheaders();
+        if (isset($headers['Authorization'])) {
+            $authHeader = $headers['Authorization'];
+        } elseif (isset($headers['authorization'])) {
+            $authHeader = $headers['authorization'];
+        }
     }
 
     if ($authHeader && preg_match('/Bearer\s(\S+)/i', $authHeader, $matches)) {
