@@ -20,11 +20,11 @@ if ($id <= 0) {
 
 $data = getRequestData();
 $progress = isset($data['progress']) ? (int)$data['progress'] : null;
-$completionStatus = isset($data['completion_status']) ? trim(strip_tags($data['completion_status'])) : null;
+$completionStatus = isset($data['completion_status']) ? trim(strip_tags($data['completion_status'])) : (isset($data['status']) ? trim(strip_tags($data['status'])) : null);
 $certificateIssued = isset($data['certificate_issued']) ? (int)$data['certificate_issued'] : null;
 
 if ($progress === null && $completionStatus === null && $certificateIssued === null) {
-    sendResponse(400, null, "Validation Error: At least one field (progress, completion_status, certificate_issued) is required to update.");
+    sendResponse(400, null, "Validation Error: At least one field (progress, status, completion_status, certificate_issued) is required to update.");
 }
 
 if ($progress !== null && ($progress < 0 || $progress > 100)) {
@@ -32,7 +32,7 @@ if ($progress !== null && ($progress < 0 || $progress > 100)) {
 }
 
 if ($completionStatus !== null && !in_array($completionStatus, ['Active', 'Completed', 'Dropped'])) {
-    sendResponse(400, null, "Validation Error: Invalid completion_status value.");
+    sendResponse(400, null, "Validation Error: Invalid status or completion_status value.");
 }
 
 try {
@@ -94,6 +94,8 @@ try {
     if ($completionStatus !== null) {
         $fields[] = "`completion_status` = ?";
         $params[] = $completionStatus;
+        $fields[] = "`status` = ?";
+        $params[] = $completionStatus;
     }
     if ($certificateIssued !== null) {
         $fields[] = "`certificate_issued` = ?";
@@ -106,7 +108,7 @@ try {
     $updateStmt->execute($params);
     
     // Fetch updated enrollment details
-    $getStmt = $db->prepare("SELECT id, user_id, course_id, enrollment_date, progress, completion_status, certificate_issued FROM enrollments WHERE id = ?");
+    $getStmt = $db->prepare("SELECT id, user_id, course_id, status, enrolled_at, completed_at, enrollment_date, progress, created_at, updated_at, completion_status, certificate_issued FROM enrollments WHERE id = ?");
     $getStmt->execute([$id]);
     $updatedEnrollment = $getStmt->fetch(PDO::FETCH_ASSOC);
     
