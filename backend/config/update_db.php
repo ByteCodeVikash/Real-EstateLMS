@@ -382,8 +382,13 @@ try {
         `id` INT AUTO_INCREMENT PRIMARY KEY,
         `user_id` INT NOT NULL,
         `course_id` INT NOT NULL,
+        `status` ENUM('Active', 'Completed', 'Dropped') DEFAULT 'Active',
+        `enrolled_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        `completed_at` TIMESTAMP NULL DEFAULT NULL,
         `enrollment_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         `progress` INT DEFAULT 0,
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         `completion_status` ENUM('Active', 'Completed', 'Dropped') DEFAULT 'Active',
         `certificate_issued` TINYINT(1) DEFAULT 0,
         UNIQUE KEY `uk_user_course` (`user_id`, `course_id`),
@@ -392,8 +397,61 @@ try {
         INDEX `idx_enrollments_user` (`user_id`),
         INDEX `idx_enrollments_course` (`course_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+    // Create triggers to sync old/new fields
+    $db->exec("DROP TRIGGER IF EXISTS `before_insert_enrollments`");
+    $db->exec("DROP TRIGGER IF EXISTS `before_update_enrollments`");
+
+    $db->exec("
+        CREATE TRIGGER `before_insert_enrollments`
+        BEFORE INSERT ON `enrollments`
+        FOR EACH ROW
+        BEGIN
+            IF NEW.`status` = 'Active' AND NEW.`completion_status` != 'Active' THEN
+                SET NEW.`status` = NEW.`completion_status`;
+            ELSEIF NEW.`completion_status` = 'Active' AND NEW.`status` != 'Active' THEN
+                SET NEW.`completion_status` = NEW.`status`;
+            END IF;
+            
+            IF NEW.`enrolled_at` = CURRENT_TIMESTAMP AND NEW.`enrollment_date` != CURRENT_TIMESTAMP THEN
+                SET NEW.`enrolled_at` = NEW.`enrollment_date`;
+            ELSEIF NEW.`enrollment_date` = CURRENT_TIMESTAMP AND NEW.`enrolled_at` != CURRENT_TIMESTAMP THEN
+                SET NEW.`enrollment_date` = NEW.`enrolled_at`;
+            END IF;
+
+            IF NEW.`status` = 'Completed' AND NEW.`completed_at` IS NULL THEN
+                SET NEW.`completed_at` = CURRENT_TIMESTAMP;
+            END IF;
+        END;
+    ");
+
+    $db->exec("
+        CREATE TRIGGER `before_update_enrollments`
+        BEFORE UPDATE ON `enrollments`
+        FOR EACH ROW
+        BEGIN
+            IF NEW.`completion_status` <> OLD.`completion_status` THEN
+                SET NEW.`status` = NEW.`completion_status`;
+            ELSEIF NEW.`status` <> OLD.`status` THEN
+                SET NEW.`completion_status` = NEW.`status`;
+            END IF;
+
+            IF NEW.`status` = 'Completed' AND (OLD.`status` IS NULL OR OLD.`status` <> 'Completed') THEN
+                SET NEW.`completed_at` = CURRENT_TIMESTAMP;
+            ELSEIF NEW.`status` <> 'Completed' THEN
+                SET NEW.`completed_at` = NULL;
+            END IF;
+
+            IF NEW.`enrollment_date` <> OLD.`enrollment_date` THEN
+                SET NEW.`enrolled_at` = NEW.`enrollment_date`;
+            ELSEIF NEW.`enrolled_at` <> OLD.`enrolled_at` THEN
+                SET NEW.`enrollment_date` = NEW.`enrolled_at`;
+            END IF;
+        END;
+    ");
+
     $db->exec("SET FOREIGN_KEY_CHECKS = 1;");
-    echo "Enrollments table created.\n";
+    echo "Enrollments table created with triggers.\n";
 
     // Seed mock enrollments for student@bgrealtyacademy.com
     $stmtUser->execute(['student@bgrealtyacademy.com']);

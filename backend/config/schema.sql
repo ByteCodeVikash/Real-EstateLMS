@@ -98,8 +98,13 @@ CREATE TABLE IF NOT EXISTS `enrollments` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `user_id` INT NOT NULL,
     `course_id` INT NOT NULL,
+    `status` ENUM('Active', 'Completed', 'Dropped') DEFAULT 'Active',
+    `enrolled_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `completed_at` TIMESTAMP NULL DEFAULT NULL,
     `enrollment_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `progress` INT DEFAULT 0, -- 0 to 100 percentage
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `completion_status` ENUM('Active', 'Completed', 'Dropped') DEFAULT 'Active',
     `certificate_issued` TINYINT(1) DEFAULT 0,
     UNIQUE KEY `uk_user_course` (`user_id`, `course_id`),
