@@ -8,11 +8,13 @@ import {
   GraduationCap, DollarSign, Menu, X, ExternalLink, 
   BarChart3, Zap, Globe, Layers, Sparkles, Gem, Crown, 
   Server, BadgeCheck,
-  BrainCircuit, Eye
+  BrainCircuit, Eye, Sun, Moon
 } from 'lucide-react';
-import { Button, Badge } from '../components/UI';
+import { Button } from '../components/UI';
 import { BGLogo } from '../components/Layout';
 import { Link } from 'react-router-dom';
+import { mockData } from '../data/mockData';
+import { useTheme } from '../context/ThemeContext';
 
 // Hoisted SVG components to avoid Temporal Dead Zone issues
 function Rocket({ className }) {
@@ -64,12 +66,16 @@ function Youtube({ className }) {
 }
 
 const LandingPage = () => {
+  // ─── THEME ───────────────────────────────────────────────────────────
+  const { isDarkMode, toggleTheme } = useTheme();
+
   // ─── STATES ─────────────────────────────────────────────────────────
-  const [activeDay, setActiveDay] = useState(1);
   const [activeFaq, setActiveFaq] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ hours: 2, minutes: 44, seconds: 12 });
   const [enrollmentCount, setEnrollmentCount] = useState(42);
+  const [currentReview, setCurrentReview] = useState(0);
+  const [curriculumExpanded, setCurriculumExpanded] = useState(false);
 
   // Timer simulation
   useEffect(() => {
@@ -93,6 +99,14 @@ const LandingPage = () => {
         return prev;
       });
     }, 8000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Student Review carousel auto-play
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentReview(prev => (prev + 1) % studentReviews.length);
+    }, 6000);
     return () => clearInterval(interval);
   }, []);
 
@@ -276,70 +290,6 @@ const LandingPage = () => {
     }
   ];
 
-  const careerOutcomes = [
-    {
-      role: "Property Consultant",
-      salary: "₹4.8L - ₹8.0L LPA + Commissions",
-      skills: ["Client Advisory", "Deal Negotiation", "Market Analysis"],
-      roadmap: ["Junior Consultant → Senior Consultant → Team Lead → Partner"],
-      gradient: "from-[#0A66C2] to-[#1E88E5]",
-      icon: Building2
-    },
-    {
-      role: "Commercial Broker",
-      salary: "₹6.0L - ₹12.0L LPA + Bonuses",
-      skills: ["Commercial Valuation", "Lease Negotiation", "Investment Analysis"],
-      roadmap: ["Broker Associate → Senior Broker → Director → VP"],
-      gradient: "from-[#D4AF37] to-[#E5C76B]",
-      icon: Briefcase
-    },
-    {
-      role: "Investment Advisor",
-      salary: "₹5.0L - ₹10.0L LPA + Carry",
-      skills: ["Portfolio Strategy", "ROI Modeling", "Risk Assessment"],
-      roadmap: ["Analyst → Advisor → Senior Advisor → Fund Manager"],
-      gradient: "from-[#0A66C2] to-[#1E88E5]",
-      icon: TrendingUp
-    },
-    {
-      role: "Luxury Property Specialist",
-      salary: "₹7.0L - ₹15.0L LPA + Commission",
-      skills: ["HNW Client Management", "Luxury Branding", "Exclusive Listings"],
-      roadmap: ["Specialist → Senior Specialist → Director → VP Luxury"],
-      gradient: "from-[#D4AF37] to-[#CFAE5D]",
-      icon: Crown
-    },
-    {
-      role: "Real Estate Entrepreneur",
-      salary: "₹10.0L+ LPA (Uncapped)",
-      skills: ["Business Development", "Team Building", "Portfolio Growth"],
-      roadmap: ["Independent Broker → Agency Owner → Developer → Investor"],
-      gradient: "from-[#0A66C2] to-[#1E88E5]",
-      icon: Globe
-    }
-  ];
-
-  const jobRoles = [
-    {
-      role: "Real Estate Advisor / Advisor Associate",
-      company: "MRJB Realty & Partners",
-      salary: "₹3.6L - ₹6.0L LPA + Commissions",
-      points: ["Manage listing pipelines", "Qualify warm inbound leads", "Organize customer site visits"]
-    },
-    {
-      role: "Property Consultant / Lead Negotiator",
-      company: "Top-Tier Premium Agencies",
-      salary: "₹4.8L - ₹8.0L LPA + Commissions",
-      points: ["HNW client listing advisory", "Close high-ticket contracts", "Coordinate legal property registries"]
-    },
-    {
-      role: "Senior Sales Closer",
-      company: "Developer Direct Sales Teams",
-      salary: "₹6.0L - ₹10.0L LPA + Performance Bonuses",
-      points: ["Convert site visits to buyers", "Pitch premium residential projects", "Earn uncapped project commission slabs"]
-    }
-  ];
-
   const teamMembers = [
     {
       name: "Rohan Mehta",
@@ -398,46 +348,38 @@ const LandingPage = () => {
     }
   ];
 
-  const testimonials = [
+  const studentReviews = [
     {
-      quote: "The 10-day program was a career game-changer. I applied the qualifying script from Day 4 and closed my first residential deal within 15 days of finishing the class. The mentorship is world-class.",
-      author: "Dustin Vance",
-      role: "Real Estate Advisor",
-      city: "Mumbai",
-      salaryBefore: "₹2.4L",
-      salaryAfter: "₹5.2L",
-      dealVolume: "₹1.2Cr",
-      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150"
+      name: "Dustin Vance",
+      course: "Commercial Real Estate: Investment & Underwriting",
+      feedback: "The underwriting framework was game-changing. I closed my first commercial listing deal within weeks of completing the program. Highly recommend it to anyone starting out!",
+      rating: 5,
+      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150",
+      outcome: "Closed ₹1.2Cr Commercial Deal"
     },
     {
-      quote: "Before this course, I struggled with site-visit objection handling. The sales coaching and mock rounds gave me massive confidence. Got hired directly by a developer group in Delhi NCR within 3 weeks!",
-      author: "Sarah Jenkins",
-      role: "Sales Specialist",
-      city: "Delhi NCR",
-      salaryBefore: "₹3.0L",
-      salaryAfter: "₹6.8L",
-      dealVolume: "₹3.5Cr",
-      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150"
+      name: "Sarah Jenkins",
+      course: "Real Estate Negotiation & Closing Secrets",
+      feedback: "The objection handling strategies are pure gold. I went from being afraid of high-net-worth client phone calls to leading key pitches. The mock sessions gave me massive confidence.",
+      rating: 5,
+      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150",
+      outcome: "Hired at MRJB Realty"
     },
     {
-      quote: "The ROI modeling and negotiation modules alone paid for the course 10x over. I'm now handling high-net-worth clients and closing premium deals I never thought possible.",
-      author: "Arjun Mehta",
-      role: "Investment Advisor",
-      city: "Bangalore",
-      salaryBefore: "₹3.6L",
-      salaryAfter: "₹9.0L",
-      dealVolume: "₹5.8Cr",
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=150"
+      name: "Arjun Mehta",
+      course: "Luxury Real Estate Listings & Brand Authority",
+      feedback: "I learned how to build a premium listing portfolio and negotiate exclusive mandates. The branding strategies helped me stand out in a crowded market.",
+      rating: 5,
+      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=150",
+      outcome: "Commission increased by 40%"
     },
     {
-      quote: "From struggling with cold calls to managing a team of 5 junior brokers — this academy transformed my career trajectory. The 100% job support is real. They don't stop until you're placed.",
-      author: "Neha Patel",
-      role: "Senior Property Consultant",
-      city: "Pune",
-      salaryBefore: "₹1.8L",
-      salaryAfter: "₹7.2L",
-      dealVolume: "₹2.8Cr",
-      avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=150"
+      name: "Neha Patel",
+      course: "Real Estate Marketing & Digital Funnel Mastery",
+      feedback: "From struggling with cold calls to managing a team of 5 junior brokers — this academy transformed my career trajectory. The 100% job support is real. They don't stop until you're placed.",
+      rating: 5,
+      avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=150",
+      outcome: "25+ Qualified Hot Leads/Month"
     }
   ];
 
@@ -479,38 +421,58 @@ const LandingPage = () => {
     visible: { opacity: 1, transition: { staggerChildren: 0.08, delayChildren: 0.1 } }
   };
 
-  // ─── RENDER ─────────────────────────────────────────────────────────
+  // ─── THEME STYLING CONFIG ──────────────────────────────────────────
+  const themeBg = isDarkMode ? 'bg-[#0A0A0C] text-[#E5E7EB]' : 'bg-[#F9FAFB] text-[#1F2937]';
+  const themeText = isDarkMode ? 'text-[#CFCFCF]/80' : 'text-[#4B5563]';
+  const themeTextMuted = isDarkMode ? 'text-[#CFCFCF]/50' : 'text-[#6B7280]';
+  const themeTextTitle = isDarkMode ? 'text-white' : 'text-[#111827]';
+  const themeBorder = isDarkMode ? 'border-white/[0.06]' : 'border-[#E5E7EB]';
+  const themeCard = isDarkMode ? 'bg-[#111115] border border-white/[0.06] text-[#E5E7EB]' : 'bg-white border border-[#E5E7EB] text-[#1F2937] shadow-[0_10px_30px_rgba(0,0,0,0.03)]';
+  const themeCardHover = isDarkMode ? 'hover:bg-[#16161B] hover:border-[#D4AF37]/30' : 'hover:border-[#D4AF37]/50 hover:shadow-xl';
+
   return (
-    <div className="min-h-screen bg-[#050505] text-[#E5E7EB] overflow-x-hidden selection:bg-[#D4AF37]/20 selection:text-white font-sans">
+    <div className={`min-h-screen transition-colors duration-300 overflow-x-hidden selection:bg-[#D4AF37]/20 selection:text-white font-sans ${themeBg}`}>
       
       {/* TOP URGENCY BAR */}
-      <div className="relative bg-[#0B0B0B] border-b border-[#D4AF37]/10 text-center z-50 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37]/5 via-transparent to-[#0A66C2]/5"></div>
-        <div className="relative py-3 px-4 flex flex-wrap items-center justify-center gap-3 text-xs font-bold">
-          <span className="inline-flex items-center gap-2">
-            <span className="relative flex h-2.5 w-2.5">
+      <div className="relative bg-[#0B0B0B]/95 border-b border-white/[0.04] z-50 overflow-hidden py-2 px-6">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37]/[0.03] via-transparent to-[#0A66C2]/[0.03]"></div>
+        <div className="max-w-7xl mx-auto flex items-center justify-center flex-wrap gap-x-3 gap-y-2 relative z-10 text-xs font-bold text-center">
+          <span className="inline-flex items-center gap-1.5 bg-[#D4AF37]/10 px-2 py-0.5 rounded border border-[#D4AF37]/20">
+            <span className="relative flex h-1.5 w-1.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#D4AF37]"></span>
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#D4AF37]"></span>
             </span>
-            <span className="text-[#D4AF37] uppercase tracking-[0.15em] text-[10px] font-black">Live Batch</span>
+            <span className="text-[#D4AF37] uppercase tracking-[0.1em] text-[8px] font-black">Live Batch</span>
           </span>
-          <span className="text-[#E5E7EB]">🔥 Launch Offer: 10-Day Real Estate Masterclass at <span className="text-[#D4AF37] font-black">₹3,999</span></span>
-          <span className="hidden md:inline-flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1 rounded-full">
-            <Clock className="w-3 h-3 text-[#D4AF37]" />
-            <span className="font-mono text-[#D4AF37]">
+          <span className="text-[#CFCFCF] text-[11px] sm:text-xs">
+            🔥 Launch Offer: 10-Day Real Estate Masterclass at <span className="text-white font-black">₹3,999</span>
+          </span>
+          <span className="inline-flex items-center gap-1 bg-white/[0.03] border border-white/[0.08] px-2 py-0.5 rounded text-[11px]">
+            <Clock className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <span className="font-mono text-[#D4AF37] font-bold">
               {String(timeLeft.hours).padStart(2, '0')}:{String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}
             </span>
           </span>
+          <a 
+            href="#pricing" 
+            className="text-[9px] font-black uppercase tracking-[0.1em] text-[#050505] bg-[#D4AF37] hover:bg-white hover:text-[#050505] hover:shadow-[0_0_15px_rgba(212,175,55,0.4)] px-3 py-1 rounded transition-all shrink-0 ml-1 border border-transparent"
+          >
+            Apply Now
+          </a>
         </div>
       </div>
 
       {/* NAVBAR */}
-      <nav className="sticky top-0 left-0 right-0 z-50 px-6 md:px-12 py-3.5 flex items-center justify-between backdrop-blur-xl bg-[#050505]/90 border-b border-white/[0.04] shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
+      <nav className={`sticky top-0 left-0 right-0 z-50 px-8 md:px-16 py-4 backdrop-blur-xl border-b shadow-lg transition-all duration-300 ${
+        isDarkMode ? 'bg-[#0A0A0C]/90 border-white/[0.04] shadow-black/40' : 'bg-white/90 border-[#E5E7EB] shadow-slate-200/50'
+      }`}>
         <div className="max-w-7xl w-full mx-auto flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 group">
             <BGLogo className="w-10 h-10 group-hover:scale-105 transition-transform duration-500" />
             <div className="flex flex-col text-left">
-              <span className="text-base font-black tracking-tight leading-none text-white group-hover:text-[#D4AF37] transition-colors duration-300">
+              <span className={`text-base font-black tracking-tight leading-none transition-colors duration-300 ${
+                isDarkMode ? 'text-white group-hover:text-[#D4AF37]' : 'text-[#111827] group-hover:text-[#D4AF37]'
+              }`}>
                 BG REALTY
               </span>
               <span className="text-[9px] font-bold text-[#D4AF37]/60 uppercase tracking-[0.2em] mt-0.5">
@@ -519,95 +481,130 @@ const LandingPage = () => {
             </div>
           </Link>
 
-          <div className="hidden lg:flex items-center gap-1">
+          <div className="hidden lg:flex items-center gap-2">
             {[
-              { label: 'Overview', href: '#highlights' },
-              { label: 'Curriculum', href: '#curriculum' },
-              { label: 'Careers', href: '#careers' },
-              { label: 'Placement', href: '#placement' },
-              { label: 'Mentors', href: '#mentors' },
-              { label: 'Pricing', href: '#pricing' },
-            ].map((item, i) => (
-              <a
-                key={i}
-                href={item.href}
-                className="px-4 py-2 text-[11px] font-black uppercase tracking-[0.15em] text-[#CFCFCF]/70 hover:text-white transition-all duration-200 rounded-xl hover:bg-white/[0.03]"
+              { label: 'Home', to: '/' },
+              { label: 'About', to: '/about' },
+              { label: 'Courses', to: '/courses' },
+              { label: 'Contact', to: '/contact' }
+            ].map((link, idx) => (
+              <Link
+                key={idx}
+                to={link.to}
+                className={`px-4 py-2 text-[11px] font-black uppercase tracking-[0.15em] transition-all duration-200 rounded-xl hover:bg-[#D4AF37]/5 ${
+                  link.to === '/' 
+                    ? 'text-[#D4AF37]' 
+                    : isDarkMode 
+                      ? 'text-[#CFCFCF]/70 hover:text-[#D4AF37]' 
+                      : 'text-[#4B5563] hover:text-[#D4AF37]'
+                }`}
               >
-                {item.label}
-              </a>
+                {link.label}
+              </Link>
             ))}
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            {/* Theme Toggle */}
+            <button
+              id="theme-toggle"
+              onClick={toggleTheme}
+              aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+              className={`h-9 w-9 flex items-center justify-center rounded-xl border transition-all duration-300 cursor-pointer active:scale-95 ${
+                isDarkMode
+                  ? 'bg-white/[0.06] border-white/[0.12] text-[#D4AF37] hover:bg-[#D4AF37]/10 hover:border-[#D4AF37]/30'
+                  : 'bg-black/[0.04] border-black/[0.1] text-[#4B5563] hover:bg-[#D4AF37]/10 hover:border-[#D4AF37]/30 hover:text-[#D4AF37]'
+              }`}
+            >
+              {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
+
+            {/* Login button — premium gold, visible in both modes */}
             <Link to="/dashboard" className="hidden sm:inline-flex">
-              <Button variant="ghost" className="text-[#CFCFCF] hover:text-white text-[10px] font-black uppercase tracking-[0.15em] h-10 border border-white/5 hover:border-[#D4AF37]/20 rounded-xl px-5">
-                Student Portal
+              <Button 
+                id="nav-login-btn"
+                className="h-10 px-6 text-[10px] font-black uppercase tracking-[0.15em] rounded-xl transition-all duration-300 bg-[#D4AF37] text-[#050505] border border-transparent hover:bg-[#E5C76B] hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] active:scale-95"
+              >
+                Login
               </Button>
             </Link>
-            <a href="#pricing">
-              <Button variant="primary" className="h-10 px-5 text-[10px] font-black uppercase tracking-[0.15em] rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#E5C76B] to-[#D4AF37] text-[#050505] hover:shadow-[0_0_30px_rgba(212,175,55,0.3)] transition-all duration-300">
-                Enroll — ₹3,999
-              </Button>
-            </a>
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 text-[#CFCFCF] hover:text-white transition-colors cursor-pointer"
+              className={`lg:hidden p-2 transition-colors cursor-pointer ${isDarkMode ? 'text-[#CFCFCF] hover:text-white' : 'text-[#4B5563] hover:text-black'}`}
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
+
+        {/* Mobile Drawer */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.25 }}
+              className={`absolute top-full left-0 right-0 border-b z-50 px-6 py-8 flex flex-col gap-5 lg:hidden shadow-2xl ${
+                isDarkMode ? 'bg-[#0B0B0B] border-[#D4AF37]/10' : 'bg-white border-[#E5E7EB]'
+              }`}
+            >
+              <div className="flex flex-col gap-2">
+                {[
+                  { label: 'Home', to: '/' },
+                  { label: 'About', to: '/about' },
+                  { label: 'Courses', to: '/courses' },
+                  { label: 'Contact', to: '/contact' }
+                ].map((link, idx) => (
+                  <Link 
+                    key={idx}
+                    to={link.to}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`py-3 px-4 text-sm font-black uppercase tracking-[0.15em] transition-all rounded-xl hover:bg-[#D4AF37]/5 ${
+                      link.to === '/'
+                        ? 'text-[#D4AF37]'
+                        : isDarkMode
+                          ? 'text-[#CFCFCF]/60 hover:text-white border-b border-white/[0.02]'
+                          : 'text-[#4B5563] hover:text-black border-b border-black/[0.02]'
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+              <div className={`pt-4 border-t flex items-center justify-between gap-4 ${isDarkMode ? 'border-white/[0.06]' : 'border-black/[0.05]'}`}>
+                {/* Mobile theme toggle */}
+                <button
+                  onClick={toggleTheme}
+                  className={`h-11 px-4 flex items-center gap-2 rounded-xl border font-bold text-[10px] uppercase tracking-wider transition-all duration-200 cursor-pointer ${
+                    isDarkMode
+                      ? 'bg-white/[0.05] border-white/[0.1] text-[#CFCFCF] hover:text-[#D4AF37]'
+                      : 'bg-black/[0.03] border-black/[0.08] text-[#4B5563] hover:text-[#D4AF37]'
+                  }`}
+                >
+                  {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                  {isDarkMode ? 'Light' : 'Dark'}
+                </button>
+                <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)} className="flex-1">
+                  <Button className="w-full text-center h-11 text-[10px] font-black uppercase tracking-[0.15em] rounded-xl bg-[#D4AF37] text-[#050505] border border-transparent hover:bg-[#E5C76B] active:scale-95">
+                    Login
+                  </Button>
+                </Link>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
-      {/* Mobile Drawer */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.25 }}
-            className="fixed top-[72px] left-0 right-0 bg-[#0B0B0B]/98 backdrop-blur-xl border-b border-[#D4AF37]/10 z-40 px-6 py-8 flex flex-col gap-5 lg:hidden shadow-2xl"
-          >
-            <div className="flex flex-col gap-2">
-              {[
-                { label: 'Overview', href: '#highlights' },
-                { label: 'Curriculum', href: '#curriculum' },
-                { label: 'Careers', href: '#careers' },
-                { label: 'Placement', href: '#placement' },
-                { label: 'Mentors', href: '#mentors' },
-                { label: 'Pricing', href: '#pricing' },
-              ].map((item, i) => (
-                <a
-                  key={i}
-                  href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="py-3 px-4 text-sm font-black uppercase tracking-[0.15em] text-[#CFCFCF]/60 hover:text-white transition-all rounded-xl hover:bg-white/[0.03] border-b border-white/[0.02]"
-                >
-                  {item.label}
-                </a>
-              ))}
-            </div>
-            <div className="pt-4 border-t border-white/[0.05]">
-              <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)} className="block w-full">
-                <Button variant="outline" className="w-full text-[#CFCFCF] hover:text-white text-[10px] font-black uppercase tracking-[0.15em] h-11 border border-white/10 hover:border-[#D4AF37]/20 rounded-xl">
-                  Student Portal
-                </Button>
-              </Link>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* HERO */}
-      <section className="relative min-h-[80vh] flex items-center overflow-hidden">
+      <section className="relative min-h-[80vh] flex items-center overflow-hidden transition-colors duration-300">
         <div className="absolute inset-0 z-0">
           <img 
             src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&q=80&w=2000"
-            className="w-full h-full object-cover opacity-20"
+            className="w-full h-full object-cover opacity-[0.07]"
             alt="City Skyline"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-[#050505]/85 to-[#050505]"></div>
+          <div className={`absolute inset-0 bg-gradient-to-b ${isDarkMode ? 'from-[#0A0A0C] via-[#0A0A0C]/85 to-[#0A0A0C]' : 'from-white via-white/85 to-white'}`}></div>
           <div className="absolute inset-0 bg-gradient-to-r from-[#0A66C2]/5 via-transparent to-[#D4AF37]/5"></div>
         </div>
 
@@ -621,24 +618,16 @@ const LandingPage = () => {
               initial={{ opacity: 0, y: 60 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="lg:col-span-7 space-y-6"
+              className="lg:col-span-7 space-y-8"
             >
-              <div className="flex flex-wrap gap-3">
+              <div>
                 <div className="inline-flex items-center gap-2 bg-[#D4AF37]/10 border border-[#D4AF37]/20 px-3.5 py-1.5 rounded-full">
-                  <BadgeCheck className="w-3.5 h-3.5 text-[#D4AF37]" />
-                  <span className="text-[9px] font-black uppercase tracking-[0.1em] text-[#D4AF37]">Certified Program</span>
-                </div>
-                <div className="inline-flex items-center gap-2 bg-[#0A66C2]/10 border border-[#0A66C2]/20 px-3.5 py-1.5 rounded-full">
-                  <Users className="w-3.5 h-3.5 text-[#0A66C2]" />
-                  <span className="text-[9px] font-black uppercase tracking-[0.1em] text-[#0A66C2]">15,000+ Alumni</span>
-                </div>
-                <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-3.5 py-1.5 rounded-full">
-                  <Briefcase className="w-3.5 h-3.5 text-[#E5E7EB]" />
-                  <span className="text-[9px] font-black uppercase tracking-[0.1em] text-[#E5E7EB]">92% Placement</span>
+                  <Crown className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <span className="text-[9px] font-black uppercase tracking-[0.1em] text-[#D4AF37]">Ranked #1 Real Estate Program</span>
                 </div>
               </div>
 
-              <h1 className="text-4xl md:text-5xl lg:text-7xl font-black leading-[1.05] tracking-tight text-white">
+              <h1 className={`text-4xl md:text-5xl lg:text-7xl font-black leading-[1.05] tracking-tight ${themeTextTitle}`}>
                 Master Real Estate
                 <br />
                 <span className="bg-gradient-to-r from-[#D4AF37] via-[#E5C76B] to-[#D4AF37] bg-clip-text text-transparent">
@@ -648,55 +637,40 @@ const LandingPage = () => {
                 Industry Leaders
               </h1>
 
-              <p className="text-base md:text-lg text-[#CFCFCF]/80 max-w-xl leading-relaxed font-medium">
+              <p className={`text-base md:text-lg max-w-xl leading-relaxed font-medium transition-colors ${themeText}`}>
                 Elite 10-day live training program designed by top real estate professionals. 
                 Master sales, negotiation, and investment strategies — then get placed at premium firms.
               </p>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl">
-                <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-4 backdrop-blur-sm">
-                  <span className="text-2xl md:text-3xl font-black text-[#D4AF37]">15K+</span>
-                  <span className="text-[9px] text-[#CFCFCF]/60 uppercase tracking-[0.1em] font-black block mt-1">Graduates</span>
-                </div>
-                <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-4 backdrop-blur-sm">
-                  <span className="text-2xl md:text-3xl font-black text-[#D4AF37]">₹250Cr+</span>
-                  <span className="text-[9px] text-[#CFCFCF]/60 uppercase tracking-[0.1em] font-black block mt-1">Deal Volume</span>
-                </div>
-                <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-4 backdrop-blur-sm">
-                  <span className="text-2xl md:text-3xl font-black text-[#D4AF37]">92%</span>
-                  <span className="text-[9px] text-[#CFCFCF]/60 uppercase tracking-[0.1em] font-black block mt-1">Placement Rate</span>
-                </div>
-                <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-4 backdrop-blur-sm">
-                  <span className="text-2xl md:text-3xl font-black text-[#D4AF37]">50+</span>
-                  <span className="text-[9px] text-[#CFCFCF]/60 uppercase tracking-[0.1em] font-black block mt-1">Partners</span>
-                </div>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+              <div className="flex flex-col sm:flex-row gap-4 pt-2">
                 <a href="#pricing" className="group">
-                  <Button variant="primary" className="w-full sm:w-auto flex items-center justify-center gap-3 h-14 px-10 text-xs font-black uppercase tracking-[0.15em] rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#E5C76B] to-[#D4AF37] text-[#050505] hover:shadow-[0_0_40px_rgba(212,175,55,0.35)] transition-all duration-300">
+                  <Button id="hero-cta-primary" variant="primary" className="w-full sm:w-auto flex items-center justify-center gap-3 h-14 px-10 text-xs font-black uppercase tracking-[0.15em] rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#E5C76B] to-[#D4AF37] text-[#050505] hover:shadow-[0_0_40px_rgba(212,175,55,0.35)] transition-all duration-300 active:scale-95">
                     Secure Your Seat
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </a>
-                <a href="#curriculum" className="group">
-                  <Button variant="outline" className="w-full sm:w-auto flex items-center justify-center gap-3 h-14 px-10 border border-white/10 hover:border-[#D4AF37]/30 text-white text-xs font-black uppercase tracking-[0.15em] rounded-2xl bg-white/[0.02] backdrop-blur-sm">
-                    <Play className="w-4 h-4 text-[#D4AF37]" /> View Curriculum
+                <a href="#pricing" className="group">
+                  <Button id="hero-cta-secondary" variant="outline" className={`w-full sm:w-auto flex items-center justify-center gap-3 h-14 px-10 transition-all duration-300 text-xs font-black uppercase tracking-[0.15em] rounded-2xl backdrop-blur-sm ${
+                    isDarkMode
+                      ? 'border border-white/20 text-white hover:border-[#D4AF37] hover:text-[#D4AF37] bg-white/[0.04]'
+                      : 'border border-[#1F2937]/25 text-[#1F2937] bg-white hover:border-[#D4AF37] hover:text-[#D4AF37]'
+                  }`}>
+                    <Play className="w-4 h-4 text-[#D4AF37]" /> View Syllabus
                   </Button>
                 </a>
               </div>
 
-              <div className="flex items-center gap-4 pt-4 border-t border-white/[0.04]">
+              <div className={`flex items-center gap-4 pt-6 border-t ${themeBorder}`}>
                 <div className="flex -space-x-3">
                   {teamMembers.slice(0, 4).map((m, i) => (
-                    <div key={i} className="w-9 h-9 rounded-full border-2 border-[#050505] overflow-hidden">
+                    <div key={i} className={`w-9 h-9 rounded-full border-2 overflow-hidden ${isDarkMode ? 'border-[#0A0A0C]' : 'border-white'}`}>
                       <img src={m.avatar} className="w-full h-full object-cover" alt="" />
                     </div>
                   ))}
                 </div>
                 <div className="text-left">
-                  <span className="text-sm font-black text-white">Learn from 5 Elite Mentors</span>
-                  <span className="text-[10px] text-[#CFCFCF]/60 font-bold block uppercase tracking-[0.1em]">50+ Years Combined Experience</span>
+                  <span className={`text-sm font-black transition-colors ${themeTextTitle}`}>Learn from 5 Elite Mentors</span>
+                  <span className={`text-[10px] font-bold block uppercase tracking-[0.1em] transition-colors ${themeTextMuted}`}>50+ Years Combined Experience</span>
                 </div>
               </div>
             </motion.div>
@@ -708,7 +682,11 @@ const LandingPage = () => {
               className="lg:col-span-5 flex items-center justify-center"
             >
               <div className="relative w-full max-w-[450px]">
-                <div className="relative rounded-3xl overflow-hidden border border-white/[0.08] bg-gradient-to-br from-white/[0.03] to-white/[0.01] backdrop-blur-xl shadow-[0_20px_80px_rgba(0,0,0,0.6)]">
+                <div className={`relative rounded-3xl overflow-hidden border backdrop-blur-xl transition-all duration-300 ${
+                  isDarkMode 
+                    ? 'border-white/[0.08] bg-gradient-to-br from-white/[0.03] to-white/[0.01] shadow-[0_20px_80px_rgba(0,0,0,0.6)]' 
+                    : 'border-[#E5E7EB] bg-white shadow-xl'
+                }`}>
                   <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent"></div>
                   
                   <div className="p-6 space-y-6">
@@ -718,14 +696,14 @@ const LandingPage = () => {
                         className="w-full h-full object-cover"
                         alt="Modern real estate"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent"></div>
+                      <div className={`absolute inset-0 bg-gradient-to-t ${isDarkMode ? 'from-[#0A0A0C]' : 'from-white'} via-transparent to-transparent`}></div>
                       
                       <div className="absolute bottom-3 left-3 right-3 flex justify-between items-end">
-                        <div className="bg-[#050505]/80 backdrop-blur-md px-3 py-2 rounded-xl border border-white/[0.08]">
+                        <div className={`backdrop-blur-md px-3 py-2 rounded-xl border ${isDarkMode ? 'bg-[#050505]/80 border-white/[0.08]' : 'bg-white/95 border-[#E5E7EB]'}`}>
                           <span className="text-[9px] text-[#D4AF37] font-black uppercase tracking-[0.1em]">Live Training</span>
-                          <p className="text-xs font-bold text-white mt-0.5">10 Days • 15 Hours</p>
+                          <p className={`text-xs font-bold mt-0.5 ${isDarkMode ? 'text-white' : 'text-[#111827]'}`}>10 Days • 15 Hours</p>
                         </div>
-                        <div className="bg-[#D4AF37]/90 backdrop-blur-md px-3 py-2 rounded-xl">
+                        <div className="bg-[#D4AF37] px-3 py-2 rounded-xl">
                           <span className="text-[9px] text-[#050505] font-black uppercase tracking-[0.1em]">Batch</span>
                           <p className="text-xs font-black text-[#050505] mt-0.5">Starting Soon</p>
                         </div>
@@ -739,43 +717,15 @@ const LandingPage = () => {
                         { icon: GraduationCap, text: "Learn from Active Industry Mentors", color: "#D4AF37" },
                       ].map((f, i) => (
                         <div key={i} className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-lg bg-white/[0.03] flex items-center justify-center">
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isDarkMode ? 'bg-white/[0.03]' : 'bg-black/[0.03]'}`}>
                             <f.icon className="w-4 h-4" style={{ color: f.color }} />
                           </div>
-                          <span className="text-xs font-bold text-[#E5E7EB]">{f.text}</span>
+                          <span className={`text-xs font-bold ${isDarkMode ? 'text-[#E5E7EB]' : 'text-[#4B5563]'}`}>{f.text}</span>
                         </div>
                       ))}
                     </div>
                   </div>
                 </div>
-
-                <motion.div 
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute -top-4 -right-4 bg-[#0B0B0B] border border-[#D4AF37]/20 rounded-2xl p-3 shadow-xl backdrop-blur-md"
-                >
-                  <div className="flex items-center gap-2">
-                    <Trophy className="w-5 h-5 text-[#D4AF37]" />
-                    <div className="text-left">
-                      <span className="text-[8px] text-[#CFCFCF]/60 uppercase tracking-widest font-black block">Ranked #1</span>
-                      <span className="text-xs font-black text-white">Real Estate Training</span>
-                    </div>
-                  </div>
-                </motion.div>
-
-                <motion.div
-                  animate={{ y: [0, 8, 0] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                  className="absolute -bottom-4 -left-4 bg-[#0B0B0B] border border-[#0A66C2]/20 rounded-2xl p-3 shadow-xl backdrop-blur-md"
-                >
-                  <div className="flex items-center gap-2">
-                    <Users className="w-5 h-5 text-[#0A66C2]" />
-                    <div className="text-left">
-                      <span className="text-[8px] text-[#CFCFCF]/60 uppercase tracking-widest font-black block">Hiring Partner</span>
-                      <span className="text-xs font-black text-white">MRJB Realty</span>
-                    </div>
-                  </div>
-                </motion.div>
               </div>
             </motion.div>
 
@@ -785,20 +735,567 @@ const LandingPage = () => {
         <motion.div 
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 text-[#CFCFCF]/30"
+          className={`absolute bottom-6 left-1/2 -translate-x-1/2 ${isDarkMode ? 'text-[#CFCFCF]/30' : 'text-black/30'}`}
         >
           <ChevronDown className="w-6 h-6" />
         </motion.div>
       </section>
 
+      {/* FEATURED COURSES */}
+      <section className={`relative py-20 md:py-28 px-6 md:px-12 border-t border-b transition-colors duration-300 ${
+        isDarkMode ? 'bg-[#111115] border-white/[0.03]' : 'bg-white border-[#E5E7EB]'
+      }`}>
+        <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-[#D4AF37]/2 rounded-full blur-[180px] pointer-events-none"></div>
+        <div className="max-w-7xl mx-auto relative z-10">
+          
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="text-left mb-12 md:mb-16 space-y-4"
+          >
+            <div className="inline-flex items-center gap-2 bg-[#D4AF37]/10 border border-[#D4AF37]/20 px-4 py-1.5 rounded-full">
+              <BookOpen className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span className="text-[9px] font-black uppercase tracking-[0.1em] text-[#D4AF37]">Premium Curriculum</span>
+            </div>
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+              <div>
+                <h2 className={`text-3xl md:text-5xl lg:text-6xl font-black leading-[1.05] ${themeTextTitle}`}>
+                  Featured Courses to<br />
+                  <span className="text-[#D4AF37]">Elevate Your Expertise</span>
+                </h2>
+                <p className={`text-sm max-w-xl leading-relaxed font-medium mt-4 ${themeText}`}>
+                  Explore our premium courses covering commercial underwriting, development, luxury sales, and lead generation funnels.
+                </p>
+              </div>
+              <Link to="/courses">
+                <Button
+                  id="explore-courses-btn"
+                  variant="outline"
+                  className={`h-12 px-6 text-[10px] font-black uppercase tracking-[0.15em] rounded-xl border flex items-center gap-2 whitespace-nowrap transition-all duration-300 ${
+                    isDarkMode
+                      ? 'border-white/20 text-white hover:border-[#D4AF37] hover:text-[#D4AF37] bg-white/[0.03]'
+                      : 'border-[#1F2937]/30 text-[#1F2937] bg-white hover:border-[#D4AF37] hover:text-[#D4AF37] shadow-sm hover:shadow-md'
+                  }`}
+                >
+                  Explore All Courses
+                  <ArrowRight className="w-3.5 h-3.5 text-[#D4AF37]" />
+                </Button>
+              </Link>
+            </div>
+          </motion.div>
+
+          <motion.div 
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            {mockData.courses.map((course, i) => (
+              <motion.div
+                key={course.id}
+                variants={fadeUp}
+                custom={i}
+                whileHover={{ y: -8 }}
+                className={`group flex flex-col rounded-2xl overflow-hidden transition-all duration-300 ${themeCard} ${themeCardHover}`}
+              >
+                {/* Course Thumbnail */}
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  <img
+                    src={course.image}
+                    alt={course.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                  <div className={`absolute inset-0 bg-gradient-to-t ${isDarkMode ? 'from-[#111115]' : 'from-white'} via-transparent to-transparent`} />
+
+                  {/* Price Badge — top right of thumbnail */}
+                  <div className="absolute top-3 right-3 z-10">
+                    <span className="bg-[#D4AF37] text-[#050505] font-extrabold text-xs px-3 py-1.5 rounded-lg shadow-md">
+                      {course.price && parseFloat(course.price) > 0
+                        ? `₹${parseFloat(course.price).toLocaleString('en-IN')}`
+                        : 'Free'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Course Details — Name + Buy Now only */}
+                <div className="p-5 flex-1 flex flex-col justify-between gap-4">
+                  <div>
+                    <h3 className={`text-base font-black transition-colors duration-300 leading-snug ${themeTextTitle} group-hover:text-[#D4AF37]`}>
+                      {course.title}
+                    </h3>
+                  </div>
+
+                  <div>
+                    <Link to={`/courses/${course.id}`} className="block">
+                      <Button
+                        className={`w-full py-3 text-[10px] font-black uppercase tracking-[0.1em] rounded-xl transition-all duration-300 border flex items-center justify-center gap-2 ${
+                          isDarkMode
+                            ? 'bg-[#D4AF37] border-transparent text-[#050505] hover:bg-[#E5C76B] hover:shadow-[0_0_20px_rgba(212,175,55,0.25)]'
+                            : 'bg-[#050505] border-transparent text-white hover:bg-[#D4AF37] hover:text-[#050505] hover:shadow-[0_0_20px_rgba(212,175,55,0.25)]'
+                        }`}
+                      >
+                        Buy Now
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* WHY BG REALTY */}
+      <section className="relative py-20 md:py-28 px-6 md:px-12 transition-colors duration-300" id="highlights">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#050505]/0 via-[#0B0B0B]/0 to-[#050505]/0 pointer-events-none"></div>
+        
+        <div className="max-w-7xl mx-auto relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="text-left mb-10 md:mb-12 space-y-4"
+          >
+            <div className="inline-flex items-center gap-2 bg-[#D4AF37]/10 border border-[#D4AF37]/20 px-4 py-1.5 rounded-full">
+              <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span className="text-[9px] font-black uppercase tracking-[0.1em] text-[#D4AF37]">Why Choose Us</span>
+            </div>
+            <h2 className={`text-3xl md:text-5xl lg:text-6xl font-black leading-[1.05] ${themeTextTitle}`}>
+              Why Choose BG Realty?<br />
+              <span className="text-[#D4AF37]">Premium Training. Real Results.</span>
+            </h2>
+            <p className={`text-sm max-w-xl leading-relaxed font-medium ${themeText}`}>
+              A comprehensive curriculum focused on practical sales skills, live interaction, 
+              executive mentorship, and guaranteed placement assistance.
+            </p>
+          </motion.div>
+
+          <motion.div 
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {highlights.map((h, i) => (
+              <motion.div
+                key={i}
+                variants={fadeUp}
+                custom={i}
+                whileHover={{ y: -6 }}
+                className={`group relative rounded-3xl p-6 transition-all duration-500 border ${themeCard} ${themeCardHover}`}
+              >
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#D4AF37]/5 to-transparent rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                
+                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${h.gradient} flex items-center justify-center mb-5 relative`}>
+                  <h.icon className={`w-6 h-6 ${h.accent}`} />
+                </div>
+                <h3 className={`text-lg font-black mb-2 group-hover:text-[#D4AF37] transition-colors duration-300 ${themeTextTitle}`}>{h.title}</h3>
+                <p className={`text-sm leading-relaxed font-medium ${themeText}`}>{h.desc}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* WHAT YOU'LL ACHIEVE & CAREER OUTCOMES */}
+      <section className={`relative py-20 md:py-28 px-6 md:px-12 border-t border-b transition-colors duration-300 ${
+        isDarkMode ? 'bg-[#0A0A0C] border-white/[0.03]' : 'bg-[#F9FAFB] border-[#E5E7EB]'
+      }`} id="careers">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              className="lg:col-span-5 space-y-6"
+            >
+              <div className="inline-flex items-center gap-2 bg-[#0A66C2]/10 border border-[#0A66C2]/20 px-4 py-1.5 rounded-full">
+                <Briefcase className="w-3.5 h-3.5 text-[#0A66C2]" />
+                <span className="text-[9px] font-black uppercase tracking-[0.1em] text-[#0A66C2]">Outcome-Driven Academy</span>
+              </div>
+              <h2 className={`text-3xl md:text-5xl font-black leading-[1.1] ${themeTextTitle}`}>
+                What You'll Achieve: <br />
+                <span className="text-[#D4AF37]">Career Acceleration</span>
+              </h2>
+              <p className={`text-sm leading-relaxed font-medium ${themeText}`}>
+                We prepare you for the absolute reality of high-ticket real estate. Our graduates gain practical, operational sales knowledge that puts them months ahead of traditional candidates.
+              </p>
+              
+              <div className="space-y-4 pt-4">
+                {[
+                  { title: "Day-One Job Readiness", desc: "Crafting executive real estate CVs and mock panel interviews with sales directors." },
+                  { title: "Direct Recruiter Placement", desc: "Gain interview entries with our verified network of 15+ real estate developers." },
+                  { title: "Growth & Brokerage Setup", desc: "Get mentored on initiating your own premium property brokerage business." }
+                ].map((item, i) => (
+                  <div key={i} className="flex gap-3">
+                    <div className="w-5 h-5 rounded-full bg-[#D4AF37]/10 flex items-center justify-center shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 text-[#D4AF37]" />
+                    </div>
+                    <div>
+                      <h4 className={`text-xs font-black ${themeTextTitle}`}>{item.title}</h4>
+                      <p className={`text-[11px] font-bold ${themeTextMuted} mt-0.5`}>{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              className="lg:col-span-7 space-y-6"
+            >
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {[
+                  { 
+                    icon: GraduationCap, 
+                    title: "Executive Skillset", 
+                    desc: "Objection handling, valuation mechanics, pipeline building, CRM analytics, and RERA compliance." 
+                  },
+                  { 
+                    icon: Target, 
+                    title: "HNW Sales Execution", 
+                    desc: "Direct scripts and psychology formulas to approach, pitch, and close high-net-worth buyers." 
+                  },
+                  { 
+                    icon: Building2, 
+                    title: "Partner Agency Openings", 
+                    desc: "Direct hiring access at premium firms like MRJB Realty, CBRE, Compass, and Sotheby's." 
+                  },
+                  { 
+                    icon: TrendingUp, 
+                    title: "Uncapped Earning Slabs", 
+                    desc: "High basic salaries starting from ₹4.8L LPA, supplemented by lucrative property closure commissions." 
+                  }
+                ].map((item, i) => (
+                  <div key={i} className={`p-5 rounded-2xl border transition-all duration-300 ${themeCard} hover:border-[#D4AF37]/30 hover:scale-[1.02]`}>
+                    <item.icon className="w-6 h-6 text-[#D4AF37] mb-3" />
+                    <h4 className={`text-xs font-black mb-1 ${themeTextTitle}`}>{item.title}</h4>
+                    <p className={`text-[11px] font-medium leading-normal ${themeText}`}>{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className={`grid grid-cols-3 gap-4 p-5 rounded-2xl border ${themeCard}`}>
+                {[
+                  { value: "92%", label: "Placement Rate" },
+                  { value: "₹4.8L", label: "Avg Fresher CTC" },
+                  { value: "15+", label: "Hiring Partners" },
+                ].map((stat, i) => (
+                  <div key={i} className="text-center">
+                    <span className="text-2xl font-black text-[#D4AF37] block">{stat.value}</span>
+                    <span className={`text-[9px] uppercase tracking-[0.1em] font-black block mt-1 ${themeTextMuted}`}>{stat.label}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* STUDENT SUCCESS & REVIEWS */}
+      <section className={`relative py-20 md:py-28 px-6 md:px-12 border-b transition-colors duration-300 ${
+        isDarkMode ? 'bg-[#111115] border-white/[0.03]' : 'bg-white border-[#E5E7EB]'
+      }`} id="reviews">
+        <div className="absolute top-0 right-1/4 w-[400px] h-[400px] bg-[#D4AF37]/[0.02] rounded-full blur-[150px] pointer-events-none"></div>
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="space-y-4 mb-12"
+          >
+            <div className="inline-flex items-center gap-2 bg-[#D4AF37]/10 border border-[#D4AF37]/20 px-4 py-1.5 rounded-full">
+              <Star className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span className="text-[9px] font-black uppercase tracking-[0.1em] text-[#D4AF37]">Student Success & Reviews</span>
+            </div>
+            <h2 className={`text-3xl md:text-5xl font-black ${themeTextTitle}`}>
+              Reviews From Our <span className="text-[#D4AF37]">Future Leaders</span>
+            </h2>
+            <p className={`text-sm max-w-xl mx-auto leading-relaxed font-medium ${themeText}`}>
+              See how our alumni transformed their careers, landed premium roles, and scaled their property brokerage pipelines.
+            </p>
+          </motion.div>
+
+          {/* Testimonial Slider Wrapper */}
+          <div className="relative overflow-hidden min-h-[280px] flex items-center justify-center">
+            <AnimatePresence mode="wait">
+              {studentReviews.map((review, i) => i === currentReview && (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  className={`w-full p-8 md:p-12 rounded-3xl text-left flex flex-col md:flex-row gap-8 items-center ${themeCard}`}
+                >
+                  <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden shrink-0 border-2 border-[#D4AF37]/40 shadow-lg">
+                    <img src={review.avatar} className="w-full h-full object-cover" alt={review.name} />
+                  </div>
+                  
+                  <div className="flex-1 space-y-4">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div>
+                        <h4 className={`text-lg font-black ${themeTextTitle}`}>{review.name}</h4>
+                        <p className="text-xs text-[#D4AF37] font-bold uppercase tracking-wider">{review.course}</p>
+                      </div>
+                      <div className="flex gap-0.5">
+                        {Array.from({ length: review.rating }).map((_, idx) => (
+                          <Star key={idx} className="w-4 h-4 text-[#D4AF37] fill-current" />
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <p className={`text-sm md:text-base italic leading-relaxed font-medium ${themeText}`}>
+                      "{review.feedback}"
+                    </p>
+
+                    <div className="flex items-center gap-2 pt-2">
+                      <span className="inline-flex items-center bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-wider">
+                        Outcome: {review.outcome}
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+
+          {/* Indicators */}
+          <div className="flex justify-center gap-2.5 mt-8">
+            {studentReviews.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentReview(i)}
+                className={`h-2.5 rounded-full transition-all duration-300 ${
+                  currentReview === i
+                    ? 'bg-[#D4AF37] w-6'
+                    : isDarkMode
+                      ? 'w-2.5 bg-white/20 hover:bg-white/40'
+                      : 'w-2.5 bg-black/20 hover:bg-black/40'
+                }`}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PRICING */}
+      <section className={`relative py-20 md:py-28 px-6 md:px-12 border-t border-b transition-colors duration-300 ${
+        isDarkMode ? 'bg-[#0A0A0C] border-[#0A0A0C]' : 'bg-[#F9FAFB] border-[#E5E7EB]'
+      }`} id="pricing">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[#D4AF37]/3 rounded-full blur-[200px] pointer-events-none"></div>
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="text-center max-w-3xl mx-auto mb-10 md:mb-12 space-y-4"
+          >
+            <div className="inline-flex items-center gap-2 bg-[#D4AF37]/10 border border-[#D4AF37]/20 px-4 py-1.5 rounded-full">
+              <Gem className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span className="text-[9px] font-black uppercase tracking-[0.1em] text-[#D4AF37]">Secure Your Future</span>
+            </div>
+            <h2 className={`text-3xl md:text-5xl lg:text-6xl font-black leading-[1.05] ${themeTextTitle}`}>
+              Premium Investment.<br />
+              <span className="text-[#D4AF37]">Exceptional Returns.</span>
+            </h2>
+            <p className={`text-sm max-w-lg mx-auto leading-relaxed font-medium ${themeText}`}>
+              One-time investment for a lifetime career. No hidden fees, no recurring charges. 
+              Just pure, actionable real estate expertise.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch max-w-5xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              className="lg:col-span-7 space-y-6"
+            >
+              <div className={`space-y-6 rounded-3xl p-8 ${themeCard}`}>
+                <h3 className={`text-lg font-black flex items-center gap-3 ${themeTextTitle}`}>
+                  <CheckCircle className="w-5 h-5 text-[#D4AF37]" />
+                  Everything Included
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {[
+                    "10 Days Live Interactive Classes",
+                    "Real Estate Sales & Pitch Coaching",
+                    "Closing & Token Commitment Skills",
+                    "Deal Negotiation & Discount Handling",
+                    "Active Real Estate Mentor Guidance",
+                    "Verified Graduation Certificate",
+                    "100% Placement & CV Mock Drills",
+                    "Direct Hiring Interviews at Partners",
+                    "Lifetime Portal Access",
+                    "EMI Options Available",
+                    "Money-Back Guarantee",
+                    "LinkedIn Profile Badge",
+                  ].map((item, index) => (
+                    <div key={index} className="flex items-center gap-3">
+                      <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
+                        isDarkMode ? 'bg-[#D4AF37]/10' : 'bg-[#D4AF37]/20'
+                      }`}>
+                        <Check className="w-3 h-3 text-[#D4AF37]" />
+                      </div>
+                      <span className={`text-xs font-bold ${isDarkMode ? 'text-[#E5E7EB]' : 'text-[#4B5563]'}`}>{item}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className={`border rounded-2xl p-5 space-y-3 ${isDarkMode ? 'bg-white/[0.02] border-white/[0.06]' : 'bg-slate-50 border-[#E5E7EB]'}`}>
+                  <div className="flex justify-between items-center">
+                    <span className={`text-[10px] uppercase tracking-[0.15em] font-black ${themeTextMuted}`}>Enrollment Status</span>
+                    <span className="text-[10px] text-[#D4AF37] font-black">{Math.round((enrollmentCount / 50) * 100)}% Booked</span>
+                  </div>
+                  <div className={`h-2.5 rounded-full overflow-hidden ${isDarkMode ? 'bg-white/[0.05]' : 'bg-slate-200'}`}>
+                    <div 
+                      className="h-full bg-gradient-to-r from-[#D4AF37] to-[#E5C76B] rounded-full transition-all duration-1000"
+                      style={{ width: `${(enrollmentCount / 50) * 100}%` }}
+                    ></div>
+                  </div>
+                  <div className="flex justify-between text-[10px] font-medium">
+                    <span className={themeTextMuted}>{enrollmentCount} Seats Booked</span>
+                    <span className="text-[#D4AF37] font-bold">{50 - enrollmentCount} Remaining</span>
+                  </div>
+                </div>
+
+                {/* 10-Day Syllabus Collapsible Accordion */}
+                <div className={`mt-6 pt-6 border-t ${themeBorder}`}>
+                  <button 
+                    onClick={() => setCurriculumExpanded(!curriculumExpanded)}
+                    className="flex items-center justify-between w-full group py-2"
+                  >
+                    <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.1em] text-[#D4AF37]">
+                      <BookOpen className="w-4 h-4" />
+                      <span>View 10-Day Masterclass Syllabus</span>
+                    </div>
+                    <ChevronDown className={`w-4 h-4 text-[#CFCFCF]/50 transition-transform duration-300 ${curriculumExpanded ? 'rotate-180 text-[#D4AF37]' : ''}`} />
+                  </button>
+                  
+                  <AnimatePresence>
+                    {curriculumExpanded && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="overflow-hidden mt-4 space-y-3"
+                      >
+                        {curriculum.map((day) => (
+                          <div key={day.day} className={`p-3 rounded-xl border ${isDarkMode ? 'bg-white/[0.01] border-white/[0.04]' : 'bg-slate-50 border-[#E5E7EB]'}`}>
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-[9px] font-black uppercase tracking-wider text-[#D4AF37]">
+                                Day {day.day} • {day.duration}
+                              </span>
+                            </div>
+                            <h4 className={`text-xs font-black ${themeTextTitle}`}>{day.title}</h4>
+                            <p className={`text-[11px] font-medium mt-1 leading-relaxed ${themeText}`}>{day.description}</p>
+                            <div className="flex flex-wrap gap-1 mt-2">
+                              {day.details.slice(0, 2).map((detail, idx) => (
+                                <span key={idx} className={`text-[9px] px-2 py-0.5 rounded font-bold ${isDarkMode ? 'bg-white/5 text-[#CFCFCF]/70' : 'bg-white text-[#4B5563] border border-[#E5E7EB]'}`}>
+                                  ✓ {detail}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              whileHover={{ y: -6 }}
+              className="lg:col-span-5"
+            >
+              <div className={`relative border-2 border-[#D4AF37]/30 rounded-3xl p-8 backdrop-blur-xl h-full flex flex-col shadow-lg transition-all ${
+                isDarkMode 
+                  ? 'bg-gradient-to-br from-white/[0.03] to-white/[0.01]' 
+                  : 'bg-white'
+              }`}>
+                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent"></div>
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <span className="bg-[#D4AF37] text-[#050505] text-[8px] font-black uppercase tracking-[0.15em] px-4 py-1.5 rounded-full">
+                    Best Value
+                  </span>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="text-center pt-4">
+                    <span className={`text-[9px] uppercase tracking-[0.2em] font-black block ${themeTextMuted}`}>All-Inclusive Program Fee</span>
+                    <div className="flex items-baseline justify-center gap-3 mt-3">
+                      <span className="text-5xl md:text-6xl font-black text-[#D4AF37]">₹3,999</span>
+                      <span className={`text-sm line-through ${themeTextMuted}`}>₹9,999</span>
+                    </div>
+                    <span className="inline-block mt-2 bg-[#D4AF37]/10 text-[#D4AF37] text-[10px] font-black px-3 py-1 rounded-full border border-[#D4AF37]/20">
+                      Save 60% — Limited Offer
+                    </span>
+                  </div>
+
+                  <div className={`border rounded-2xl p-4 text-center ${isDarkMode ? 'bg-white/[0.02] border-white/[0.06]' : 'bg-slate-50 border-[#E5E7EB]'}`}>
+                    <span className={`text-[9px] uppercase tracking-[0.15em] font-black block mb-2 ${themeTextMuted}`}>Offer Closes In</span>
+                    <div className="flex items-center justify-center gap-2">
+                      <Clock className="w-4 h-4 text-[#D4AF37]" />
+                      <span className="font-mono text-xl font-black text-[#D4AF37]">
+                        {String(timeLeft.hours).padStart(2, '0')}h : {String(timeLeft.minutes).padStart(2, '0')}m : {String(timeLeft.seconds).padStart(2, '0')}s
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className={`border rounded-2xl p-4 ${isDarkMode ? 'bg-white/[0.02] border-white/[0.06]' : 'bg-slate-50 border-[#E5E7EB]'}`}>
+                    <span className={`text-[9px] uppercase tracking-[0.15em] font-black block mb-2 ${themeTextMuted}`}>EMI Options Available</span>
+                    <div className="flex justify-between text-xs">
+                      <span className={`font-medium ${themeText}`}>Starting at</span>
+                      <span className={`font-black ${themeTextTitle}`}>₹999/month</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={`space-y-3 mt-8 pt-8 border-t ${isDarkMode ? 'border-white/[0.06]' : 'border-[#E5E7EB]'}`}>
+                  <Link to="/dashboard">
+                    <Button id="pricing-enroll-btn" variant="primary" className="w-full h-14 text-xs font-black uppercase tracking-[0.15em] rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#E5C76B] to-[#D4AF37] text-[#050505] hover:shadow-[0_0_40px_rgba(212,175,55,0.35)] transition-all duration-300 active:scale-95">
+                      Enroll Now — Join Live Batch
+                    </Button>
+                  </Link>
+                  <Link to="/dashboard">
+                    <Button id="pricing-reserve-btn" variant="outline" className={`w-full h-12 text-[10px] font-black uppercase tracking-[0.15em] rounded-2xl border transition-all duration-200 ${
+                      isDarkMode
+                        ? 'border-white/20 text-white hover:text-[#D4AF37] hover:border-[#D4AF37]/40 bg-white/[0.03]'
+                        : 'border-[#1F2937]/25 text-[#1F2937] hover:text-[#D4AF37] hover:border-[#D4AF37]/50 bg-transparent'
+                    }`}>
+                      Reserve Your Seat (Free)
+                    </Button>
+                  </Link>
+
+                  <div className={`flex justify-between items-center text-[9px] font-black uppercase tracking-[0.1em] pt-2 px-1 ${themeTextMuted}`}>
+                    <span className="flex items-center gap-1">
+                      <ShieldCheck className="w-3 h-3 text-[#D4AF37]" /> Secure Checkout
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Award className="w-3 h-3 text-[#D4AF37]" /> Money-Back Guarantee
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* TRUST BAR */}
-      <section className="relative py-10 md:py-14 border-t border-white/[0.03] overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37]/[0.02] via-transparent to-[#0A66C2]/[0.02]"></div>
+      <section className={`relative py-12 md:py-16 border-t border-b transition-colors duration-300 ${
+        isDarkMode ? 'bg-[#111115] border-white/[0.03]' : 'bg-[#F9FAFB] border-[#E5E7EB]'
+      }`}>
+        <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37]/[0.01] via-transparent to-[#0A66C2]/[0.01]"></div>
         <div className="max-w-7xl mx-auto px-6 md:px-12 text-center relative z-10">
           <motion.p 
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            className="text-[10px] text-[#CFCFCF]/50 uppercase tracking-[0.25em] font-black mb-6"
+            className={`text-[10px] uppercase tracking-[0.25em] font-black mb-8 ${themeTextMuted}`}
           >
             Trusted by Elite Agencies & Developers
           </motion.p>
@@ -821,7 +1318,9 @@ const LandingPage = () => {
                 className={`text-lg md:text-xl font-black tracking-[0.15em] transition-all duration-300 cursor-default ${
                   item.gold 
                     ? 'text-[#D4AF37]/60 hover:text-[#D4AF37]' 
-                    : 'text-[#CFCFCF]/30 hover:text-[#CFCFCF]/60'
+                    : isDarkMode 
+                      ? 'text-[#CFCFCF]/30 hover:text-[#CFCFCF]/60'
+                      : 'text-[#1F2937]/35 hover:text-[#1F2937]/75'
                 }`}
               >
                 {item.name}
@@ -831,807 +1330,10 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* WHY BG REALTY */}
-      <section className="relative py-16 md:py-20 px-6 md:px-12" id="highlights">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-[#0B0B0B]/50 to-[#050505]"></div>
-        
-        <div className="max-w-7xl mx-auto relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="text-left mb-10 md:mb-12 space-y-4"
-          >
-            <div className="inline-flex items-center gap-2 bg-[#D4AF37]/10 border border-[#D4AF37]/20 px-4 py-1.5 rounded-full">
-              <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
-              <span className="text-[9px] font-black uppercase tracking-[0.1em] text-[#D4AF37]">Why BG Realty?</span>
-            </div>
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-[1.05]">
-              Premium Training.<br />
-              <span className="text-[#D4AF37]">Real Results.</span>
-            </h2>
-            <p className="text-sm text-[#CFCFCF]/80 max-w-xl leading-relaxed font-medium">
-              A comprehensive curriculum focused on practical sales skills, live interaction, 
-              executive mentorship, and guaranteed placement assistance.
-            </p>
-          </motion.div>
-
-          <motion.div 
-            variants={stagger}
-            initial="hidden"
-            whileInView="visible"
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
-            {highlights.map((h, i) => (
-              <motion.div
-                key={i}
-                variants={fadeUp}
-                custom={i}
-                whileHover={{ y: -6 }}
-                className="group relative bg-white/[0.02] border border-white/[0.06] rounded-3xl p-6 transition-all duration-500 hover:border-[#D4AF37]/20 hover:bg-white/[0.04] hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)]"
-              >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#D4AF37]/5 to-transparent rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-                
-                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${h.gradient} flex items-center justify-center mb-5 relative`}>
-                  <h.icon className={`w-6 h-6 ${h.accent}`} />
-                </div>
-                <h3 className="text-lg font-black text-white mb-2 group-hover:text-[#D4AF37] transition-colors duration-300">{h.title}</h3>
-                <p className="text-sm text-[#CFCFCF]/70 leading-relaxed font-medium">{h.desc}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* CURRICULUM */}
-      <section className="relative py-16 md:py-20 px-6 md:px-12 bg-[#0B0B0B] border-t border-white/[0.03] border-b border-white/[0.03]" id="curriculum">
-        <div className="max-w-7xl mx-auto relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="text-left mb-10 md:mb-12 space-y-4"
-          >
-            <div className="inline-flex items-center gap-2 bg-[#0A66C2]/10 border border-[#0A66C2]/20 px-4 py-1.5 rounded-full">
-              <BookOpen className="w-3.5 h-3.5 text-[#0A66C2]" />
-              <span className="text-[9px] font-black uppercase tracking-[0.1em] text-[#0A66C2]">10-Day Roadmap</span>
-            </div>
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-[1.05]">
-              Executive<br />
-              <span className="text-[#D4AF37]">Learning Journey</span>
-            </h2>
-            <p className="text-sm text-[#CFCFCF]/80 max-w-xl leading-relaxed font-medium">
-              Explore each module. Every day builds toward mastery in real estate sales, 
-              negotiation, legal compliance, and career readiness.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div className="lg:col-span-5 space-y-2">
-              {curriculum.map((day) => (
-                <motion.button
-                  key={day.day}
-                  onClick={() => setActiveDay(day.day)}
-                  whileHover={{ x: 4 }}
-                  className={`w-full p-4 rounded-2xl border text-left transition-all duration-300 flex items-center gap-4 cursor-pointer ${
-                    activeDay === day.day 
-                      ? 'bg-[#D4AF37]/10 border-[#D4AF37]/30 text-white shadow-lg' 
-                      : 'bg-white/[0.02] border-white/[0.05] text-[#CFCFCF]/50 hover:bg-white/[0.04] hover:text-white'
-                  }`}
-                >
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs shrink-0 transition-all ${
-                    activeDay === day.day 
-                      ? 'bg-[#D4AF37] text-[#050505]' 
-                      : 'bg-white/[0.05] text-[#CFCFCF]/50'
-                  }`}>
-                    {String(day.day).padStart(2, '0')}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <span className={`text-[8px] uppercase tracking-[0.15em] font-black block mb-0.5 ${
-                      activeDay === day.day ? 'text-[#D4AF37]/80' : 'text-[#CFCFCF]/30'
-                    }`}>
-                      Module {String(day.day).padStart(2, '0')}
-                    </span>
-                    <span className="text-xs md:text-sm font-black truncate block">{day.title}</span>
-                  </div>
-                  <ChevronRight className={`w-4 h-4 shrink-0 ${
-                    activeDay === day.day ? 'text-[#D4AF37]' : 'text-[#CFCFCF]/30'
-                  }`} />
-                </motion.button>
-              ))}
-            </div>
-
-            <div className="lg:col-span-7">
-              <AnimatePresence mode="wait">
-                {curriculum.map((day) => day.day === activeDay && (
-                  <motion.div
-                    key={day.day}
-                    initial={{ opacity: 0, x: 30 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -30 }}
-                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                    className="relative bg-white/[0.02] border border-white/[0.06] rounded-3xl p-8 h-full overflow-hidden"
-                  >
-                    <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent"></div>
-                    
-                    <div className="space-y-6">
-                      <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 rounded-2xl bg-[#D4AF37]/10 flex items-center justify-center">
-                          <day.icon className="w-6 h-6 text-[#D4AF37]" />
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-3">
-                            <span className="bg-[#D4AF37]/10 text-[#D4AF37] text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-[0.1em] border border-[#D4AF37]/20">
-                              Day {day.day}
-                            </span>
-                            <span className="text-[10px] text-[#CFCFCF]/50 font-bold">{day.duration} Interactive</span>
-                          </div>
-                          <h3 className="text-xl md:text-2xl font-black text-white mt-2">{day.title}</h3>
-                        </div>
-                      </div>
-
-                      <p className="text-sm text-[#CFCFCF]/70 leading-relaxed font-medium">
-                        {day.description}
-                      </p>
-
-                      <div className="space-y-3">
-                        <div className="flex justify-between items-center">
-                          <span className="text-[10px] text-[#D4AF37] font-black uppercase tracking-[0.1em]">Module Progress</span>
-                          <span className="text-[10px] text-[#CFCFCF]/50 font-bold">{day.day * 10}% Complete</span>
-                        </div>
-                        <div className="h-1.5 bg-white/[0.05] rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-gradient-to-r from-[#D4AF37] to-[#E5C76B] rounded-full transition-all duration-500"
-                            style={{ width: `${day.day * 10}%` }}
-                          ></div>
-                        </div>
-                      </div>
-
-                      <div className="space-y-4 pt-4 border-t border-white/[0.04]">
-                        <span className="text-[10px] text-[#E5E7EB] font-black uppercase tracking-[0.1em]">Key Focus Areas</span>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                          {day.details.map((detail, idx) => (
-                            <div key={idx} className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
-                              <Check className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" />
-                              <span className="text-xs text-[#CFCFCF]/70 font-medium">{detail}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="pt-4 border-t border-white/[0.04] flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-[10px] text-[#CFCFCF]/50 font-bold">
-                          <Download className="w-3.5 h-3.5" />
-                          Download module resources
-                        </div>
-                        <a href="#pricing">
-                          <Button variant="primary" className="h-10 px-6 text-[10px] font-black uppercase tracking-[0.1em] rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#E5C76B] text-[#050505]">
-                            Enroll Now
-                          </Button>
-                        </a>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CAREER OUTCOMES */}
-      <section className="relative py-16 md:py-20 px-6 md:px-12" id="careers">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="text-left mb-10 md:mb-12 space-y-4"
-          >
-            <div className="inline-flex items-center gap-2 bg-[#D4AF37]/10 border border-[#D4AF37]/20 px-4 py-1.5 rounded-full">
-              <TrendingUp className="w-3.5 h-3.5 text-[#D4AF37]" />
-              <span className="text-[9px] font-black uppercase tracking-[0.1em] text-[#D4AF37]">Career Outcomes</span>
-            </div>
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-[1.05]">
-              Your Future<br />
-              <span className="text-[#D4AF37]">Career Roadmap</span>
-            </h2>
-            <p className="text-sm text-[#CFCFCF]/80 max-w-xl leading-relaxed font-medium">
-              Choose your path. Each career track includes salary projections, 
-              skill development, and a clear progression roadmap.
-            </p>
-          </motion.div>
-
-          <motion.div 
-            variants={stagger}
-            initial="hidden"
-            whileInView="visible"
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
-            {careerOutcomes.map((career, i) => (
-              <motion.div
-                key={i}
-                variants={fadeUp}
-                custom={i}
-                whileHover={{ y: -6 }}
-                className="group relative bg-white/[0.02] border border-white/[0.06] rounded-3xl p-6 overflow-hidden transition-all duration-500 hover:border-[#D4AF37]/20 hover:bg-white/[0.04]"
-              >
-                <div className={`absolute top-0 left-0 w-1 h-0 group-hover:h-full transition-all duration-500 bg-gradient-to-b ${career.gradient}`}></div>
-                
-                <div className="space-y-5">
-                  <div className="flex items-center gap-4">
-                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${career.gradient}/10 flex items-center justify-center`}>
-                      <career.icon className={`w-5 h-5`} style={{ color: career.gradient.includes('D4AF37') ? '#D4AF37' : '#0A66C2' }} />
-                    </div>
-                    <div>
-                      <h3 className="text-base font-black text-white group-hover:text-[#D4AF37] transition-colors">{career.role}</h3>
-                      <span className="text-[#D4AF37] text-xs font-black">{career.salary}</span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <span className="text-[9px] text-[#CFCFCF]/50 uppercase tracking-[0.15em] font-black">Skills Acquired</span>
-                    <div className="flex flex-wrap gap-2">
-                      {career.skills.map((skill, idx) => (
-                        <span key={idx} className="bg-white/[0.03] border border-white/[0.06] text-[#CFCFCF]/70 text-[10px] font-bold px-3 py-1 rounded-full">
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="pt-3 border-t border-white/[0.04]">
-                    <span className="text-[9px] text-[#CFCFCF]/50 uppercase tracking-[0.15em] font-black block mb-2">Career Progression</span>
-                    <div className="flex items-center gap-1.5 text-[10px] text-[#CFCFCF]/60 font-medium">
-                      {career.roadmap.map((step, idx) => (
-                        <React.Fragment key={idx}>
-                          <span className="bg-white/[0.03] px-2 py-1 rounded-md">{step}</span>
-                          {idx < career.roadmap.length - 1 && <ArrowRight className="w-3 h-3 text-[#D4AF37]/50" />}
-                        </React.Fragment>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* PLACEMENT */}
-      <section className="relative py-16 md:py-20 px-6 md:px-12 bg-[#0B0B0B] border-t border-white/[0.03] border-b border-white/[0.03]" id="placement">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              className="lg:col-span-5 space-y-8"
-            >
-              <div className="space-y-4">
-                <div className="inline-flex items-center gap-2 bg-[#0A66C2]/10 border border-[#0A66C2]/20 px-4 py-1.5 rounded-full">
-                  <Briefcase className="w-3.5 h-3.5 text-[#0A66C2]" />
-                  <span className="text-[9px] font-black uppercase tracking-[0.1em] text-[#0A66C2]">Job Placement Command</span>
-                </div>
-                <h2 className="text-3xl md:text-5xl font-black text-white leading-[1.05]">
-                  Your Career.<br />
-                  <span className="text-[#D4AF37]">We Deliver.</span>
-                </h2>
-                <p className="text-sm text-[#CFCFCF]/80 leading-relaxed font-medium">
-                  We don't stop until you're placed. Our dedicated career support team 
-                  works with you from day one until you sign your offer letter.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {[
-                  { icon: Building2, title: "Hiring Partners", desc: "15+ partner firms actively recruiting" },
-                  { icon: MessageSquare, title: "Interview Support", desc: "Mock panels and real interview prep" },
-                  { icon: FileText, title: "Resume Building", desc: "Executive real estate resume crafting" },
-                  { icon: Users, title: "Recruiter Access", desc: "Direct connect with hiring managers" },
-                ].map((item, i) => (
-                  <div key={i} className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5 hover:border-[#0A66C2]/20 transition-all duration-300">
-                    <item.icon className="w-5 h-5 text-[#D4AF37] mb-3" />
-                    <h4 className="text-xs font-black text-white mb-1">{item.title}</h4>
-                    <p className="text-[10px] text-[#CFCFCF]/60 font-medium">{item.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              className="lg:col-span-7 space-y-5"
-            >
-              <span className="text-[10px] text-[#CFCFCF]/50 uppercase tracking-[0.2em] font-black block">Active Hiring Profiles</span>
-              
-              {jobRoles.map((role, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ delay: idx * 0.1 }}
-                  whileHover={{ x: 6 }}
-                  className="group relative bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6 transition-all duration-300 hover:border-[#D4AF37]/20 hover:bg-white/[0.04]"
-                >
-                  <div className="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-[#D4AF37] to-[#E5C76B] opacity-0 group-hover:opacity-100 transition-opacity rounded-l-2xl"></div>
-                  
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pl-0 group-hover:pl-4 transition-all">
-                    <div>
-                      <h4 className="text-sm font-black text-white">{role.role}</h4>
-                      <p className="text-[10px] text-[#CFCFCF]/60 font-bold mt-0.5">{role.company}</p>
-                    </div>
-                    <span className="inline-flex items-center bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 text-[10px] font-black px-3 py-1.5 rounded-full">
-                      {role.salary}
-                    </span>
-                  </div>
-                  <div className="mt-4 pt-4 border-t border-white/[0.04] flex flex-wrap gap-2">
-                    {role.points.map((p, pIdx) => (
-                      <span key={pIdx} className="bg-white/[0.02] border border-white/[0.05] text-[#CFCFCF]/60 text-[9px] font-bold px-2.5 py-1 rounded-md">
-                        {p}
-                      </span>
-                    ))}
-                  </div>
-                </motion.div>
-              ))}
-
-              <div className="grid grid-cols-3 gap-4 pt-4">
-                {[
-                  { value: "92%", label: "Placement Success" },
-                  { value: "₹4.8L", label: "Avg Starting Package" },
-                  { value: "15+", label: "Hiring Partners" },
-                ].map((stat, i) => (
-                  <div key={i} className="text-center bg-white/[0.02] border border-white/[0.06] rounded-xl p-4">
-                    <span className="text-2xl font-black text-[#D4AF37]">{stat.value}</span>
-                    <span className="text-[9px] text-[#CFCFCF]/50 uppercase tracking-[0.1em] font-black block mt-1">{stat.label}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* CERTIFICATION */}
-      <section className="relative py-16 md:py-20 px-6 md:px-12" id="certification">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              className="lg:col-span-5 space-y-6"
-            >
-              <div className="inline-flex items-center gap-2 bg-[#D4AF37]/10 border border-[#D4AF37]/20 px-4 py-1.5 rounded-full">
-                <Award className="w-3.5 h-3.5 text-[#D4AF37]" />
-                <span className="text-[9px] font-black uppercase tracking-[0.1em] text-[#D4AF37]">Official Credentials</span>
-              </div>
-              <h2 className="text-3xl md:text-5xl font-black text-white leading-[1.05]">
-                Earn Your<br />
-                <span className="text-[#D4AF37]">Professional Badge</span>
-              </h2>
-              <p className="text-sm text-[#CFCFCF]/80 leading-relaxed font-medium">
-                Showcase your expertise with a premium, verifiable certificate. 
-                Upon completion, receive a gold-sealed digital credential recognized across the industry.
-              </p>
-
-              <div className="space-y-4">
-                {[
-                  { icon: ShieldCheck, title: "Blockchain-Verified", desc: "Unique QR verification hash for instant authentication" },
-                  { icon: LinkedinIcon, title: "LinkedIn Integration", desc: "One-click share to your professional profile" },
-                  { icon: BadgeCheck, title: "Industry Recognized", desc: "Accepted by 50+ partner firms and brokerages" },
-                ].map((item, i) => (
-                  <div key={i} className="flex gap-3 bg-white/[0.02] border border-white/[0.06] rounded-xl p-4">
-                    <div className="w-9 h-9 rounded-lg bg-[#D4AF37]/10 flex items-center justify-center shrink-0">
-                      <item.icon className="w-4 h-4 text-[#D4AF37]" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-black text-white">{item.title}</h4>
-                      <p className="text-[10px] text-[#CFCFCF]/60 font-medium mt-0.5">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              className="lg:col-span-7 flex justify-center"
-            >
-              <div className="w-full max-w-[550px] aspect-[1.414] bg-gradient-to-br from-[#1a1a1a] to-[#0B0B0B] border-2 border-[#D4AF37]/30 rounded-2xl p-8 md:p-10 flex flex-col justify-between shadow-[0_20px_80px_rgba(0,0,0,0.6)] relative overflow-hidden text-center">
-                <div className="absolute inset-2 border border-[#D4AF37]/10 rounded-xl pointer-events-none"></div>
-                <div className="absolute inset-3 border border-[#D4AF37]/5 rounded-lg pointer-events-none"></div>
-                
-                <div className="absolute top-4 left-4 w-8 h-8 border-t-2 border-l-2 border-[#D4AF37]/40"></div>
-                <div className="absolute top-4 right-4 w-8 h-8 border-t-2 border-r-2 border-[#D4AF37]/40"></div>
-                <div className="absolute bottom-4 left-4 w-8 h-8 border-b-2 border-l-2 border-[#D4AF37]/40"></div>
-                <div className="absolute bottom-4 right-4 w-8 h-8 border-b-2 border-r-2 border-[#D4AF37]/40"></div>
-
-                <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none">
-                  <BGLogo className="w-72 h-72" />
-                </div>
-
-                <div className="space-y-3 relative z-10">
-                  <span className="text-[10px] uppercase tracking-[0.2em] font-black text-[#D4AF37]/70 block">BG Realty Training Academy</span>
-                  <h3 className="text-xl md:text-2xl font-black text-white tracking-wide">CERTIFICATE OF COMPLETION</h3>
-                  <div className="w-16 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto"></div>
-                </div>
-
-                <div className="my-4 space-y-2 relative z-10">
-                  <p className="text-[10px] text-[#CFCFCF]/50 italic">This prestigious credential is awarded to</p>
-                  <p className="text-lg md:text-xl font-black text-white font-serif border-b border-[#D4AF37]/20 w-3/4 mx-auto pb-2">
-                    [Your Name]
-                  </p>
-                </div>
-
-                <p className="text-[10px] md:text-[11px] text-[#CFCFCF]/60 leading-relaxed max-w-sm mx-auto relative z-10 font-medium">
-                  for successfully completing the <strong className="text-white">10-Day Real Estate Training & Sales Program</strong>, 
-                  demonstrating mastery in property consultation, communication, lead qualification, site visits, and negotiation.
-                </p>
-
-                <div className="flex justify-center relative z-10 my-2">
-                  <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center border-2 border-[#D4AF37]/30">
-                    <div className="grid grid-cols-3 gap-0.5">
-                      {[...Array(9)].map((_, i) => (
-                        <div key={i} className={`w-3 h-3 ${i % 2 === 0 ? 'bg-[#050505]' : 'bg-white'}`}></div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-end mt-3 px-4 relative z-10">
-                  <div className="text-left">
-                    <div className="text-xs font-black text-white font-serif border-b border-[#D4AF37]/20 pb-1 px-1">Amit Sharma</div>
-                    <span className="text-[8px] text-[#CFCFCF]/50 font-bold mt-0.5 block">Director, BG Realty</span>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-xs font-black text-white font-serif border-b border-[#D4AF37]/20 pb-1 px-1">Rajesh Verma</div>
-                    <span className="text-[8px] text-[#CFCFCF]/50 font-bold mt-0.5 block">Lead Instructor</span>
-                  </div>
-                </div>
-
-                <div className="text-[8px] text-[#CFCFCF]/40 font-mono mt-3 relative z-10">
-                  verify.bgrealtyacademy.com/CERT-2026-{Math.floor(Math.random() * 89999 + 10000)}
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* TESTIMONIALS */}
-      <section className="relative py-16 md:py-20 px-6 md:px-12 bg-[#0B0B0B] border-t border-white/[0.03] border-b border-white/[0.03]" id="testimonials">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="text-left mb-10 md:mb-12 space-y-4"
-          >
-            <div className="inline-flex items-center gap-2 bg-[#D4AF37]/10 border border-[#D4AF37]/20 px-4 py-1.5 rounded-full">
-              <Star className="w-3.5 h-3.5 text-[#D4AF37]" />
-              <span className="text-[9px] font-black uppercase tracking-[0.1em] text-[#D4AF37]">Alumni Success</span>
-            </div>
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-[1.05]">
-              Real Success.<br />
-              <span className="text-[#D4AF37]">Real Metrics.</span>
-            </h2>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {testimonials.slice(0, 2).map((test, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                className="group relative bg-white/[0.02] border border-white/[0.06] rounded-3xl p-8 transition-all duration-500 hover:border-[#D4AF37]/20 hover:bg-white/[0.04]"
-              >
-                <div className="flex items-start gap-5 mb-6">
-                  <div className="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border-2 border-[#D4AF37]/20">
-                    <img src={test.avatar} className="w-full h-full object-cover" alt={test.author} />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="text-base font-black text-white">{test.author}</h4>
-                        <p className="text-xs text-[#CFCFCF]/60 font-medium">{test.role} • {test.city}</p>
-                      </div>
-                      <div className="flex">
-                        {[1,2,3,4,5].map(star => (
-                          <Star key={star} className="w-3.5 h-3.5 text-[#D4AF37] fill-current" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <p className="text-sm text-[#CFCFCF]/70 italic leading-relaxed font-medium mb-6">
-                  "{test.quote}"
-                </p>
-
-                <div className="grid grid-cols-3 gap-4 pt-5 border-t border-white/[0.04]">
-                  <div className="text-center">
-                    <span className="text-[9px] text-[#CFCFCF]/50 uppercase tracking-[0.1em] font-black block mb-1">Before</span>
-                    <span className="text-sm font-black text-[#CFCFCF]/60">{test.salaryBefore}</span>
-                  </div>
-                  <div className="text-center border-x border-white/[0.04]">
-                    <span className="text-[9px] text-[#D4AF37] uppercase tracking-[0.1em] font-black block mb-1">After</span>
-                    <span className="text-sm font-black text-[#D4AF37]">{test.salaryAfter}</span>
-                  </div>
-                  <div className="text-center">
-                    <span className="text-[9px] text-[#CFCFCF]/50 uppercase tracking-[0.1em] font-black block mb-1">Deal Volume</span>
-                    <span className="text-sm font-black text-white">{test.dealVolume}</span>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* INSTRUCTORS */}
-      <section className="relative py-16 md:py-20 px-6 md:px-12" id="mentors">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="text-left mb-10 md:mb-12 space-y-4"
-          >
-            <div className="inline-flex items-center gap-2 bg-[#D4AF37]/10 border border-[#D4AF37]/20 px-4 py-1.5 rounded-full">
-              <Users className="w-3.5 h-3.5 text-[#D4AF37]" />
-              <span className="text-[9px] font-black uppercase tracking-[0.1em] text-[#D4AF37]">Elite Industry Mentors</span>
-            </div>
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-[1.05]">
-              Learn From<br />
-              <span className="text-[#D4AF37]">The Best</span>
-            </h2>
-            <p className="text-sm text-[#CFCFCF]/80 max-w-xl leading-relaxed font-medium">
-              Every mentor is an active practitioner closing multi-crore deals. 
-              You learn strategies that work in today's market.
-            </p>
-          </motion.div>
-
-          <motion.div 
-            variants={stagger}
-            initial="hidden"
-            whileInView="visible"
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
-            {teamMembers.map((member, i) => (
-              <motion.div
-                key={i}
-                variants={fadeUp}
-                custom={i}
-                whileHover={{ y: -6 }}
-                className="group relative bg-white/[0.02] border border-white/[0.06] rounded-3xl p-6 overflow-hidden transition-all duration-500 hover:border-[#D4AF37]/20 hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)]"
-              >
-                <div className={`absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br ${member.gradient}/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`}></div>
-
-                <div className="flex items-center gap-4 mb-5">
-                  <div className="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border-2 border-[#D4AF37]/10 group-hover:border-[#D4AF37]/30 transition-all duration-300">
-                    <img src={member.avatar} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt={member.name} />
-                  </div>
-                  <div>
-                    <span className={`inline-block px-2.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-[0.1em] border mb-1.5 ${
-                      i % 2 === 0 
-                        ? 'bg-[#0A66C2]/10 text-[#0A66C2] border-[#0A66C2]/20' 
-                        : 'bg-[#D4AF37]/10 text-[#D4AF37] border-[#D4AF37]/20'
-                    }`}>
-                      {member.role}
-                    </span>
-                    <h3 className="text-base font-black text-white leading-tight">{member.name}</h3>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <span className="text-[8px] text-[#CFCFCF]/50 uppercase tracking-[0.15em] font-black block mb-1">Specialization</span>
-                    <p className="text-xs font-black text-white">{member.specialization}</p>
-                  </div>
-                  
-                  <div className="h-px bg-white/[0.04]"></div>
-                  
-                  <div>
-                    <span className="text-[8px] text-[#CFCFCF]/50 uppercase tracking-[0.15em] font-black block mb-1">Transaction Volume</span>
-                    <p className="text-sm font-black text-[#D4AF37]">{member.transactions}</p>
-                  </div>
-
-                  <div className="h-px bg-white/[0.04]"></div>
-
-                  <p className="text-[11px] text-[#CFCFCF]/60 font-medium leading-relaxed">
-                    {member.experience}
-                  </p>
-
-                  <a 
-                    href={member.linkedin}
-                    className="inline-flex items-center gap-2 text-[10px] font-bold text-[#0A66C2] hover:text-[#D4AF37] transition-colors"
-                  >
-                    <LinkedinIcon className="w-3.5 h-3.5" />
-                    View LinkedIn Profile
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="mt-12 bg-white/[0.02] border border-white/[0.06] rounded-3xl p-8 md:p-10"
-          >
-            <div className="text-center mb-8">
-              <span className="text-[10px] text-[#D4AF37] uppercase tracking-[0.2em] font-black block">Collective Expertise</span>
-              <p className="text-xs text-[#CFCFCF]/60 font-medium mt-1">The numbers behind our mentor panel</p>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-              {[
-                { value: "50+", label: "Years Combined" },
-                { value: "₹500Cr+", label: "Total Transactions" },
-                { value: "5,000+", label: "Students Mentored" },
-                { value: "50+", label: "Partner Developers" },
-              ].map((stat, i) => (
-                <div key={i} className={i > 0 ? "border-l border-white/[0.06]" : ""}>
-                  <span className="text-3xl md:text-4xl font-black text-[#D4AF37] block">{stat.value}</span>
-                  <span className="text-[9px] text-[#CFCFCF]/50 uppercase tracking-[0.1em] font-black block mt-1">{stat.label}</span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* PRICING */}
-      <section className="relative py-16 md:py-20 px-6 md:px-12 bg-[#0B0B0B] border-t border-white/[0.03]" id="pricing">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[#D4AF37]/3 rounded-full blur-[200px] pointer-events-none"></div>
-
-        <div className="max-w-7xl mx-auto relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="text-center max-w-3xl mx-auto mb-10 md:mb-12 space-y-4"
-          >
-            <div className="inline-flex items-center gap-2 bg-[#D4AF37]/10 border border-[#D4AF37]/20 px-4 py-1.5 rounded-full">
-              <Gem className="w-3.5 h-3.5 text-[#D4AF37]" />
-              <span className="text-[9px] font-black uppercase tracking-[0.1em] text-[#D4AF37]">Secure Your Future</span>
-            </div>
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-[1.05]">
-              Premium Investment.<br />
-              <span className="text-[#D4AF37]">Exceptional Returns.</span>
-            </h2>
-            <p className="text-sm text-[#CFCFCF]/80 max-w-lg mx-auto leading-relaxed font-medium">
-              One-time investment for a lifetime career. No hidden fees, no recurring charges. 
-              Just pure, actionable real estate expertise.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch max-w-5xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              className="lg:col-span-7 space-y-6"
-            >
-              <div className="space-y-6 bg-white/[0.02] border border-white/[0.06] rounded-3xl p-8">
-                <h3 className="text-lg font-black text-white flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-[#D4AF37]" />
-                  Everything Included
-                </h3>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {[
-                    "10 Days Live Interactive Classes",
-                    "Real Estate Sales & Pitch Coaching",
-                    "Closing & Token Commitment Skills",
-                    "Deal Negotiation & Discount Handling",
-                    "Active Real Estate Mentor Guidance",
-                    "Verified Graduation Certificate",
-                    "100% Placement & CV Mock Drills",
-                    "Direct Hiring Interviews at Partners",
-                    "Lifetime Portal Access",
-                    "EMI Options Available",
-                    "Money-Back Guarantee",
-                    "LinkedIn Profile Badge",
-                  ].map((item, index) => (
-                    <div key={index} className="flex items-center gap-3">
-                      <div className="w-5 h-5 rounded-full bg-[#D4AF37]/10 flex items-center justify-center shrink-0">
-                        <Check className="w-3 h-3 text-[#D4AF37]" />
-                      </div>
-                      <span className="text-xs font-bold text-[#E5E7EB]">{item}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5 space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-[10px] text-[#CFCFCF]/50 uppercase tracking-[0.15em] font-black">Enrollment Status</span>
-                    <span className="text-[10px] text-[#D4AF37] font-black">{Math.round((enrollmentCount / 50) * 100)}% Booked</span>
-                  </div>
-                  <div className="h-2.5 bg-white/[0.05] rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-gradient-to-r from-[#D4AF37] to-[#E5C76B] rounded-full transition-all duration-1000"
-                      style={{ width: `${(enrollmentCount / 50) * 100}%` }}
-                    ></div>
-                  </div>
-                  <div className="flex justify-between text-[10px] text-[#CFCFCF]/60 font-medium">
-                    <span>{enrollmentCount} Seats Booked</span>
-                    <span className="text-[#D4AF37] font-bold">{50 - enrollmentCount} Remaining</span>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              whileHover={{ y: -6 }}
-              className="lg:col-span-5"
-            >
-              <div className="relative bg-gradient-to-br from-white/[0.03] to-white/[0.01] border-2 border-[#D4AF37]/20 rounded-3xl p-8 backdrop-blur-xl h-full flex flex-col shadow-[0_20px_80px_rgba(0,0,0,0.5)]">
-                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent"></div>
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="bg-[#D4AF37] text-[#050505] text-[8px] font-black uppercase tracking-[0.15em] px-4 py-1.5 rounded-full">
-                    Best Value
-                  </span>
-                </div>
-
-                <div className="space-y-6">
-                  <div className="text-center pt-4">
-                    <span className="text-[9px] text-[#CFCFCF]/50 uppercase tracking-[0.2em] font-black block">All-Inclusive Program Fee</span>
-                    <div className="flex items-baseline justify-center gap-3 mt-3">
-                      <span className="text-5xl md:text-6xl font-black text-[#D4AF37]">₹3,999</span>
-                      <span className="text-sm text-[#CFCFCF]/50 line-through">₹9,999</span>
-                    </div>
-                    <span className="inline-block mt-2 bg-[#D4AF37]/10 text-[#D4AF37] text-[10px] font-black px-3 py-1 rounded-full border border-[#D4AF37]/20">
-                      Save 60% — Limited Offer
-                    </span>
-                  </div>
-
-                  <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4 text-center">
-                    <span className="text-[9px] text-[#CFCFCF]/50 uppercase tracking-[0.15em] font-black block mb-2">Offer Closes In</span>
-                    <div className="flex items-center justify-center gap-2">
-                      <Clock className="w-4 h-4 text-[#D4AF37]" />
-                      <span className="font-mono text-xl font-black text-[#D4AF37]">
-                        {String(timeLeft.hours).padStart(2, '0')}h : {String(timeLeft.minutes).padStart(2, '0')}m : {String(timeLeft.seconds).padStart(2, '0')}s
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4">
-                    <span className="text-[9px] text-[#CFCFCF]/50 uppercase tracking-[0.15em] font-black block mb-2">EMI Options Available</span>
-                    <div className="flex justify-between text-xs">
-                      <span className="text-[#CFCFCF]/70 font-medium">Starting at</span>
-                      <span className="text-white font-black">₹999/month</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-3 mt-8 pt-8 border-t border-white/[0.06]">
-                  <Link to="/dashboard">
-                    <Button variant="primary" className="w-full h-14 text-xs font-black uppercase tracking-[0.15em] rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#E5C76B] to-[#D4AF37] text-[#050505] hover:shadow-[0_0_40px_rgba(212,175,55,0.35)] transition-all duration-300">
-                      Enroll Now — Join Live Batch
-                    </Button>
-                  </Link>
-                  <Link to="/dashboard">
-                    <Button variant="outline" className="w-full h-12 text-[10px] font-black uppercase tracking-[0.15em] rounded-2xl border-white/10 text-[#CFCFCF] hover:text-white hover:border-[#D4AF37]/30">
-                      Reserve Your Seat (Free)
-                    </Button>
-                  </Link>
-
-                  <div className="flex justify-between items-center text-[9px] text-[#CFCFCF]/50 font-black uppercase tracking-[0.1em] pt-2 px-1">
-                    <span className="flex items-center gap-1">
-                      <ShieldCheck className="w-3 h-3 text-[#D4AF37]" /> Secure Checkout
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Award className="w-3 h-3 text-[#D4AF37]" /> Money-Back Guarantee
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
       {/* FAQ */}
-      <section className="relative py-16 md:py-20 px-6 md:px-12">
+      <section className={`relative py-20 md:py-28 px-6 md:px-12 transition-colors duration-300 ${
+        isDarkMode ? 'bg-[#0A0A0C]' : 'bg-white'
+      }`}>
         <div className="max-w-3xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -1642,7 +1344,7 @@ const LandingPage = () => {
               <HelpCircle className="w-3.5 h-3.5 text-[#D4AF37]" />
               <span className="text-[9px] font-black uppercase tracking-[0.1em] text-[#D4AF37]">FAQ</span>
             </div>
-            <h2 className="text-3xl md:text-5xl font-black text-white leading-[1.05]">
+            <h2 className={`text-3xl md:text-5xl font-black leading-[1.05] ${themeTextTitle}`}>
               Everything<br />
               <span className="text-[#D4AF37]">You Need to Know</span>
             </h2>
@@ -1655,17 +1357,23 @@ const LandingPage = () => {
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
-                className={`bg-white/[0.02] border border-white/[0.06] rounded-2xl overflow-hidden transition-all duration-300 ${
-                  activeFaq === i ? 'border-[#D4AF37]/20 bg-white/[0.03]' : ''
+                className={`border rounded-2xl overflow-hidden transition-all duration-300 ${
+                  activeFaq === i 
+                    ? 'border-[#D4AF37]/40 bg-gradient-to-r ' + (isDarkMode ? 'from-white/[0.03]' : 'from-slate-50')
+                    : isDarkMode 
+                      ? 'bg-white/[0.02] border-white/[0.06] hover:bg-white/[0.04]' 
+                      : 'bg-white border-[#E5E7EB] hover:bg-slate-50'
                 }`}
               >
                 <button
                   onClick={() => setActiveFaq(activeFaq === i ? null : i)}
-                  className="w-full p-5 text-left flex justify-between items-center gap-4 text-white hover:text-[#D4AF37] transition-colors font-bold text-sm"
+                  className={`w-full p-5 text-left flex justify-between items-center gap-4 transition-colors font-bold text-sm ${
+                    isDarkMode ? 'text-white hover:text-[#D4AF37]' : 'text-[#1F2937] hover:text-[#D4AF37]'
+                  }`}
                 >
                   <span>{faq.question}</span>
-                  <ChevronDown className={`w-4 h-4 text-[#CFCFCF]/50 transition-transform duration-300 shrink-0 ${
-                    activeFaq === i ? 'rotate-180 text-[#D4AF37]' : ''
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-300 shrink-0 ${
+                    activeFaq === i ? 'rotate-180 text-[#D4AF37]' : 'text-[#CFCFCF]/50'
                   }`} />
                 </button>
 
@@ -1677,7 +1385,9 @@ const LandingPage = () => {
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                     >
-                      <div className="px-5 pb-6 pt-2 text-sm text-[#CFCFCF]/70 leading-relaxed border-t border-white/[0.04] bg-white/[0.01] font-medium">
+                      <div className={`px-5 pb-6 pt-2 text-sm leading-relaxed font-medium border-t ${
+                        isDarkMode ? 'text-[#CFCFCF]/70 border-white/[0.04]' : 'text-[#4B5563] border-[#E5E7EB]'
+                      }`}>
                         {faq.answer}
                       </div>
                     </motion.div>
@@ -1690,7 +1400,7 @@ const LandingPage = () => {
       </section>
 
       {/* FOOTER */}
-      <footer className="relative border-t border-white/[0.03] bg-[#0B0B0B]">
+      <footer className={`relative border-t transition-colors duration-300 ${isDarkMode ? 'bg-[#0A0A0C] border-white/[0.04]' : 'bg-white border-[#E5E7EB]'}`}>
         <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent"></div>
 
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
@@ -1699,21 +1409,25 @@ const LandingPage = () => {
               <Link to="/" className="flex items-center gap-3 group">
                 <BGLogo className="w-10 h-10" />
                 <div className="flex flex-col">
-                  <span className="text-base font-black tracking-tight leading-none text-white">
+                  <span className={`text-base font-black tracking-tight leading-none ${isDarkMode ? 'text-white' : 'text-[#111827]'}`}>
                     BG REALTY
                   </span>
-                  <span className="text-[9px] font-bold text-[#D4AF37]/50 uppercase tracking-[0.15em] mt-0.5">
+                  <span className="text-[9px] font-bold text-[#D4AF37]/55 uppercase tracking-[0.15em] mt-0.5">
                     Training Academy
                   </span>
                 </div>
               </Link>
-              <p className="text-xs text-[#CFCFCF]/60 leading-relaxed font-medium max-w-xs">
+              <p className={`text-xs leading-relaxed font-medium max-w-xs ${themeText}`}>
                 The official real estate training division of BG Realty. Empowering 
                 professionals with elite sales, negotiation, and investment skills.
               </p>
               <div className="flex gap-3">
                 {[LinkedinIcon, Twitter, Instagram, Youtube].map((Icon, i) => (
-                  <a key={i} href="#" className="w-9 h-9 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-[#CFCFCF]/50 hover:text-[#D4AF37] hover:border-[#D4AF37]/20 transition-all duration-200">
+                  <a key={i} href="#" className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 border ${
+                    isDarkMode 
+                      ? 'bg-white/[0.03] border-white/[0.06] text-[#CFCFCF]/50 hover:text-[#D4AF37] hover:border-[#D4AF37]/20' 
+                      : 'bg-black/[0.02] border-[#E5E7EB] text-[#4B5563] hover:text-[#D4AF37] hover:border-[#D4AF37]/40'
+                  }`}>
                     <Icon className="w-4 h-4" />
                   </a>
                 ))}
@@ -1721,17 +1435,27 @@ const LandingPage = () => {
             </div>
 
             <div>
-              <h4 className="text-[10px] font-black text-white uppercase tracking-[0.15em] mb-5">Quick Links</h4>
+              <h4 className={`text-[10px] font-black uppercase tracking-[0.15em] mb-5 ${isDarkMode ? 'text-white' : 'text-[#111827]'}`}>Quick Links</h4>
               <ul className="space-y-3">
+                <li>
+                  <Link to="/about" className={`text-xs hover:text-[#D4AF37] transition-colors font-medium ${themeText}`}>
+                    About Us
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/contact" className={`text-xs hover:text-[#D4AF37] transition-colors font-medium ${themeText}`}>
+                    Contact Us
+                  </Link>
+                </li>
                 {[
                   { label: 'Program Highlights', href: '#highlights' },
-                  { label: 'Course Curriculum', href: '#curriculum' },
+                  { label: 'Course Curriculum', href: '#pricing' },
                   { label: 'Career Outcomes', href: '#careers' },
-                  { label: 'Placement Support', href: '#placement' },
-                  { label: 'Our Mentors', href: '#mentors' },
+                  { label: 'Placement Support', href: '#careers' },
+                  { label: 'Student Reviews', href: '#reviews' },
                 ].map((link, i) => (
                   <li key={i}>
-                    <a href={link.href} className="text-xs text-[#CFCFCF]/60 hover:text-[#D4AF37] transition-colors font-medium">
+                    <a href={link.href} className={`text-xs hover:text-[#D4AF37] transition-colors font-medium ${themeText}`}>
                       {link.label}
                     </a>
                   </li>
@@ -1740,7 +1464,7 @@ const LandingPage = () => {
             </div>
 
             <div>
-              <h4 className="text-[10px] font-black text-white uppercase tracking-[0.15em] mb-5">Programs</h4>
+              <h4 className={`text-[10px] font-black uppercase tracking-[0.15em] mb-5 ${isDarkMode ? 'text-white' : 'text-[#111827]'}`}>Programs</h4>
               <ul className="space-y-3">
                 {[
                   { label: '10-Day Real Estate Masterclass', href: '#pricing' },
@@ -1750,7 +1474,7 @@ const LandingPage = () => {
                   { label: 'Custom Corporate Training', href: '#' },
                 ].map((link, i) => (
                   <li key={i}>
-                    <a href={link.href} className="text-xs text-[#CFCFCF]/60 hover:text-[#D4AF37] transition-colors font-medium">
+                    <a href={link.href} className={`text-xs hover:text-[#D4AF37] transition-colors font-medium ${themeText}`}>
                       {link.label}
                     </a>
                   </li>
@@ -1760,17 +1484,17 @@ const LandingPage = () => {
 
             <div className="space-y-6">
               <div className="space-y-4">
-                <h4 className="text-[10px] font-black text-white uppercase tracking-[0.15em]">Contact</h4>
+                <h4 className={`text-[10px] font-black uppercase tracking-[0.15em] ${isDarkMode ? 'text-white' : 'text-[#111827]'}`}>Contact</h4>
                 <ul className="space-y-3">
-                  <li className="flex items-start gap-2 text-xs text-[#CFCFCF]/60 font-medium">
+                  <li className={`flex items-start gap-2 text-xs font-medium ${themeText}`}>
                     <MapPin className="w-3.5 h-3.5 text-[#D4AF37] shrink-0 mt-0.5" />
                     Metro Building Sector 62, Noida, UP
                   </li>
-                  <li className="flex items-center gap-2 text-xs text-[#CFCFCF]/60 font-medium">
+                  <li className={`flex items-center gap-2 text-xs font-medium ${themeText}`}>
                     <Phone className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
                     +91 98765 43210
                   </li>
-                  <li className="flex items-center gap-2 text-xs text-[#CFCFCF]/60 font-medium">
+                  <li className={`flex items-center gap-2 text-xs font-medium ${themeText}`}>
                     <Mail className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
                     admissions@bgrealtyacademy.com
                   </li>
@@ -1778,18 +1502,25 @@ const LandingPage = () => {
               </div>
 
               <div className="space-y-3">
-                <h4 className="text-[10px] font-black text-white uppercase tracking-[0.15em]">Trust & Legal</h4>
+                <h4 className={`text-[10px] font-black uppercase tracking-[0.15em] ${isDarkMode ? 'text-white' : 'text-[#111827]'}`}>Trust & Legal</h4>
                 <div className="flex flex-wrap gap-2">
-                  <span className="bg-white/[0.03] border border-white/[0.06] text-[#CFCFCF]/60 text-[8px] font-bold px-2.5 py-1 rounded-md">RERA Compliant</span>
-                  <span className="bg-white/[0.03] border border-white/[0.06] text-[#CFCFCF]/60 text-[8px] font-bold px-2.5 py-1 rounded-md">ISO Certified</span>
-                  <span className="bg-white/[0.03] border border-white/[0.06] text-[#CFCFCF]/60 text-[8px] font-bold px-2.5 py-1 rounded-md">SSL Secure</span>
-                  <span className="bg-white/[0.03] border border-white/[0.06] text-[#CFCFCF]/60 text-[8px] font-bold px-2.5 py-1 rounded-md">Verified</span>
+                  {['RERA Compliant', 'ISO Certified', 'SSL Secure', 'Verified'].map((lbl, idx) => (
+                    <span key={idx} className={`text-[8px] font-bold px-2.5 py-1 rounded-md border ${
+                      isDarkMode 
+                        ? 'bg-white/[0.03] border-white/[0.06] text-[#CFCFCF]/60' 
+                        : 'bg-black/[0.02] border-[#E5E7EB] text-[#4B5563]'
+                    }`}>
+                      {lbl}
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="mt-10 pt-6 border-t border-white/[0.04] flex flex-col md:flex-row justify-between items-center gap-4 text-[9px] text-[#CFCFCF]/40 font-black uppercase tracking-[0.15em]">
+          <div className={`mt-10 pt-6 border-t flex flex-col md:flex-row justify-between items-center gap-4 text-[9px] uppercase tracking-[0.15em] font-black ${
+            isDarkMode ? 'border-white/[0.04] text-[#CFCFCF]/40' : 'border-[#E5E7EB] text-[#6B7280]'
+          }`}>
             <p>© 2026 BG Realty Training Academy. All rights reserved.</p>
             <div className="flex gap-6">
               <a href="#" className="hover:text-[#D4AF37] transition-colors">Privacy Policy</a>
