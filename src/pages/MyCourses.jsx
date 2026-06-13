@@ -1,9 +1,84 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Search, Filter, Play, Clock, BookOpen, Star, Lock, SlidersHorizontal, ChevronDown, Sparkles, Trophy, ArrowRight, ShieldCheck, HelpCircle } from 'lucide-react';
+import { Search, Filter, Play, Clock, BookOpen, Star, Lock, SlidersHorizontal, ChevronDown, ChevronUp, Sparkles, Trophy, ArrowRight, ShieldCheck, HelpCircle, Video } from 'lucide-react';
 import { GlassCard, Badge, Button } from '../components/UI';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+
+const SyllabusAccordion = ({ modules }) => {
+  const [expandedModuleId, setExpandedModuleId] = useState(modules[0]?.id || null);
+
+  const toggleModule = (id) => {
+    setExpandedModuleId(expandedModuleId === id ? null : id);
+  };
+
+  return (
+    <div className="space-y-3">
+      {modules.map((module) => {
+        const isExpanded = expandedModuleId === module.id;
+        return (
+          <div key={module.id} className="border border-[#1a1a1c] rounded-xl overflow-hidden bg-[#0f0f12]/40">
+            <button
+              onClick={() => toggleModule(module.id)}
+              className="w-full flex items-center justify-between p-4 text-left font-bold text-xs uppercase tracking-wider text-white hover:bg-slate-900 transition-colors cursor-pointer"
+            >
+              <div className="flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-premium-accent" />
+                <span>{module.title}</span>
+              </div>
+              <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
+            </button>
+            <AnimatePresence initial={false}>
+              {isExpanded && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden border-t border-[#1a1a1c]/60"
+                >
+                  <div className="p-4 space-y-2.5">
+                    {module.description && (
+                      <p className="text-[11px] text-slate-400 font-bold mb-3 italic">
+                        {module.description}
+                      </p>
+                    )}
+                    {module.lectures?.length > 0 ? (
+                      module.lectures.map((lecture) => (
+                        <div key={lecture.id} className="flex items-center justify-between py-2 px-3 rounded-lg bg-[#08080a]/60 border border-[#141416]/50 text-left">
+                          <div className="flex items-center gap-2.5">
+                            <Video className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                            <span className="text-[11px] font-semibold text-slate-300">{lecture.title}</span>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            {lecture.duration && (
+                              <span className="text-[10px] font-bold text-slate-500">{lecture.duration}</span>
+                            )}
+                            {lecture.is_preview ? (
+                              <span className="text-[9px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded font-black uppercase tracking-wider border border-emerald-500/20">
+                                Preview
+                              </span>
+                            ) : (
+                              <span className="text-[9px] bg-slate-800/20 text-slate-500 px-1.5 py-0.5 rounded font-bold uppercase border border-slate-800/40">
+                                Locked
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-[11px] text-slate-500 font-bold text-left">No lectures available in this module.</p>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 const MyCourses = () => {
   const { token, API_BASE_URL } = useAuth();
@@ -15,6 +90,8 @@ const MyCourses = () => {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [selectedLockedCourse, setSelectedLockedCourse] = useState(null);
   const [isEnrolling, setIsEnrolling] = useState(false);
+  const [selectedCourseDetails, setSelectedCourseDetails] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
 
   const [allCourses, setAllCourses] = useState([]);
   const [enrolledCourses, setEnrolledCourses] = useState([]);
@@ -146,6 +223,8 @@ const MyCourses = () => {
         lessons: course.modules ? course.modules.reduce((acc, m) => acc + (m.lectures?.length || 0), 0) : 0,
         status: isLocked ? 'Locked' : 'Active',
         isPremium: course.price > 0,
+        price: course.price || 0,
+        modules: course.modules || [],
         image: image,
         description: course.description
       };
@@ -178,6 +257,11 @@ const MyCourses = () => {
   const handleUnlockClick = (course) => {
     setSelectedLockedCourse(course);
     setShowUpgradeModal(true);
+  };
+
+  const handleViewDetails = (course) => {
+    setSelectedCourseDetails(course);
+    setShowDetailsModal(true);
   };
 
   const containerVariants = {
@@ -426,9 +510,14 @@ const MyCourses = () => {
                     <div className="space-y-4">
                       {/* Category & Title */}
                       <div className="space-y-1.5">
-                        <span className="text-[9px] font-black text-premium-accent uppercase tracking-widest">
-                          {course.category}
-                        </span>
+                        <div className="flex justify-between items-center">
+                          <span className="text-[9px] font-black text-premium-accent uppercase tracking-widest">
+                            {course.category}
+                          </span>
+                          <span className="text-[11px] font-black text-white bg-[#0f0f12]/80 backdrop-blur-sm px-2.5 py-1 rounded-lg border border-[#1a1a1c]/80 shadow-sm">
+                            {parseFloat(course.price) > 0 ? `$${parseFloat(course.price).toFixed(2)}` : 'Free'}
+                          </span>
+                        </div>
                         <h3 className="font-black text-lg text-white leading-snug group-hover:text-premium-accent transition-colors line-clamp-1">
                           {course.title}
                         </h3>
@@ -491,26 +580,36 @@ const MyCourses = () => {
                       </div>
 
                       {/* Course CTAs Buttons */}
-                      {isLocked ? (
-                        <Button 
-                          variant="outline" 
-                          onClick={() => handleUnlockClick(course)}
-                          className="w-full text-xs uppercase tracking-widest font-black border-amber-200/60 bg-amber-500/8 hover:bg-amber-500/10 hover:border-amber-400 hover:text-amber-400 h-12 rounded-xl flex items-center justify-center gap-2 shadow-none cursor-pointer"
-                        >
-                          <Lock className="w-4 h-4 text-amber-500" />
-                          Unlock Course
-                        </Button>
-                      ) : (
-                        <Link to={`/watch/${course.id}`} className="block w-full">
+                      <div className="flex gap-2.5">
+                        <Link to={`/courses/${course.id}`} className="flex-1">
                           <Button 
-                            variant={isCompleted ? 'outline' : 'primary'} 
-                            className="w-full group text-xs uppercase tracking-widest font-black h-12 rounded-xl flex items-center justify-center gap-2 shadow-sm"
+                            variant="outline" 
+                            className="w-full text-[11px] uppercase tracking-wider font-extrabold h-11 rounded-xl flex items-center justify-center cursor-pointer"
                           >
-                            <span>{isCompleted ? 'Review Syllabus' : 'Resume Syllabus'}</span>
-                            <Play className="w-4 h-4 fill-current group-hover:translate-x-1.5 transition-transform duration-300" />
+                            Details
                           </Button>
                         </Link>
-                      )}
+                        {isLocked ? (
+                          <Button 
+                            variant="outline" 
+                            onClick={() => handleUnlockClick(course)}
+                            className="flex-1 text-[11px] uppercase tracking-wider font-extrabold border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10 hover:border-amber-400 hover:text-amber-400 h-11 rounded-xl flex items-center justify-center gap-1.5 shadow-none cursor-pointer"
+                          >
+                            <Lock className="w-3.5 h-3.5 text-amber-500" />
+                            Unlock
+                          </Button>
+                        ) : (
+                          <Link to={`/watch/${course.id}`} className="flex-1">
+                            <Button 
+                              variant={isCompleted ? 'outline' : 'primary'} 
+                              className="w-full group text-[11px] uppercase tracking-wider font-extrabold h-11 rounded-xl flex items-center justify-center gap-1.5 shadow-sm"
+                            >
+                              <span>{isCompleted ? 'Review' : 'Resume'}</span>
+                              <Play className="w-3.5 h-3.5 fill-current group-hover:translate-x-1 transition-transform duration-300" />
+                            </Button>
+                          </Link>
+                        )}
+                      </div>
                     </div>
                   </div>
 
@@ -626,6 +725,150 @@ const MyCourses = () => {
                   <HelpCircle className="w-3.5 h-3.5" />
                   Need immediate support? Contact billing@bgrealtyacademy.com
                 </p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Course Details Modal */}
+      <AnimatePresence>
+        {showDetailsModal && selectedCourseDetails && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
+              className="bg-[#0b0b0d] border border-[#1a1a1c] rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl my-8 relative flex flex-col max-h-[90vh]"
+            >
+              {/* Premium Glow effect */}
+              <div className="absolute -top-12 -left-12 w-32 h-32 bg-premium-accent/10 rounded-full blur-3xl pointer-events-none"></div>
+              <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-premium-violet/10 rounded-full blur-3xl pointer-events-none"></div>
+
+              {/* Close Button */}
+              <button 
+                onClick={() => setShowDetailsModal(false)}
+                className="absolute top-6 right-6 text-slate-400 hover:text-slate-200 font-extrabold text-lg cursor-pointer z-30 bg-[#0b0b0d]/50 hover:bg-[#0b0b0d] p-1.5 rounded-full"
+              >
+                ✕
+              </button>
+
+              {/* Modal scrollable content */}
+              <div className="overflow-y-auto flex-1 p-8 space-y-6 scrollbar-thin">
+                {/* Hero / Thumbnail area inside modal */}
+                <div className="relative h-48 rounded-2xl overflow-hidden bg-[#111114] border border-[#1a1a1c]">
+                  <img 
+                    src={selectedCourseDetails.image} 
+                    className="w-full h-full object-cover" 
+                    alt={selectedCourseDetails.title}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4 z-10 space-y-1">
+                    <span className="bg-premium-accent/20 text-premium-accent border border-premium-accent/30 px-2.5 py-0.5 rounded-md text-[9px] font-black tracking-wider uppercase">
+                      {selectedCourseDetails.category}
+                    </span>
+                    <h2 className="text-xl sm:text-2xl font-black text-white">{selectedCourseDetails.title}</h2>
+                  </div>
+                  <div className="absolute top-4 left-4 z-10">
+                    <span className="text-xs font-black text-white bg-slate-950/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10">
+                      {parseFloat(selectedCourseDetails.price) > 0 ? `$${parseFloat(selectedCourseDetails.price).toFixed(2)}` : 'Free'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Main details info */}
+                <div className="space-y-4">
+                  <h3 className="text-xs font-black uppercase text-premium-accent tracking-widest">About Course</h3>
+                  <p className="text-xs text-slate-300 font-medium leading-relaxed">
+                    {selectedCourseDetails.description || selectedCourseDetails.subtitle}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Instructor Bio */}
+                  <div className="space-y-4">
+                    <h3 className="text-xs font-black uppercase text-premium-accent tracking-widest">Instructor</h3>
+                    <div className="flex items-center gap-3 bg-[#0f0f12]/50 p-3 rounded-xl border border-[#1a1a1c]">
+                      <div className="w-12 h-12 rounded-full border border-[#1a1a1c] overflow-hidden shadow-sm shrink-0">
+                        <img 
+                          src={selectedCourseDetails.instructorAvatar} 
+                          alt={selectedCourseDetails.instructor}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="text-left">
+                        <p className="text-xs font-black text-white">{selectedCourseDetails.instructor}</p>
+                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">{selectedCourseDetails.instructorRole}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Course Quick stats */}
+                  <div className="space-y-4">
+                    <h3 className="text-xs font-black uppercase text-premium-accent tracking-widest">Syllabus Overview</h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-[#0f0f12]/50 border border-[#1a1a1c] p-3 rounded-xl text-center">
+                        <Clock className="w-4 h-4 text-premium-accent mx-auto mb-1.5" />
+                        <span className="block text-[10px] text-slate-400 font-bold uppercase tracking-wider">Duration</span>
+                        <span className="text-xs font-black text-white">{selectedCourseDetails.duration}</span>
+                      </div>
+                      <div className="bg-[#0f0f12]/50 border border-[#1a1a1c] p-3 rounded-xl text-center">
+                        <BookOpen className="w-4 h-4 text-premium-accent mx-auto mb-1.5" />
+                        <span className="block text-[10px] text-slate-400 font-bold uppercase tracking-wider">Lectures</span>
+                        <span className="text-xs font-black text-white">{selectedCourseDetails.lessons} Lectures</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Syllabus curriculum section */}
+                <div className="space-y-4">
+                  <h3 className="text-xs font-black uppercase text-premium-accent tracking-widest">Course Syllabus</h3>
+                  {selectedCourseDetails.modules?.length > 0 ? (
+                    <SyllabusAccordion modules={selectedCourseDetails.modules} />
+                  ) : (
+                    <p className="text-xs text-slate-500 font-bold italic">No syllabus modules defined for this course yet.</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Modal Bottom Actions */}
+              <div className="border-t border-[#1a1a1c] p-6 bg-[#09090b] flex flex-col sm:flex-row gap-3">
+                <Button 
+                  variant="outline" 
+                  className="flex-1 text-xs uppercase tracking-wider font-extrabold h-12 rounded-xl cursor-pointer"
+                  onClick={() => setShowDetailsModal(false)}
+                >
+                  Close Details
+                </Button>
+                {selectedCourseDetails.status === 'Locked' ? (
+                  <Button 
+                    variant="gold" 
+                    disabled={isEnrolling}
+                    className="flex-1 text-xs uppercase tracking-wider font-extrabold h-12 rounded-xl flex items-center justify-center gap-1.5 shadow-md shadow-violet-500/10 bg-gradient-premium disabled:opacity-50"
+                    onClick={() => {
+                      setShowDetailsModal(false);
+                      handleUnlockClick(selectedCourseDetails);
+                    }}
+                  >
+                    <span>Unlock Course</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                ) : (
+                  <Link to={`/watch/${selectedCourseDetails.id}`} className="flex-1" onClick={() => setShowDetailsModal(false)}>
+                    <Button 
+                      className="w-full text-xs uppercase tracking-wider font-extrabold h-12 rounded-xl flex items-center justify-center gap-1.5 shadow-sm"
+                    >
+                      <span>Resume Syllabus</span>
+                      <Play className="w-4 h-4 fill-current" />
+                    </Button>
+                  </Link>
+                )}
               </div>
             </motion.div>
           </motion.div>

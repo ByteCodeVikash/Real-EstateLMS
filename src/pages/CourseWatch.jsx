@@ -687,7 +687,7 @@ const CourseWatch = () => {
                   onCanPlay={() => { setIsLoading(false); setBuffering(false); }}
                   onWaiting={() => setBuffering(true)}
                   onPlaying={() => { setIsPlaying(true); setBuffering(false); handleMouseMove(); }}
-                  onPause={onPause}
+                  onPause={() => setIsPlaying(false)}
                   onSeeking={() => setBuffering(true)}
                   onSeeked={() => setBuffering(false)}
                   onEnded={handleVideoEnded}
