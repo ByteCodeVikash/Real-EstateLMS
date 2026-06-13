@@ -1,18 +1,23 @@
 import { useState } from 'react';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, Link } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import { useTheme } from './context/ThemeContext';
 import LandingPage from './pages/LandingPage';
+import About from './pages/about/About';
+import Contact from './pages/contact/Contact';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import MyCourses from './pages/MyCourses';
+import PublicCoursesPage from './pages/PublicCoursesPage';
 import CourseWatch from './pages/CourseWatch';
 import Assignments from './pages/Assignments';
 import LiveClasses from './pages/LiveClasses';
 import ProfileSecurity from './pages/ProfileSecurity';
 import Notifications from './pages/Notifications';
 import AccessDenied from './pages/AccessDenied';
-import { Sidebar, Navbar } from './components/Layout';
+import CourseDetail from './pages/CourseDetail';
+import { Sidebar, Navbar, PublicNavbar } from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Admin imports
@@ -54,6 +59,19 @@ const AdminDashboardLayout = ({ children }) => {
   );
 };
 
+// Public layout — uses the same navbar as LandingPage (theme-aware)
+const PublicCourseLayout = ({ children }) => {
+  const { isDarkMode } = useTheme();
+  return (
+    <div className={`min-h-screen transition-colors duration-300 ${isDarkMode ? 'bg-[#050505] text-[#c5c5c7]' : 'bg-[#F9FAFB] text-[#1F2937]'}`}>
+      <PublicNavbar />
+      <main>
+        {children}
+      </main>
+    </div>
+  );
+};
+
 function App() {
   const location = useLocation();
 
@@ -62,6 +80,8 @@ function App() {
       <Routes location={location} key={location.pathname}>
         {/* Landing Page */}
         <Route path="/" element={<LandingPage />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
 
         {/* Auth Pages (Standalone) */}
         <Route path="/login" element={<Login />} />
@@ -74,7 +94,10 @@ function App() {
 
         {/* Dashboard Routes (Shared Layout) */}
         <Route path="/dashboard" element={<ProtectedRoute allowedRoles={['student', 'admin', 'super_admin']}><DashboardLayout><Dashboard /></DashboardLayout></ProtectedRoute>} />
-        <Route path="/courses" element={<ProtectedRoute allowedRoles={['student', 'admin', 'super_admin']}><DashboardLayout><MyCourses /></DashboardLayout></ProtectedRoute>} />
+        {/* Public Course Catalog — no login required */}
+        <Route path="/courses" element={<PublicCoursesPage />} />
+        {/* Public Course Detail — no login required; Buy Now redirects to login if needed */}
+        <Route path="/courses/:id" element={<PublicCourseLayout><CourseDetail /></PublicCourseLayout>} />
         <Route path="/assignments" element={<ProtectedRoute allowedRoles={['student', 'admin', 'super_admin']}><DashboardLayout><Assignments /></DashboardLayout></ProtectedRoute>} />
         <Route path="/live" element={<ProtectedRoute allowedRoles={['student', 'admin', 'super_admin']}><DashboardLayout><LiveClasses /></DashboardLayout></ProtectedRoute>} />
         <Route path="/security" element={<ProtectedRoute allowedRoles={['student', 'admin', 'super_admin']}><DashboardLayout><ProfileSecurity /></DashboardLayout></ProtectedRoute>} />

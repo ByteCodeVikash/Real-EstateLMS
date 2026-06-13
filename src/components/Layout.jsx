@@ -4,10 +4,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Layout as LayoutIcon, BookOpen, FileText, Video, Shield, Settings, 
   LogOut, Bell, Award, TrendingUp, Search, Flame, ChevronDown, User,
-  Menu, X
+  Menu, X, Sun, Moon
 } from 'lucide-react';
 import { cn } from './UI';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
+
 
 export const BGLogo = ({ className = "w-10 h-10" }) => (
   <svg className={className} viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -295,5 +297,152 @@ export const Navbar = ({ onMenuOpen }) => {
         </div>
       </div>
     </header>
+  );
+};
+
+/* ─── PublicNavbar ───────────────────────────────────────────────────
+   Same nav as LandingPage. Used on /courses and /courses/:id.
+   Links: Logo · Home · About · Courses · Contact · Theme Toggle · Login
+────────────────────────────────────────────────────────────────────── */
+export const PublicNavbar = () => {
+  const { isDarkMode, toggleTheme } = useTheme();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const location = useLocation();
+
+  const navLinks = [
+    { label: 'Home',    to: '/' },
+    { label: 'About',   to: '/about' },
+    { label: 'Courses', to: '/courses' },
+    { label: 'Contact', to: '/contact' },
+  ];
+
+  return (
+    <nav className={`sticky top-0 left-0 right-0 z-50 px-8 md:px-16 py-4 backdrop-blur-xl border-b shadow-lg transition-all duration-300 ${
+      isDarkMode ? 'bg-[#0A0A0C]/90 border-white/[0.04] shadow-black/40' : 'bg-white/90 border-[#E5E7EB] shadow-slate-200/50'
+    }`}>
+      <div className="max-w-7xl w-full mx-auto flex items-center justify-between">
+        {/* Logo */}
+        <Link to="/" className="flex items-center gap-3 group">
+          <BGLogo className="w-10 h-10 group-hover:scale-105 transition-transform duration-500" />
+          <div className="flex flex-col text-left">
+            <span className={`text-base font-black tracking-tight leading-none transition-colors duration-300 ${
+              isDarkMode ? 'text-white group-hover:text-[#D4AF37]' : 'text-[#111827] group-hover:text-[#D4AF37]'
+            }`}>BG REALTY</span>
+            <span className="text-[9px] font-bold text-[#D4AF37]/60 uppercase tracking-[0.2em] mt-0.5">Training Academy</span>
+          </div>
+        </Link>
+
+        {/* Desktop nav links */}
+        <div className="hidden lg:flex items-center gap-2">
+          {navLinks.map((link, idx) => {
+            const isActive = location.pathname === link.to || (link.to !== '/' && location.pathname.startsWith(link.to));
+            return (
+              <Link
+                key={idx}
+                to={link.to}
+                className={`px-4 py-2 text-[11px] font-black uppercase tracking-[0.15em] transition-all duration-200 rounded-xl hover:bg-[#D4AF37]/5 ${
+                  isActive
+                    ? 'text-[#D4AF37]'
+                    : isDarkMode
+                      ? 'text-[#CFCFCF]/70 hover:text-[#D4AF37]'
+                      : 'text-[#4B5563] hover:text-[#D4AF37]'
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Right controls */}
+        <div className="flex items-center gap-3">
+          <button
+            id="theme-toggle"
+            onClick={toggleTheme}
+            aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            className={`h-9 w-9 flex items-center justify-center rounded-xl border transition-all duration-300 cursor-pointer active:scale-95 ${
+              isDarkMode
+                ? 'bg-white/[0.06] border-white/[0.12] text-[#D4AF37] hover:bg-[#D4AF37]/10 hover:border-[#D4AF37]/30'
+                : 'bg-black/[0.04] border-black/[0.1] text-[#4B5563] hover:bg-[#D4AF37]/10 hover:border-[#D4AF37]/30 hover:text-[#D4AF37]'
+            }`}
+          >
+            {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </button>
+
+          <Link
+            to="/dashboard"
+            id="nav-login-btn"
+            className="hidden sm:flex h-10 px-6 text-[10px] font-black uppercase tracking-[0.15em] rounded-xl items-center transition-all duration-300 bg-[#D4AF37] text-[#050505] border border-transparent hover:bg-[#E5C76B] hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] active:scale-95"
+          >
+            Login
+          </Link>
+
+          <button
+            onClick={() => setMobileOpen(v => !v)}
+            className={`lg:hidden p-2 transition-colors cursor-pointer ${isDarkMode ? 'text-[#CFCFCF] hover:text-white' : 'text-[#4B5563] hover:text-black'}`}
+          >
+            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Drawer */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className={`absolute top-full left-0 right-0 border-b z-50 px-6 py-8 flex flex-col gap-5 lg:hidden shadow-2xl ${
+              isDarkMode ? 'bg-[#0B0B0B] border-[#D4AF37]/10' : 'bg-white border-[#E5E7EB]'
+            }`}
+          >
+            <div className="flex flex-col gap-2">
+              {navLinks.map((link, idx) => {
+                const isActive = location.pathname === link.to || (link.to !== '/' && location.pathname.startsWith(link.to));
+                return (
+                  <Link
+                    key={idx}
+                    to={link.to}
+                    onClick={() => setMobileOpen(false)}
+                    className={`py-3 px-4 text-sm font-black uppercase tracking-[0.15em] transition-all rounded-xl hover:bg-[#D4AF37]/5 ${
+                      isActive
+                        ? 'text-[#D4AF37]'
+                        : isDarkMode
+                          ? 'text-[#CFCFCF]/60 hover:text-white border-b border-white/[0.02]'
+                          : 'text-[#4B5563] hover:text-black border-b border-black/[0.02]'
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
+            </div>
+            <div className={`pt-4 border-t flex items-center gap-4 ${isDarkMode ? 'border-white/[0.06]' : 'border-black/[0.05]'}`}>
+              <button
+                onClick={toggleTheme}
+                className={`h-11 px-4 flex items-center gap-2 rounded-xl border font-bold text-[10px] uppercase tracking-wider transition-all cursor-pointer ${
+                  isDarkMode
+                    ? 'bg-white/[0.05] border-white/[0.1] text-[#CFCFCF] hover:text-[#D4AF37]'
+                    : 'bg-black/[0.03] border-black/[0.08] text-[#4B5563] hover:text-[#D4AF37]'
+                }`}
+              >
+                {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                {isDarkMode ? 'Light' : 'Dark'}
+              </button>
+              <Link
+                to="/dashboard"
+                id="nav-login-btn-mobile"
+                onClick={() => setMobileOpen(false)}
+                className="flex-1 h-11 text-[10px] font-black uppercase tracking-[0.15em] rounded-xl bg-[#D4AF37] text-[#050505] border border-transparent hover:bg-[#E5C76B] active:scale-95 flex items-center justify-center"
+              >
+                Login
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </nav>
   );
 };
