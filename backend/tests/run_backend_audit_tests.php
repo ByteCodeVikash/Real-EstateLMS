@@ -7,7 +7,7 @@
 define('SECURE_ENTRY', true);
 require_once __DIR__ . '/../config/db.php';
 
-$baseUrl = 'http://127.0.0.1:8090';
+$baseUrl = 'http://127.0.0.1:8282';
 
 // Colors for terminal output
 define('GREEN', "\033[0;32m");
@@ -539,6 +539,17 @@ $invalidIdFetch = makeRequest('GET', "/api/courses/abc", null, $studentToken);
 // If id <= 0 -> returns 400 Invalid course ID.
 // Let's verify this!
 assertTest("Invalid ID Parameter Parsing (Non-integer ID)", $invalidIdFetch['code'] === 400, "Failed to reject non-integer course ID with 400: " . $invalidIdFetch['code']);
+
+// F. Logout Endpoint Verification
+$logoutNoToken = makeRequest('POST', '/api/auth/logout');
+assertTest("Logout API without token rejection", $logoutNoToken['code'] === 401, "Allowed logout without token: " . $logoutNoToken['code']);
+
+$logoutInvalidToken = makeRequest('POST', '/api/auth/logout', null, 'invalid-token-123');
+assertTest("Logout API with invalid token rejection", $logoutInvalidToken['code'] === 401, "Allowed logout with invalid token: " . $logoutInvalidToken['code']);
+
+$logoutSuccess = makeRequest('POST', '/api/auth/logout', null, $studentToken);
+assertTest("Logout API with valid token success", $logoutSuccess['code'] === 200, "Logout failed with valid token: " . $logoutSuccess['code']);
+
 
 
 // -----------------------------------------------------------------------------
