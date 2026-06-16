@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ShoppingCart, BookOpen, Tag, ArrowRight, Sparkles, Clock } from 'lucide-react';
+import { Search, ShoppingCart, BookOpen, Tag, ArrowRight, Sparkles, Clock, Play } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -115,7 +115,7 @@ const SkeletonCard = () => (
 );
 
 /* ─── Active Course Card (matches Landing Page exactly) ──────────── */
-const ActiveCourseCard = ({ course, isDarkMode, onBuyNow }) => {
+const ActiveCourseCard = ({ course, isDarkMode, onBuyNow, isEnrolled }) => {
   const price = parseFloat(course.price);
   const thumbnail = resolveThumbnail(course.thumbnail || course.image);
   const themeCard      = isDarkMode ? 'bg-[#0d0d10] border border-white/[0.06]' : 'bg-white border border-black/[0.06] shadow-sm';
@@ -126,15 +126,23 @@ const ActiveCourseCard = ({ course, isDarkMode, onBuyNow }) => {
     <motion.div variants={fadeUp} whileHover={{ y: -8 }} className={`group flex flex-col rounded-2xl overflow-hidden transition-all duration-300 ${themeCard} ${themeCardHover}`}>
       {/* Thumbnail */}
       <div className="relative aspect-[16/10] overflow-hidden">
-        <img src={thumbnail} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-        <div className={`absolute inset-0 bg-gradient-to-t ${isDarkMode ? 'from-[#0d0d10]' : 'from-white'} via-transparent to-transparent`} />
+        <Link to={`/courses/${course.id}`} className="block w-full h-full">
+          <img src={thumbnail} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+        </Link>
+        <div className={`absolute inset-0 bg-gradient-to-t ${isDarkMode ? 'from-[#0d0d10]' : 'from-white'} via-transparent to-transparent pointer-events-none`} />
 
-        {/* Price Badge — top right */}
+        {/* Price/Enrolled Badge — top right */}
         <div className="absolute top-3 right-3 z-10">
-          <span className="bg-[#D4AF37] text-[#050505] font-extrabold text-xs px-3 py-1.5 rounded-lg shadow-md flex items-center gap-1">
-            <Tag className="w-3 h-3" />
-            {price > 0 ? `₹${price.toLocaleString('en-IN')}` : 'Free'}
-          </span>
+          {isEnrolled ? (
+            <span className="bg-[#10B981] text-white font-extrabold text-[9px] uppercase tracking-widest px-2.5 py-1.5 rounded-lg shadow-md flex items-center gap-1">
+              Enrolled
+            </span>
+          ) : (
+            <span className="bg-[#D4AF37] text-[#050505] font-extrabold text-xs px-3 py-1.5 rounded-lg shadow-md flex items-center gap-1">
+              <Tag className="w-3 h-3" />
+              {price > 0 ? `₹${price.toLocaleString('en-IN')}` : 'Free'}
+            </span>
+          )}
         </div>
 
         {/* Category — bottom left */}
@@ -147,7 +155,7 @@ const ActiveCourseCard = ({ course, isDarkMode, onBuyNow }) => {
         )}
 
         {/* Premium badge — top left */}
-        {price > 0 && (
+        {price > 0 && !isEnrolled && (
           <div className="absolute top-3 left-3 z-10">
             <span className="bg-gradient-to-r from-[#0A66C2] to-[#1E88E5] text-white font-extrabold text-[9px] uppercase tracking-widest px-2 py-1 rounded-md flex items-center gap-1">
               <Sparkles className="w-2.5 h-2.5" />
@@ -160,12 +168,23 @@ const ActiveCourseCard = ({ course, isDarkMode, onBuyNow }) => {
       {/* Card Body — Name + Buy Now only */}
       <div className="p-5 flex-1 flex flex-col justify-between gap-4">
         <div>
-          <h3 className={`text-base font-black transition-colors duration-300 leading-snug group-hover:text-[#D4AF37] ${themeTitle}`}>
-            {course.title}
-          </h3>
+          <Link to={`/courses/${course.id}`} className="block">
+            <h3 className={`text-base font-black transition-colors duration-300 leading-snug group-hover:text-[#D4AF37] ${themeTitle}`}>
+              {course.title}
+            </h3>
+          </Link>
         </div>
         <div>
-          <Link to={`/courses/${course.id}`} className="block">
+          {isEnrolled ? (
+            <Link to={`/watch/${course.id}`} className="block">
+              <button
+                className="w-full py-3 text-[10px] font-black uppercase tracking-[0.1em] rounded-xl transition-all duration-300 border flex items-center justify-center gap-2 cursor-pointer bg-white/5 border-white/10 text-white hover:bg-white/10"
+              >
+                <Play className="w-3.5 h-3.5 fill-current text-white" />
+                Resume Course
+              </button>
+            </Link>
+          ) : (
             <button
               id={`buy-now-${course.id}`}
               onClick={onBuyNow ? (e) => { e.preventDefault(); onBuyNow(course.id); } : undefined}
@@ -174,7 +193,7 @@ const ActiveCourseCard = ({ course, isDarkMode, onBuyNow }) => {
               <ShoppingCart className="w-3.5 h-3.5" />
               Buy Now
             </button>
-          </Link>
+          )}
         </div>
       </div>
     </motion.div>
@@ -243,41 +262,68 @@ const ComingSoonCard = ({ course, isDarkMode }) => {
 
 /* ─── Main Page ───────────────────────────────────────────────────── */
 const PublicCoursesPage = () => {
-  const { API_BASE_URL, user } = useAuth();
+  const { API_BASE_URL, user, token } = useAuth();
   const { isDarkMode } = useTheme();
   const navigate = useNavigate();
 
   const [courses, setCourses]         = useState([]);
+  const [enrolledIds, setEnrolledIds] = useState([]);
   const [loading, setLoading]         = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('All');
 
   /* Fetch live courses — fall back to mockData if API returns nothing */
   useEffect(() => {
-    const fetchCourses = async () => {
+    const fetchCoursesAndEnrollments = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/api/courses`);
-        if (res.ok) {
-          const data = await res.json();
-          const apiCourses = data?.data?.courses || [];
-          // Use API courses if available, otherwise fall back to mockData
-          if (apiCourses.length > 0) {
-            setCourses(apiCourses);
-          } else {
-            // Normalise mockData shape to match API shape
-            const fallback = mockData.courses.map(c => ({
-              ...c,
-              category_name: c.category,
-              thumbnail: c.image,
-              mentor_name: c.instructor,
-            }));
-            setCourses(fallback);
-          }
+        setLoading(true);
+        const headers = {};
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const fetchPromises = [
+          fetch(`${API_BASE_URL}/api/courses`, { headers })
+        ];
+
+        if (token) {
+          fetchPromises.push(
+            fetch(`${API_BASE_URL}/api/my-courses`, { headers })
+          );
+        }
+
+        const results = await Promise.all(fetchPromises);
+
+        // Handle courses response
+        const coursesRes = results[0];
+        let apiCourses = [];
+        if (coursesRes.ok) {
+          const data = await coursesRes.json();
+          apiCourses = data?.data?.courses || [];
+        }
+
+        if (apiCourses.length > 0) {
+          setCourses(apiCourses);
         } else {
+          // Normalize mockData shape to match API shape
           const fallback = mockData.courses.map(c => ({
-            ...c, category_name: c.category, thumbnail: c.image, mentor_name: c.instructor,
+            ...c,
+            category_name: c.category,
+            thumbnail: c.image,
+            mentor_name: c.instructor,
           }));
           setCourses(fallback);
+        }
+
+        // Handle enrolled courses response if logged in
+        if (token && results[1] && results[1].ok) {
+          const enrolledData = await results[1].json();
+          if (enrolledData.status === 'success') {
+            const enrolled = enrolledData.data || [];
+            setEnrolledIds(enrolled.map(c => c.id));
+          }
+        } else {
+          setEnrolledIds([]);
         }
       } catch (err) {
         console.error('Failed to fetch courses, using mockData:', err);
@@ -285,12 +331,14 @@ const PublicCoursesPage = () => {
           ...c, category_name: c.category, thumbnail: c.image, mentor_name: c.instructor,
         }));
         setCourses(fallback);
+        setEnrolledIds([]);
       } finally {
         setLoading(false);
       }
     };
-    fetchCourses();
-  }, [API_BASE_URL]);
+
+    fetchCoursesAndEnrollments();
+  }, [API_BASE_URL, token]);
 
   /* Filter live courses */
   const filteredCourses = useMemo(() => {
@@ -439,6 +487,7 @@ const PublicCoursesPage = () => {
                     course={course}
                     isDarkMode={isDarkMode}
                     onBuyNow={handleBuyNow}
+                    isEnrolled={enrolledIds.includes(course.id)}
                   />
                 ))}
               </AnimatePresence>
