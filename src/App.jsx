@@ -7,6 +7,8 @@ import About from './pages/about/About';
 import Contact from './pages/contact/Contact';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import MyCourses from './pages/MyCourses';
 import PublicCoursesPage from './pages/PublicCoursesPage';
@@ -86,6 +88,8 @@ function App() {
         {/* Auth Pages (Standalone) */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/access-denied" element={<AccessDenied />} />
 

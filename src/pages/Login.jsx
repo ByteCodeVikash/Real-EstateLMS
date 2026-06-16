@@ -318,7 +318,12 @@ const Login = () => {
 
               {/* Password */}
               <div className="space-y-2">
-                <label htmlFor="password" className="text-xs font-black text-white/60 uppercase tracking-wider block">Password</label>
+                <div className="flex justify-between items-center">
+                  <label htmlFor="password" className="text-xs font-black text-white/60 uppercase tracking-wider block">Password</label>
+                  <Link to="/forgot-password" className="text-xs font-bold text-[#D4AF37] hover:text-[#E5C76B] transition-colors">
+                    Forgot Password?
+                  </Link>
+                </div>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/25">
                     <Lock className="w-4.5 h-4.5" />
