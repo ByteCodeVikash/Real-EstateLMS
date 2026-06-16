@@ -202,6 +202,14 @@ if (tableExists($db, 'users')) {
         $db->exec("ALTER TABLE `users` ADD COLUMN `auth_provider` VARCHAR(50) DEFAULT 'local' AFTER `updated_at`");
         logProgress($outputs, "Added column 'auth_provider' to 'users'");
     }
+    if (!columnExists($db, 'users', 'reset_token')) {
+        $db->exec("ALTER TABLE `users` ADD COLUMN `reset_token` VARCHAR(255) DEFAULT NULL");
+        logProgress($outputs, "Added column 'reset_token' to 'users'");
+    }
+    if (!columnExists($db, 'users', 'reset_token_expires')) {
+        $db->exec("ALTER TABLE `users` ADD COLUMN `reset_token_expires` DATETIME DEFAULT NULL");
+        logProgress($outputs, "Added column 'reset_token_expires' to 'users'");
+    }
 }
 
 // 8. Alter admins table columns
@@ -213,6 +221,14 @@ if (tableExists($db, 'admins')) {
     if (!columnExists($db, 'admins', 'status')) {
         $db->exec("ALTER TABLE `admins` ADD COLUMN `status` ENUM('Active', 'Inactive') DEFAULT 'Active' AFTER `password_hash`");
         logProgress($outputs, "Added column 'status' to 'admins'");
+    }
+    if (!columnExists($db, 'admins', 'reset_token')) {
+        $db->exec("ALTER TABLE `admins` ADD COLUMN `reset_token` VARCHAR(255) DEFAULT NULL");
+        logProgress($outputs, "Added column 'reset_token' to 'admins'");
+    }
+    if (!columnExists($db, 'admins', 'reset_token_expires')) {
+        $db->exec("ALTER TABLE `admins` ADD COLUMN `reset_token_expires` DATETIME DEFAULT NULL");
+        logProgress($outputs, "Added column 'reset_token_expires' to 'admins'");
     }
 }
 

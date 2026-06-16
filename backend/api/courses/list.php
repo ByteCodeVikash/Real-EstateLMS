@@ -8,8 +8,12 @@ require_once __DIR__ . '/../../config/db.php';
 require_once __DIR__ . '/../../helpers/response.php';
 require_once __DIR__ . '/../../middleware/auth_middleware.php';
 
-// Authenticate user
-$user = requireAuth();
+// Authenticate user optionally
+$user = null;
+$token = getBearerToken();
+if ($token) {
+    $user = requireAuth();
+}
 
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
@@ -29,10 +33,10 @@ try {
     $params = [];
     
     // 1. Role-based visibility logic
-    if ($user['role'] === 'student') {
+    if ($user && $user['role'] === 'student') {
         // Students can only view Published courses
         $conditions[] = "c.status = 'Published'";
-    } else if ($user['role'] === 'instructor') {
+    } else if ($user && $user['role'] === 'instructor') {
         // Instructors can view all published courses OR their own draft/archived courses
         $conditions[] = "(c.created_by = ? OR c.status = 'Published')";
         $params[] = $user['id'];
@@ -41,12 +45,15 @@ try {
             $conditions[] = "c.status = ?";
             $params[] = $status;
         }
-    } else {
+    } else if ($user) {
         // Admins can see everything, apply status filter if specified
         if (!empty($status)) {
             $conditions[] = "c.status = ?";
             $params[] = $status;
         }
+    } else {
+        // Guests can only view Published courses
+        $conditions[] = "c.status = 'Published'";
     }
     
     // 2. Search filter
@@ -99,7 +106,7 @@ try {
     
     // Get list of enrolled course IDs if student
     $enrolledCourseIds = [];
-    if ($user['role'] === 'student') {
+    if ($user && $user['role'] === 'student') {
         $enrollStmt = $db->prepare("SELECT course_id FROM enrollments WHERE user_id = ?");
         $enrollStmt->execute([$user['id']]);
         $enrolledCourseIds = $enrollStmt->fetchAll(PDO::FETCH_COLUMN) ?: [];
@@ -131,7 +138,7 @@ try {
                 $lec['sort_order'] = (int)$lec['sort_order'];
                 $lec['is_preview'] = (int)$lec['is_preview'] === 1;
 
-                if ($user['role'] === 'student' && !$isEnrolled && !$lec['is_preview']) {
+                if ((!$user || $user['role'] === 'student') && !$isEnrolled && !$lec['is_preview']) {
                     $lec['video_url'] = null;
                     $lec['video_id'] = null;
                 }

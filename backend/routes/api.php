@@ -11,6 +11,9 @@ return [
     'GET /api/auth/validate' => 'api/auth/validate.php',
     'POST /api/auth/google' => 'api/auth/google.php',
     'POST /api/auth/logout' => 'api/auth/logout.php',
+    'POST /api/auth/forgot-password' => 'api/auth/forgot_password.php',
+    'POST /api/auth/reset-password/validate' => 'api/auth/validate_reset_token.php',
+    'POST /api/auth/reset-password' => 'api/auth/reset_password.php',
     
     // Categories APIs
     'GET /api/categories' => 'api/categories/list.php',

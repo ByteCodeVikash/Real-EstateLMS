@@ -109,7 +109,7 @@ try {
 
     // 1. GET /api/courses (Unauthenticated)
     $res = makeRequest('GET', '/api/courses');
-    assertAPI("GET /api/courses unauthenticated is blocked", $res['code'] === 401, "Code: " . $res['code']);
+    assertAPI("GET /api/courses unauthenticated is allowed", $res['code'] === 200, "Code: " . $res['code']);
 
     // 2. GET /api/courses (Authenticated Student)
     $res = makeRequest('GET', '/api/courses', null, 'mock-student-token');

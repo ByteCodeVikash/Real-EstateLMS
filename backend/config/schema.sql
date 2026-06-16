@@ -18,6 +18,8 @@ CREATE TABLE IF NOT EXISTS `users` (
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `auth_provider` VARCHAR(50) DEFAULT 'local',
+    `reset_token` VARCHAR(255) DEFAULT NULL,
+    `reset_token_expires` DATETIME DEFAULT NULL,
     INDEX `idx_users_email` (`email`),
     INDEX `idx_users_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -31,6 +33,8 @@ CREATE TABLE IF NOT EXISTS `admins` (
     `role` ENUM('Super Admin', 'Instructor Manager', 'Grader Advisor') NOT NULL DEFAULT 'Grader Advisor',
     `last_active` DATETIME DEFAULT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `reset_token` VARCHAR(255) DEFAULT NULL,
+    `reset_token_expires` DATETIME DEFAULT NULL,
     INDEX `idx_admins_email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
