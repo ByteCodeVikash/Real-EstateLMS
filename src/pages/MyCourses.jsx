@@ -219,6 +219,8 @@ const MyCourses = () => {
         category: course.category_name || 'General',
         specializationBadge: course.category_name || 'General',
         progress: enrollment ? enrollment.progress : 0,
+        last_watched_lecture_title: enrollment ? enrollment.last_watched_lecture_title : null,
+        last_watched_lecture_id: enrollment ? enrollment.last_watched_lecture_id : null,
         duration: course.duration || '12 Hours',
         lessons: course.modules ? course.modules.reduce((acc, m) => acc + (m.lectures?.length || 0), 0) : 0,
         status: isLocked ? 'Locked' : 'Active',
@@ -577,6 +579,15 @@ const MyCourses = () => {
                             }`}
                           ></motion.div>
                         </div>
+                        {course.last_watched_lecture_title ? (
+                          <p className="text-[10.5px] text-slate-400 font-medium truncate mt-1">
+                            <span className="text-premium-gold-light font-bold">Resume:</span> {course.last_watched_lecture_title}
+                          </p>
+                        ) : (
+                          <p className="text-[10.5px] text-slate-500 italic mt-1">
+                            Not started yet
+                          </p>
+                        )}
                       </div>
 
                       {/* Course CTAs Buttons */}

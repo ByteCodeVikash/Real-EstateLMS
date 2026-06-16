@@ -41,7 +41,25 @@ try {
                 FROM lectures l 
                 JOIN course_modules m ON l.module_id = m.id 
                 WHERE m.course_id = c.id
-            ) AS total_lectures
+            ) AS total_lectures,
+            (
+                SELECT l.title 
+                FROM lecture_progress lp
+                JOIN lectures l ON lp.lecture_id = l.id
+                JOIN course_modules m ON l.module_id = m.id
+                WHERE lp.user_id = e.user_id AND m.course_id = c.id
+                ORDER BY lp.updated_at DESC
+                LIMIT 1
+            ) AS last_watched_lecture_title,
+            (
+                SELECT l.id 
+                FROM lecture_progress lp
+                JOIN lectures l ON lp.lecture_id = l.id
+                JOIN course_modules m ON l.module_id = m.id
+                WHERE lp.user_id = e.user_id AND m.course_id = c.id
+                ORDER BY lp.updated_at DESC
+                LIMIT 1
+            ) AS last_watched_lecture_id
         FROM enrollments e
         JOIN courses c ON e.course_id = c.id
         LEFT JOIN categories cat ON c.category_id = cat.id
@@ -104,7 +122,9 @@ try {
             'image' => $image,
             'description' => $row['description'],
             'enrollment_date' => $row['enrollment_date'],
-            'certificate_issued' => (int)$row['certificate_issued']
+            'certificate_issued' => (int)$row['certificate_issued'],
+            'last_watched_lecture_title' => $row['last_watched_lecture_title'],
+            'last_watched_lecture_id' => $row['last_watched_lecture_id'] ? (int)$row['last_watched_lecture_id'] : null
         ];
     }
     

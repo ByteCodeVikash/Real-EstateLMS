@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Play, Pause, SkipForward, SkipBack, Settings, Maximize, Volume2, Volume1, VolumeX, Shield, 
   Lock, CheckCircle, FileText, Download, Monitor, Menu, X, 
-  AlertTriangle, Fingerprint, ShieldAlert, ArrowLeft, Send, Sparkles, Trophy, Activity
+  AlertTriangle, Fingerprint, ShieldAlert, ArrowLeft, Send, Sparkles, Trophy, Activity,
+  ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { useParams, Link } from 'react-router-dom';
 import { Button, Badge } from '../components/UI';
@@ -27,6 +28,41 @@ const CourseWatch = () => {
   const [activeLecture, setActiveLecture] = useState(null);
   const [courseProgress, setCourseProgress] = useState(0);
   const [loading, setLoading] = useState(true);
+
+  const flatLectures = useMemo(() => {
+    if (!course || !course.modules) return [];
+    return course.modules.flatMap(m => m.lectures || []);
+  }, [course]);
+
+  const hasNextLecture = useMemo(() => {
+    const idx = flatLectures.findIndex(l => l.id === activeLecture?.id);
+    return idx !== -1 && idx < flatLectures.length - 1 && !flatLectures[idx + 1].locked;
+  }, [flatLectures, activeLecture]);
+
+  const hasPrevLecture = useMemo(() => {
+    const idx = flatLectures.findIndex(l => l.id === activeLecture?.id);
+    return idx > 0 && !flatLectures[idx - 1].locked;
+  }, [flatLectures, activeLecture]);
+
+  const playNextLecture = () => {
+    const idx = flatLectures.findIndex(l => l.id === activeLecture?.id);
+    if (idx !== -1 && idx < flatLectures.length - 1) {
+      const nextLec = flatLectures[idx + 1];
+      if (!nextLec.locked) {
+        setActiveLecture(nextLec);
+      }
+    }
+  };
+
+  const playPrevLecture = () => {
+    const idx = flatLectures.findIndex(l => l.id === activeLecture?.id);
+    if (idx > 0) {
+      const prevLec = flatLectures[idx - 1];
+      if (!prevLec.locked) {
+        setActiveLecture(prevLec);
+      }
+    }
+  };
 
   const [sidebarOpen, setSidebarOpen] = useState(() => typeof window !== 'undefined' ? window.innerWidth >= 1024 : true);
   const [activeTab, setActiveTab] = useState('Overview');
@@ -78,20 +114,58 @@ const CourseWatch = () => {
         if (res.ok) {
           const data = await res.json();
           if (data.status === 'success' && data.data) {
-            setCourse(data.data);
-            setCourseProgress(data.data.progress || 0);
+            const courseData = data.data;
+            const isEnrolled = courseData.is_enrolled;
+            const isAdminOrInstructor = user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'instructor';
 
-            // Find first lecture across all modules
-            let firstLecture = null;
-            if (data.data.modules && data.data.modules.length > 0) {
-              for (const mod of data.data.modules) {
+            // Map modules & lectures to set 'locked' status dynamically
+            if (courseData.modules) {
+              courseData.modules = courseData.modules.map(mod => {
+                if (mod.lectures) {
+                  mod.lectures = mod.lectures.map(lec => ({
+                    ...lec,
+                    locked: isAdminOrInstructor ? false : (!isEnrolled && !lec.is_preview)
+                  }));
+                }
+                return mod;
+              });
+            }
+
+            setCourse(courseData);
+            setCourseProgress(courseData.progress || 0);
+
+            // Find last watched lecture based on updated_at
+            let activeLec = null;
+            let latestTime = 0;
+            if (courseData.modules && courseData.modules.length > 0) {
+              for (const mod of courseData.modules) {
                 if (mod.lectures && mod.lectures.length > 0) {
-                  firstLecture = mod.lectures[0];
-                  break;
+                  for (const lec of mod.lectures) {
+                    if (lec.updated_at && !lec.locked) {
+                      const t = new Date(lec.updated_at).getTime();
+                      if (t > latestTime) {
+                        latestTime = t;
+                        activeLec = lec;
+                      }
+                    }
+                  }
                 }
               }
             }
-            setActiveLecture(firstLecture);
+
+            // Fallback to first unlocked lecture if no lecture was watched/started yet
+            if (!activeLec && courseData.modules && courseData.modules.length > 0) {
+              for (const mod of courseData.modules) {
+                if (mod.lectures && mod.lectures.length > 0) {
+                  const firstUnlocked = mod.lectures.find(lec => !lec.locked);
+                  if (firstUnlocked) {
+                    activeLec = firstUnlocked;
+                    break;
+                  }
+                }
+              }
+            }
+            setActiveLecture(activeLec);
           }
         }
 
@@ -112,7 +186,7 @@ const CourseWatch = () => {
     };
 
     fetchCourseDetails();
-  }, [courseId, token, API_BASE_URL]);
+  }, [courseId, token, API_BASE_URL, user?.role]);
 
   // Real-time Discussion Chat Panel state — loaded from localStorage per course
   const [chatMessages, setChatMessages] = useState(
@@ -185,14 +259,11 @@ const CourseWatch = () => {
     .catch(err => console.error('Error fetching playhead progress:', err));
   }, [activeLecture?.id, token, API_BASE_URL]);
 
-  // Save progress handler
-  const saveProgress = async (seconds, isCompleted = 0) => {
-    if (!activeLecture?.id || !token) return;
-    if (Math.abs(seconds - lastSavedTimeRef.current) < 2 && isCompleted === 0) return;
-
-    lastSavedTimeRef.current = seconds;
+  // Save progress helper for a specific lecture ID
+  const saveProgressForLecture = async (lectureId, seconds, isCompleted = 0) => {
+    if (!lectureId || !token) return;
     try {
-      const response = await fetch(`${API_BASE_URL}/api/lectures/${activeLecture.id}/progress`, {
+      const response = await fetch(`${API_BASE_URL}/api/lectures/${lectureId}/progress`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -211,13 +282,12 @@ const CourseWatch = () => {
           if (result.data.course_progress !== undefined) {
             setCourseProgress(result.data.course_progress);
           }
-          // Mark completed in active lecture object if returned
           if (isCompleted && course) {
             setCourse(prev => {
               if (!prev) return prev;
               const updatedModules = prev.modules.map(mod => {
                 const updatedLectures = mod.lectures.map(lec => {
-                  if (lec.id === activeLecture.id) {
+                  if (lec.id === lectureId) {
                     return { ...lec, completed: true };
                   }
                   return lec;
@@ -233,6 +303,61 @@ const CourseWatch = () => {
       console.error('Error saving progress playhead:', error);
     }
   };
+
+  // Save progress handler
+  const saveProgress = async (seconds, isCompleted = 0) => {
+    if (!activeLecture?.id || !token) return;
+    if (Math.abs(seconds - lastSavedTimeRef.current) < 2 && isCompleted === 0) return;
+
+    lastSavedTimeRef.current = seconds;
+    await saveProgressForLecture(activeLecture.id, seconds, isCompleted);
+  };
+
+  // Save progress of the previous lecture before switching
+  const prevLectureRef = useRef(null);
+
+  useEffect(() => {
+    const prevLec = prevLectureRef.current;
+    prevLectureRef.current = activeLecture;
+
+    if (prevLec && prevLec.id !== activeLecture?.id && videoRef.current) {
+      const seconds = videoRef.current.currentTime;
+      if (seconds > 0) {
+        saveProgressForLecture(prevLec.id, seconds, 0);
+      }
+    }
+  }, [activeLecture?.id]);
+
+  // Save progress on page unload
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (activeLecture?.id && videoRef.current && !activeLecture.locked) {
+        const seconds = videoRef.current.currentTime;
+        if (seconds > 0) {
+          const url = `${API_BASE_URL}/api/lectures/${activeLecture.id}/progress`;
+          const body = JSON.stringify({
+            playhead_seconds: Math.floor(seconds),
+            duration_seconds: Math.floor(videoRef.current?.duration || duration || 0),
+            is_completed: 0
+          });
+          fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body,
+            keepalive: true
+          }).catch(() => {});
+        }
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [activeLecture?.id, token, API_BASE_URL, duration]);
 
   // Custom Fullscreen API Toggle handler
   const toggleFullscreen = () => {
@@ -273,16 +398,20 @@ const CourseWatch = () => {
 
   // ── Real Video Helpers ──────────────────────────────────────────────────────
   const QUALITY_OPTIONS = ['Auto', '720p', '480p'];
-  const getVideoUrl = (lecture, quality) => {
+  const getVideoUrl = (lecture) => {
     if (!lecture) return '';
     if (lecture.video_url) {
       return lecture.video_url;
     }
-    // Default fallback to local mock sample video
-    const q = quality || 'Auto';
-    if (q === '480p') return '/videos/lecture-sample-480p.mp4';
-    return '/videos/lecture-sample-720p.mp4';
+    // No fallback — return empty to show placeholder
+    return '';
   };
+
+  // Handle external video embeds (YouTube / Vimeo) — declared early for use in handlers
+  const isYoutube = activeLecture?.video_url?.includes('youtube.com') || activeLecture?.video_url?.includes('youtu.be') || activeLecture?.video_type === 'youtube';
+  const isVimeo = activeLecture?.video_url?.includes('vimeo.com') || activeLecture?.video_type === 'vimeo';
+  const isExternalEmbed = isYoutube || isVimeo;
+  const noVideoAvailable = !isExternalEmbed && !getVideoUrl(activeLecture);
 
   const formatTime = (sec) => {
     if (!isFinite(sec) || isNaN(sec)) return '0:00';
@@ -293,7 +422,7 @@ const CourseWatch = () => {
 
   const handleTimeUpdate = () => {
     const v = videoRef.current;
-    if (!v) return;
+    if (!v || isYoutube || isVimeo) return;
     setCurrentTime(v.currentTime);
     setVideoProgress((v.currentTime / (v.duration || 1)) * 100);
 
@@ -325,7 +454,9 @@ const CourseWatch = () => {
     setIsPlaying(false); 
     setVideoProgress(100); 
     setShowControls(true); 
-    saveProgress(duration, 1); // Mark Completed
+    if (!isYoutube && !isVimeo) {
+      saveProgress(duration, 1); // Mark Completed
+    }
   };
 
   const togglePlay = () => {
@@ -401,7 +532,13 @@ const CourseWatch = () => {
     const v = videoRef.current;
     if (!v || !activeLecture) return;
 
-    const nextSrc = getVideoUrl(activeLecture, selectedQuality);
+    const nextSrc = getVideoUrl(activeLecture);
+    if (!nextSrc) {
+      // No video source available — skip loading
+      setIsLoading(false);
+      setBuffering(false);
+      return;
+    }
     if (lastLoadedSrcRef.current === nextSrc && preserveTime) return;
 
     const wasPlaying = !v.paused && !v.ended;
@@ -474,10 +611,21 @@ const CourseWatch = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isMuted, volume, playbackSpeed, selectedQuality, duration, isFullscreen, activeLecture]);
 
-  // Load lecture video when active lecture changes
   useEffect(() => {
     if (activeLecture) {
-      loadVideo({ preserveTime: false });
+      // Reset play state when switching lectures
+      setIsPlaying(false);
+      setShowControls(true);
+      if (!isYoutube && !isVimeo) {
+        loadVideo({ preserveTime: false });
+      } else {
+        // For iframe embeds, just reset UI state
+        setIsLoading(false);
+        setBuffering(false);
+        setCurrentTime(0);
+        setDuration(0);
+        setVideoProgress(0);
+      }
     }
   }, [activeLecture?.id]);
 
@@ -515,9 +663,6 @@ const CourseWatch = () => {
     savedNotes && setSavedNotes('');
   };
 
-  // Handle external video embeds (YouTube / Vimeo)
-  const isYoutube = activeLecture?.video_url?.includes('youtube.com') || activeLecture?.video_url?.includes('youtu.be') || activeLecture?.video_type === 'youtube';
-  const isVimeo = activeLecture?.video_url?.includes('vimeo.com') || activeLecture?.video_type === 'vimeo';
 
   const getYoutubeEmbedUrl = (url, vid) => {
     let id = vid;
@@ -645,7 +790,24 @@ const CourseWatch = () => {
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[70%] bg-blue-500/5 blur-[120px] rounded-full pointer-events-none z-10"></div>
             
             {/* Render Standard Player OR Youtube/Vimeo Embed */}
-            {isYoutube ? (
+            {activeLecture?.locked ? (
+              /* Enrollment Protection Overlay */
+              <div className="absolute inset-0 flex flex-col items-center justify-center z-30 bg-slate-950/95 backdrop-blur-md px-6 text-center">
+                <div className="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center shadow-xl mb-4 text-red-500">
+                  <Lock className="w-8 h-8 animate-pulse" />
+                </div>
+                <h3 className="text-sm font-black text-white uppercase tracking-wider mb-2">Lecture Protected</h3>
+                <p className="text-[11px] text-slate-400 max-w-sm leading-relaxed mb-6 font-semibold">
+                  This lecture is locked. You must be enrolled in this course to access this content.
+                </p>
+                <Link
+                  to={`/courses/${courseId}`}
+                  className="px-5 py-2.5 bg-premium-accent hover:bg-blue-600 text-white text-[10px] font-black uppercase tracking-wider rounded-xl hover:shadow-[0_0_30px_rgba(37,99,235,0.3)] transition-all duration-300"
+                >
+                  Go to Course Page
+                </Link>
+              </div>
+            ) : isYoutube ? (
               <iframe
                 src={getYoutubeEmbedUrl(activeLecture.video_url, activeLecture.video_id)}
                 className="absolute inset-0 w-full h-full border-0 z-20"
@@ -659,6 +821,19 @@ const CourseWatch = () => {
                 allow="autoplay; fullscreen"
                 allowFullScreen
               />
+            ) : noVideoAvailable ? (
+              /* No Video Available Placeholder */
+              <div className="absolute inset-0 flex items-center justify-center z-20 bg-slate-950">
+                <div className="text-center space-y-4 pointer-events-none">
+                  <div className="w-20 h-20 rounded-full bg-slate-900/80 border border-slate-800 flex items-center justify-center shadow-2xl mx-auto">
+                    <AlertTriangle className="w-10 h-10 text-slate-600" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm font-black text-slate-400 uppercase tracking-wider">No Video Source</p>
+                    <p className="text-[10px] text-slate-500 font-mono tracking-wider">This lecture does not have a video URL configured yet.</p>
+                  </div>
+                </div>
+              </div>
             ) : (
               <>
                 {/* Poster Background */}
@@ -687,7 +862,12 @@ const CourseWatch = () => {
                   onCanPlay={() => { setIsLoading(false); setBuffering(false); }}
                   onWaiting={() => setBuffering(true)}
                   onPlaying={() => { setIsPlaying(true); setBuffering(false); handleMouseMove(); }}
-                  onPause={() => setIsPlaying(false)}
+                  onPause={() => {
+                    setIsPlaying(false);
+                    if (videoRef.current) {
+                      saveProgress(videoRef.current.currentTime, 0);
+                    }
+                  }}
                   onSeeking={() => setBuffering(true)}
                   onSeeked={() => setBuffering(false)}
                   onEnded={handleVideoEnded}
@@ -758,7 +938,8 @@ const CourseWatch = () => {
                   )}
                 </div>
 
-                {/* Custom Cinematic controls bar */}
+                {/* Custom Cinematic controls bar — only for HTML5 video, hidden for external embeds */}
+                {!isExternalEmbed && !noVideoAvailable && (
                 <div className={`absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent transition-opacity duration-300 z-30 space-y-4 ${
                   showControls || !isPlaying ? 'opacity-100' : 'opacity-0'
                 }`}>
@@ -783,7 +964,19 @@ const CourseWatch = () => {
                   {/* Left/Right Controllers */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-6">
+                      <button 
+                        onClick={playPrevLecture} 
+                        disabled={!hasPrevLecture}
+                        className={`transition-colors cursor-pointer ${
+                          hasPrevLecture ? 'text-slate-400 hover:text-white' : 'text-slate-700 cursor-not-allowed'
+                        }`} 
+                        title="Previous Lecture"
+                      >
+                        <ChevronLeft className="w-5 h-5" />
+                      </button>
+                      
                       <button onClick={() => seekBy(-10)} className="text-slate-400 hover:text-white transition-colors cursor-pointer" title="Back 10s"><SkipBack className="w-5 h-5" /></button>
+                      
                       <button 
                         onClick={togglePlay}
                         className="text-white hover:text-premium-accent transition-colors cursor-pointer"
@@ -794,7 +987,19 @@ const CourseWatch = () => {
                           <Play className="w-5 h-5 fill-current text-white" />
                         )}
                       </button>
+                      
                       <button onClick={() => seekBy(10)} className="text-slate-400 hover:text-white transition-colors cursor-pointer" title="Forward 10s"><SkipForward className="w-5 h-5" /></button>
+
+                      <button 
+                        onClick={playNextLecture} 
+                        disabled={!hasNextLecture}
+                        className={`transition-colors cursor-pointer ${
+                          hasNextLecture ? 'text-slate-400 hover:text-white' : 'text-slate-700 cursor-not-allowed'
+                        }`} 
+                        title="Next Lecture"
+                      >
+                        <ChevronRight className="w-5 h-5" />
+                      </button>
                       
                       {/* Volume block */}
                       <div className="flex items-center gap-2.5 ml-4">
@@ -890,6 +1095,7 @@ const CourseWatch = () => {
                     </div>
                   </div>
                 </div>
+                )}
               </>
             )}
 
