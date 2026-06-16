@@ -6,7 +6,8 @@ import {
   FolderOpen, Search, SlidersHorizontal, LayoutGrid, List, 
   DollarSign, Users, Award, TrendingUp, Upload, Play, 
   FileText, GripVertical, Trash, Globe, Lock, Star, Clock, 
-  ArrowLeft, ChevronRight, Check, X, ShieldAlert, BookOpenCheck
+  ArrowLeft, ChevronRight, Check, X, ShieldAlert, BookOpenCheck,
+  MonitorPlay, Link2
 } from 'lucide-react';
 import { Button, Badge, GlassCard } from '../../components/UI';
 import { useAuth } from '../../context/AuthContext';
@@ -29,6 +30,15 @@ const THUMBNAIL_PRESETS = [
 const Portal = ({ children }) => {
   return createPortal(children, document.body);
 };
+
+function Youtube({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.94 2C5.12 20 12 20 12 20s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z" />
+      <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" />
+    </svg>
+  );
+}
 
 const MOCK_MENTORS = [
   { name: 'Sarah Jenkins', role: 'Premium Broker', avatar: 'SJ', bio: 'Former Sotheby\'s director with ₹2B+ in lifetime residential volume.' },
@@ -452,7 +462,7 @@ export default function AdminCourses() {
         lectures: (m.lectures || []).map((l, lIdx) => ({
           title: l.title,
           description: l.description || '',
-          video_url: l.video_url || 'https://www.w3schools.com/html/mov_bbb.mp4',
+          video_url: l.video_url || '',
           duration: l.duration || '15m',
           sort_order: lIdx + 1,
           is_preview: l.is_preview ? 1 : 0,
@@ -529,13 +539,17 @@ export default function AdminCourses() {
     }));
   };
 
-  const handleAddLecture = (moduleId, lectureTitle, duration, type) => {
-    if (!lectureTitle) return;
+  const handleAddLecture = (moduleId, lectureData) => {
+    if (!lectureData || !lectureData.title) return;
     const newLec = {
       id: `lec-${Date.now()}`,
-      title: lectureTitle,
-      duration: duration || "15m",
-      type: type || "video"
+      title: lectureData.title,
+      duration: lectureData.duration || "15m",
+      type: lectureData.type || "video",
+      video_url: lectureData.video_url || '',
+      video_type: lectureData.video_type || 'html5',
+      video_id: lectureData.video_id || '',
+      is_preview: lectureData.is_preview || false
     };
 
     setFormState(prev => ({
@@ -1401,7 +1415,23 @@ export default function AdminCourses() {
 
                                       <div className="truncate">
                                         <p className="text-xs font-bold text-white text-white truncate">{lecture.title}</p>
-                                        <span className="text-[9px] text-slate-400 font-semibold uppercase tracking-wider block mt-0.5">{lecture.duration} • {lecture.type}</span>
+                                        <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                                          <span className="text-[9px] text-slate-400 font-semibold uppercase tracking-wider">{lecture.duration} • {lecture.type}</span>
+                                          {lecture.video_type && lecture.video_type !== 'html5' && (
+                                            <span className={`text-[7px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded border ${
+                                              lecture.video_type === 'youtube' 
+                                                ? 'bg-red-500/10 text-red-400 border-red-500/20' 
+                                                : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                                            }`}>
+                                              {lecture.video_type === 'youtube' ? 'YT' : 'Vimeo'}
+                                            </span>
+                                          )}
+                                          {lecture.is_preview && (
+                                            <span className="text-[7px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                              Preview
+                                            </span>
+                                          )}
+                                        </div>
                                       </div>
                                     </div>
 
@@ -1426,7 +1456,7 @@ export default function AdminCourses() {
 
                           {/* Quick Lecture Add Form */}
                           <LectureAddForm 
-                            onAdd={(title, duration, type) => handleAddLecture(module.id, title, duration, type)} 
+                            onAdd={(lectureData) => handleAddLecture(module.id, lectureData)} 
                           />
                         </div>
                       ))}
@@ -1751,15 +1781,23 @@ function LectureAddForm({ onAdd }) {
   const [title, setTitle] = useState('');
   const [duration, setDuration] = useState('15m');
   const [type, setType] = useState('video');
+  const [videoUrl, setVideoUrl] = useState('');
+  const [videoType, setVideoType] = useState('html5');
+  const [videoId, setVideoId] = useState('');
+  const [isPreview, setIsPreview] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!title.trim()) return;
-    onAdd(title, duration, type);
+    onAdd({ title, duration, type, video_url: videoUrl, video_type: videoType, video_id: videoId, is_preview: isPreview });
     setTitle('');
     setDuration('15m');
     setType('video');
+    setVideoUrl('');
+    setVideoType('html5');
+    setVideoId('');
+    setIsPreview(false);
     setIsFormOpen(false);
   };
 
@@ -1767,6 +1805,7 @@ function LectureAddForm({ onAdd }) {
     <div className="pt-2 border-t border-[#1e1e22]/40 border-[#1a1a1c]/60">
       {isFormOpen ? (
         <form onSubmit={handleSubmit} className="p-3 bg-[#0b0b0d] dark:bg-slate-950 border border-premium-border border-[#1a1a1c] rounded-xl space-y-3 text-left">
+          {/* Row 1: Title, Duration, Lesson Type */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div className="md:col-span-1 space-y-1">
               <label className="text-[9px] font-black uppercase text-slate-400 tracking-wider">Lesson Title *</label>
@@ -1802,6 +1841,66 @@ function LectureAddForm({ onAdd }) {
                 <option value="document">PDF Document</option>
                 <option value="quiz">Interactive Quiz</option>
               </select>
+            </div>
+          </div>
+
+          {/* Row 2: Video URL & Video Type */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="md:col-span-2 space-y-1">
+              <label className="text-[9px] font-black uppercase text-slate-400 tracking-wider flex items-center gap-1">
+                <Link2 className="w-3 h-3" /> Video URL
+              </label>
+              <input
+                type="url"
+                value={videoUrl}
+                onChange={(e) => setVideoUrl(e.target.value)}
+                placeholder="https://youtube.com/watch?v=... or direct .mp4 link"
+                className="w-full bg-[#0f0f12] bg-[#0b0b0d] border border-premium-border border-[#1a1a1c] rounded-lg px-2.5 py-1.5 text-[11px] font-bold text-white text-white focus:outline-none"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-[9px] font-black uppercase text-slate-400 tracking-wider flex items-center gap-1">
+                <MonitorPlay className="w-3 h-3" /> Video Type
+              </label>
+              <select
+                value={videoType}
+                onChange={(e) => setVideoType(e.target.value)}
+                className="w-full bg-[#0f0f12] bg-[#0b0b0d] border border-premium-border border-[#1a1a1c] rounded-lg px-2.5 py-1.5 text-[11px] font-bold text-white text-white focus:outline-none"
+              >
+                <option value="html5">HTML5 (Direct MP4)</option>
+                <option value="youtube">YouTube Embed</option>
+                <option value="vimeo">Vimeo Embed</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Row 3: Video ID & Preview Toggle */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
+            <div className="space-y-1">
+              <label className="text-[9px] font-black uppercase text-slate-400 tracking-wider flex items-center gap-1">
+                <Youtube className="w-3 h-3" /> Video ID (Optional)
+              </label>
+              <input
+                type="text"
+                value={videoId}
+                onChange={(e) => setVideoId(e.target.value)}
+                placeholder="e.g. dQw4w9WgXcQ"
+                className="w-full bg-[#0f0f12] bg-[#0b0b0d] border border-premium-border border-[#1a1a1c] rounded-lg px-2.5 py-1.5 text-[11px] font-bold text-white text-white focus:outline-none"
+              />
+            </div>
+
+            <div className="flex items-center gap-2.5 pb-0.5">
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={isPreview}
+                  onChange={(e) => setIsPreview(e.target.checked)}
+                  className="sr-only peer"
+                />
+                <div className="w-8 h-4 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 after:border-slate-600 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-emerald-600 peer-checked:after:bg-white"></div>
+              </label>
+              <span className="text-[9px] font-black uppercase text-slate-400 tracking-wider">Free Preview Lecture</span>
             </div>
           </div>
 

@@ -426,6 +426,15 @@ const Dashboard = () => {
                         className="progress-fill-gold"
                       />
                     </div>
+                    {course.last_watched_lecture_title ? (
+                      <p className="text-[10px] text-slate-400 font-medium truncate mt-1">
+                        <span className="text-premium-gold-light font-bold">Resume:</span> {course.last_watched_lecture_title}
+                      </p>
+                    ) : (
+                      <p className="text-[10px] text-slate-500 italic mt-1">
+                        Not started yet
+                      </p>
+                    )}
                   </div>
 
                   <Link to={`/watch/${course.id}`}>
