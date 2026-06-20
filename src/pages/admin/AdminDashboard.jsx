@@ -13,6 +13,7 @@ import {
 } from 'recharts';
 import { AdminStatCard, AdminTable, AdminDrawer, AdminModal } from '../../components/admin/AdminComponents';
 import { Button, Badge } from '../../components/UI';
+import { useAuth } from '../../context/AuthContext';
 
 // Dark luxury tooltip for charts
 const DarkTooltip = ({ active, payload, label }) => {
@@ -38,6 +39,7 @@ const DI = "w-full bg-[#111114] border border-[#1e1e22] focus:border-premium-acc
 const DS = "w-full bg-[#111114] border border-[#1e1e22] focus:border-premium-accent/40 focus:ring-1 focus:ring-premium-accent/20 outline-none rounded-xl px-4 py-2.5 text-xs font-bold text-white transition-all cursor-pointer";
 
 export default function AdminDashboard() {
+  const { token, API_BASE_URL } = useAuth();
   const [analyticsTab, setAnalyticsTab] = useState('overview');
   const [activityTab, setActivityTab]   = useState('enrollments');
 
@@ -58,11 +60,11 @@ export default function AdminDashboard() {
   const [notificationForm,setNotificationForm]= useState({ title: '', message: '', audience: 'All Students', priority: 'Medium' });
   const [certificateForm, setCertificateForm] = useState({ studentName: '', courseName: 'Luxury Flipping Masterclass', issueDate: new Date().toISOString().split('T')[0], certId: `BG-CERT-${Math.floor(100000 + Math.random() * 900000)}` });
 
-  const [coursesCount,        setCoursesCount]        = useState(42);
-  const [webinarsCount,       setWebinarsCount]        = useState(18);
-  const [totalStudentsCount,  setTotalStudentsCount]   = useState(1248);
-  const [supportTicketsCount, setSupportTicketsCount]  = useState(4);
-  const [totalRevenue,        setTotalRevenue]         = useState(128450);
+  const [coursesCount,        setCoursesCount]        = useState(0);
+  const [webinarsCount,       setWebinarsCount]        = useState(0);
+  const [totalStudentsCount,  setTotalStudentsCount]   = useState(0);
+  const [supportTicketsCount, setSupportTicketsCount]  = useState(0);
+  const [totalRevenue,        setTotalRevenue]         = useState(0);
 
   const [enrollments, setEnrollments] = useState([
     { id: 1, name: 'Robert Fox',     email: 'robert@foxrealestate.com', course: 'Luxury Flipping Masterclass',      amount: '₹1,499', status: 'Success', date: 'Just now',   avatar: 'RF' },
@@ -94,6 +96,37 @@ export default function AdminDashboard() {
     { id: 2, user: 'johndoe_re',    ip: '92.119.177.21', location: 'Shenzhen, CN', device: 'Safari / iOS',    status: 'Blocked (Invalid Pass)',   date: '40 mins ago' },
     { id: 3, user: 'vikash_owner',  ip: '103.88.22.41',  location: 'Mumbai, IN',   device: 'Firefox / MacOS', status: 'Allowed (Geo Trust)',      date: '2 hrs ago' },
   ]);
+
+  // Load live stats from backend API
+  useEffect(() => {
+    if (!token) return;
+    const fetchStats = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/dashboard/stats`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (response.ok) {
+          const resData = await response.json();
+          if (resData.success && resData.data) {
+            const data = resData.data;
+            if (data.total_students !== undefined) setTotalStudentsCount(data.total_students);
+            if (data.total_courses !== undefined) setCoursesCount(data.total_courses);
+            if (data.total_webinars !== undefined) setWebinarsCount(data.total_webinars);
+            if (data.gross_revenue !== undefined) setTotalRevenue(data.gross_revenue);
+            if (data.pending_reviews !== undefined) setSupportTicketsCount(data.pending_reviews);
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching dashboard stats:', err);
+      }
+    };
+
+    fetchStats();
+    const interval = setInterval(fetchStats, 15000);
+    return () => clearInterval(interval);
+  }, [token, API_BASE_URL]);
 
   // Live system simulation
   useEffect(() => {

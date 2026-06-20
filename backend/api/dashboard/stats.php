@@ -119,12 +119,22 @@ try {
         $stmtSubRev = $db->query("SELECT COUNT(*) FROM assignment_submissions WHERE status = 'Submitted' OR status = 'Under Review'");
         $pendingReviews = (int)$stmtSubRev->fetchColumn();
 
+        // Total Webinars
+        $stmtWeb = $db->query("SELECT COUNT(*) FROM webinars");
+        $totalWebinars = (int)$stmtWeb->fetchColumn();
+
+        // Gross Revenue
+        $stmtRev = $db->query("SELECT COALESCE(SUM(amount), 0) FROM orders WHERE status = 'paid'");
+        $grossRevenue = (float)$stmtRev->fetchColumn();
+
         sendResponse(200, [
             'total_students' => $totalStudents,
             'total_instructors' => $totalInstructors,
             'total_courses' => $totalCourses,
             'total_enrollments' => $totalEnrollments,
-            'pending_reviews' => $pendingReviews
+            'pending_reviews' => $pendingReviews,
+            'total_webinars' => $totalWebinars,
+            'gross_revenue' => $grossRevenue
         ], "Admin dashboard stats retrieved successfully.");
     }
 } catch (PDOException $e) {
