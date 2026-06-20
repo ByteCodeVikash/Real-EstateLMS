@@ -70,8 +70,7 @@ try {
         $updateStmt->execute([$token, $expires, $userId]);
 
         // Construct reset link
-        $origin = $_SERVER['HTTP_ORIGIN'] ?? 'http://localhost:5173';
-        $resetLink = rtrim($origin, '/') . '/reset-password?token=' . $token;
+        $resetLink = rtrim(FRONTEND_URL, '/') . '/reset-password?token=' . $token;
 
         // Log the simulated email reset
         $logDir = __DIR__ . '/../../logs';

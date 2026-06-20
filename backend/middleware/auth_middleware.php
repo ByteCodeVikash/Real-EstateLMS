@@ -100,13 +100,8 @@ function requireAuth(): array {
         
         return $user;
     } catch (PDOException $e) {
-        // Fallback to token payload details if database is offline/unreachable
-        return [
-            'id' => $payload['id'],
-            'full_name' => $payload['full_name'],
-            'email' => $payload['email'],
-            'role' => $payload['role']
-        ];
+        // Fail closed on database connection/query failures to prevent authentication bypasses
+        sendResponse(503, null, "Service Temporarily Unavailable: Database offline. Please try again later.");
     }
 }
 

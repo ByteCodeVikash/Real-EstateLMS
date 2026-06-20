@@ -127,7 +127,7 @@ const Signup = () => {
       }, 800);
       return;
     }
-    const clientId = '476678466295-8pj5ao3k65gc35grt1o31m7uk60rqvnn.apps.googleusercontent.com';
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '476678466295-8pj5ao3k65gc35grt1o31m7uk60rqvnn.apps.googleusercontent.com';
     const redirectUri = window.location.origin + '/google-callback.html';
     const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=id_token&scope=openid%20email%20profile&state=google_signup&nonce=nonce-${Math.random().toString(36).substring(2)}`;
     
