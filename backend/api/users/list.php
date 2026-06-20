@@ -35,7 +35,7 @@ try {
     $total = (int)$countStmt->fetchColumn();
 
     $sql = "SELECT 
-                u.id, u.full_name, u.email, u.role, u.created_at, u.is_active,
+                u.id, u.full_name, u.email, u.role, u.created_at, u.status,
                 (SELECT COUNT(*) FROM enrollments e WHERE e.user_id = u.id) AS enrolled_courses,
                 (SELECT SUM(e.progress) / NULLIF(COUNT(*), 0) FROM enrollments e WHERE e.user_id = u.id) AS avg_progress
             FROM users u
@@ -43,18 +43,23 @@ try {
             ORDER BY u.created_at DESC
             LIMIT ? OFFSET ?";
 
-    $params[] = $limit;
-    $params[] = $offset;
-
     $stmt = $db->prepare($sql);
-    $stmt->execute($params);
+    
+    $paramIndex = 1;
+    if (!empty($role)) {
+        $stmt->bindValue($paramIndex++, $role);
+    }
+    $stmt->bindValue($paramIndex++, $limit, PDO::PARAM_INT);
+    $stmt->bindValue($paramIndex++, $offset, PDO::PARAM_INT);
+    
+    $stmt->execute();
     $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($users as &$u) {
         $u['id'] = (int)$u['id'];
         $u['enrolled_courses'] = (int)$u['enrolled_courses'];
         $u['avg_progress'] = $u['avg_progress'] !== null ? round((float)$u['avg_progress'], 1) : 0;
-        $u['is_active'] = (int)($u['is_active'] ?? 1) === 1;
+        $u['is_active'] = ($u['status'] ?? 'Active') === 'Active';
     }
 
     sendResponse(200, [

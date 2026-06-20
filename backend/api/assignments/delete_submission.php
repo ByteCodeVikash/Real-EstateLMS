@@ -6,7 +6,7 @@
 
 require_once __DIR__ . '/../../config/db.php';
 require_once __DIR__ . '/../../helpers/response.php';
-require_once __DIR__ . '/../../middleware/auth_middleware';
+require_once __DIR__ . '/../../middleware/auth_middleware.php';
 require_once __DIR__ . '/../../models/Assignment.php';
 require_once __DIR__ . '/../../models/AssignmentSubmission.php';
 
