@@ -21,8 +21,12 @@ try {
     try {
         $db = new PDO($dsn, DB_USER, DB_PASS, $options);
     } catch (PDOException $e) {
-        $fallbackPass = (DB_PASS === 'BJReality_LMS_2026!') ? 'BGRealty_LMS_2026!' : 'BJReality_LMS_2026!';
-        $db = new PDO($dsn, DB_USER, $fallbackPass, $options);
+        $fallbackPass = defined('DB_PASS_FALLBACK') ? DB_PASS_FALLBACK : '';
+        if ($fallbackPass !== '' && $fallbackPass !== DB_PASS) {
+            $db = new PDO($dsn, DB_USER, $fallbackPass, $options);
+        } else {
+            throw $e;
+        }
     }
 } catch (Exception $e) {
     die("Database Connection Error: " . $e->getMessage());
@@ -278,10 +282,6 @@ if (tableExists($db, 'assignments')) {
 
 // 11. Alter assignment_submissions table columns
 if (tableExists($db, 'assignment_submissions')) {
-    if (!columnExists($db, 'assignment_submissions', 'user_id')) {
-        $db->exec("ALTER TABLE `assignment_submissions` ADD COLUMN `user_id` INT NOT NULL AFTER `assignment_id`");
-        logProgress($outputs, "Added column 'user_id' to 'assignment_submissions'");
-    }
     // Update status enum
     $db->exec("ALTER TABLE `assignment_submissions` MODIFY COLUMN `status` ENUM('Submitted', 'Under Review', 'Graded', 'Revision Requested') NOT NULL DEFAULT 'Submitted'");
     logProgress($outputs, "Updated 'status' enum in 'assignment_submissions'");
@@ -303,7 +303,24 @@ if (tableExists($db, 'webinars')) {
     }
 }
 
-// 13. Alter certificates table columns
+// 13. Create certificates table (if not exists) then alter columns
+if (!tableExists($db, 'certificates')) {
+    $db->exec("CREATE TABLE `certificates` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `user_id` INT NOT NULL,
+        `course_id` INT NOT NULL,
+        `certificate_number` VARCHAR(100) NOT NULL UNIQUE,
+        `issued_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT `fk_certificates_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+        CONSTRAINT `fk_certificates_course` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`) ON DELETE CASCADE,
+        INDEX `idx_certificates_user` (`user_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+    logProgress($outputs, "Created table 'certificates'");
+} else {
+    logProgress($outputs, "Table 'certificates' already exists");
+}
+
+// 13b. Alter certificates table columns
 if (tableExists($db, 'certificates')) {
     if (!columnExists($db, 'certificates', 'certificate_code')) {
         $db->exec("ALTER TABLE `certificates` ADD COLUMN `certificate_code` VARCHAR(100) DEFAULT NULL AFTER `course_id`");
@@ -435,6 +452,62 @@ try {
     }
 } catch (Exception $e) {
     logProgress($outputs, "Foreign Key error (some might already exist): " . $e->getMessage(), false);
+}
+
+// 15. Create orders table (Razorpay payment records)
+if (!tableExists($db, 'orders')) {
+    $sql = "CREATE TABLE `orders` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `user_id` INT NOT NULL,
+        `course_id` INT NOT NULL,
+        `razorpay_order_id` VARCHAR(100) NOT NULL UNIQUE,
+        `razorpay_payment_id` VARCHAR(100) DEFAULT NULL,
+        `razorpay_signature` VARCHAR(512) DEFAULT NULL,
+        `amount` DECIMAL(10,2) NOT NULL,
+        `currency` VARCHAR(10) NOT NULL DEFAULT 'INR',
+        `status` ENUM('pending','paid','failed','refunded') NOT NULL DEFAULT 'pending',
+        `failure_reason` TEXT DEFAULT NULL,
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        INDEX `idx_orders_user` (`user_id`),
+        INDEX `idx_orders_course` (`course_id`),
+        INDEX `idx_orders_status` (`status`),
+        INDEX `idx_orders_razorpay_order` (`razorpay_order_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
+    $db->exec($sql);
+    logProgress($outputs, "Created table 'orders'");
+} else {
+    logProgress($outputs, "Table 'orders' already exists");
+}
+
+// 16. Add payment columns to enrollments table
+if (tableExists($db, 'enrollments')) {
+    if (!columnExists($db, 'enrollments', 'order_id')) {
+        $db->exec("ALTER TABLE `enrollments` ADD COLUMN `order_id` INT DEFAULT NULL AFTER `certificate_issued`");
+        logProgress($outputs, "Added column 'order_id' to 'enrollments'");
+    }
+    if (!columnExists($db, 'enrollments', 'payment_status')) {
+        $db->exec("ALTER TABLE `enrollments` ADD COLUMN `payment_status` ENUM('free','paid','pending','failed') NOT NULL DEFAULT 'free' AFTER `order_id`");
+        logProgress($outputs, "Added column 'payment_status' to 'enrollments'");
+    }
+}
+
+// 17. Bind FK: orders -> users, orders -> courses
+try {
+    if (tableExists($db, 'orders') && tableExists($db, 'users')) {
+        $db->exec("ALTER TABLE `orders` ADD CONSTRAINT `fk_orders_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;");
+        logProgress($outputs, "Bound foreign key fk_orders_user");
+    }
+    if (tableExists($db, 'orders') && tableExists($db, 'courses')) {
+        $db->exec("ALTER TABLE `orders` ADD CONSTRAINT `fk_orders_course` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`) ON DELETE CASCADE;");
+        logProgress($outputs, "Bound foreign key fk_orders_course");
+    }
+    if (tableExists($db, 'enrollments') && tableExists($db, 'orders')) {
+        $db->exec("ALTER TABLE `enrollments` ADD CONSTRAINT `fk_enrollments_order` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE SET NULL;");
+        logProgress($outputs, "Bound foreign key fk_enrollments_order");
+    }
+} catch (Exception $e) {
+    logProgress($outputs, "Orders FK binding (some may already exist): " . $e->getMessage(), false);
 }
 
 // Re-enable foreign key checks

@@ -14,6 +14,7 @@ return [
     'POST /api/auth/forgot-password' => 'api/auth/forgot_password.php',
     'POST /api/auth/reset-password/validate' => 'api/auth/validate_reset_token.php',
     'POST /api/auth/reset-password' => 'api/auth/reset_password.php',
+    'GET /api/users' => 'api/users/list.php',
     
     // Categories APIs
     'GET /api/categories' => 'api/categories/list.php',
@@ -104,5 +105,11 @@ return [
 
     // Dashboard Stats APIs
     'GET /api/dashboard/stats' => 'api/dashboard/stats.php',
+
+    // Payment & Order APIs (Razorpay)
+    'POST /api/payments/create-order' => 'api/payments/create_order.php',
+    'POST /api/payments/verify'       => 'api/payments/verify.php',
+    'POST /api/payments/failure'      => 'api/payments/failure.php',
+    'GET /api/payments/my-purchases'  => 'api/payments/my_purchases.php',
 ];
 
