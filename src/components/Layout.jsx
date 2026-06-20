@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Layout as LayoutIcon, BookOpen, FileText, Video, Shield, Settings, 
   LogOut, Bell, Award, TrendingUp, Search, Flame, ChevronDown, User,
-  Menu, X, Sun, Moon
+  Menu, X, Sun, Moon, CreditCard
 } from 'lucide-react';
 import { cn } from './UI';
 import { useAuth } from '../context/AuthContext';
@@ -48,7 +48,8 @@ const menuItems = [
   { icon: BookOpen, label: 'My Courses', path: '/courses' },
   { icon: Video, label: 'Live Webinars', path: '/live' },
   { icon: FileText, label: 'Assignments', path: '/assignments' },
-  { icon: Award, label: 'Certificates', path: '/courses?nav=certificates' }, // Same page, distinct nav state for highlighting
+  { icon: CreditCard, label: 'My Purchases', path: '/purchases' },
+  { icon: Award, label: 'Certificates', path: '/certificates' },
   { icon: TrendingUp, label: 'Analytics', path: '/dashboard?nav=analytics' }, // Same page, distinct nav state for highlighting
   { icon: Shield, label: 'Security', path: '/security' },
   { icon: Settings, label: 'Settings', path: '/security?nav=settings' },

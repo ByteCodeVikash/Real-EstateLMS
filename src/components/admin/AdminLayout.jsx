@@ -14,6 +14,7 @@ import { useAuth } from '../../context/AuthContext';
 const adminMenuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/dashboard' },
   { icon: Users, label: 'Students', path: '/admin/students' },
+  { icon: UserCheck, label: 'Enrollments', path: '/admin/enrollments' },
   { icon: BookOpen, label: 'Courses', path: '/admin/courses' },
   { icon: GraduationCap, label: 'Instructors', path: '/admin/instructors' },
   { icon: Video, label: 'Live Classes', path: '/admin/live' },
@@ -29,7 +30,7 @@ const adminMenuItems = [
 export const AdminSidebarContent = ({ onItemClick, isDarkMode, toggleDarkMode }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
 
   const handleLogout = async (e) => {
     e.preventDefault();
@@ -41,6 +42,13 @@ export const AdminSidebarContent = ({ onItemClick, isDarkMode, toggleDarkMode })
   const isItemActive = (path) => {
     return location.pathname === path;
   };
+
+  const filteredMenuItems = adminMenuItems.filter(item => {
+    if (user?.role === 'instructor') {
+      return !['Students', 'Enrollments', 'Instructors', 'Revenue', 'Security', 'Settings', 'Categories'].includes(item.label);
+    }
+    return true;
+  });
 
   return (
     <>
@@ -72,7 +80,7 @@ export const AdminSidebarContent = ({ onItemClick, isDarkMode, toggleDarkMode })
 
       {/* Menu Navigation */}
       <nav className="flex-1 px-4 space-y-1 py-5 overflow-y-auto scrollbar-thin">
-        {adminMenuItems.map((item, idx) => (
+        {filteredMenuItems.map((item, idx) => (
           <Link
             key={idx}
             to={item.path}
@@ -318,21 +326,25 @@ export const AdminLayout = ({ children }) => {
                 <div className="px-3.5 py-2.5 border-b border-slate-800 pb-3 mb-2">
                   <p className="text-xs font-black text-white">{user?.full_name || 'Admin'}</p>
                   <p className="text-[9px] text-premium-accent uppercase font-black tracking-widest mt-0.5">
-                    {user?.role === 'super_admin' ? 'Super Admin' : 'Platform Manager'}
+                    {user?.role === 'super_admin' ? 'Super Admin' : user?.role === 'instructor' ? 'Course Instructor' : 'Platform Manager'}
                   </p>
                 </div>
-                <Link 
-                  to="/admin/security" 
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-900/60 hover:text-white transition-all"
-                >
-                  <ShieldAlert className="w-4 h-4 text-slate-500" /> Role & Credentials
-                </Link>
-                <Link 
-                  to="/admin/settings" 
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-900/60 hover:text-white transition-all"
-                >
-                  <Settings className="w-4 h-4 text-slate-500" /> System Settings
-                </Link>
+                {user?.role !== 'instructor' && (
+                  <>
+                    <Link 
+                      to="/admin/security" 
+                      className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-900/60 hover:text-white transition-all"
+                    >
+                      <ShieldAlert className="w-4 h-4 text-slate-500" /> Role & Credentials
+                    </Link>
+                    <Link 
+                      to="/admin/settings" 
+                      className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-900/60 hover:text-white transition-all"
+                    >
+                      <Settings className="w-4 h-4 text-slate-500" /> System Settings
+                    </Link>
+                  </>
+                )}
                 <div className="h-px bg-slate-800 my-1.5"></div>
                 <button 
                   onClick={handleLogout}

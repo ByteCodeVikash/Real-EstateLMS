@@ -123,6 +123,7 @@ const CourseDetail = () => {
   const [allCourses, setAllCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isEnrolling, setIsEnrolling] = useState(false);
+  const [paymentError, setPaymentError] = useState(null); // { title, message, canRetry, orderData }
   const [activeFaq, setActiveFaq] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [activePreviewLecture, setActivePreviewLecture] = useState(null);
@@ -240,36 +241,178 @@ const CourseDetail = () => {
     }
   }, [id, token, API_BASE_URL]);
 
-  // Buy Now handler — requires auth; redirects to login preserving return path
-  const handleBuyNow = async () => {
+  // ─── Razorpay script loader (lazy, singleton) ───────────────────────────────
+  const loadRazorpayScript = () =>
+    new Promise((resolve) => {
+      if (window.Razorpay) { resolve(true); return; }
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload  = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.head.appendChild(script);
+    });
+
+  // ─── Record failure in backend ───────────────────────────────────────────────
+  const recordFailure = async (razorpayOrderId, errorCode, errorDescription) => {
+    try {
+      await fetch(`${API_BASE_URL}/api/payments/failure`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ razorpay_order_id: razorpayOrderId, error_code: errorCode, error_description: errorDescription })
+      });
+    } catch (_) { /* best-effort */ }
+  };
+
+  // ─── Main Buy Now Handler ────────────────────────────────────────────────────
+  const handleBuyNow = async (retryOrderData = null) => {
     if (!user) {
-      // Redirect to login; after login the user will be sent back to this course detail
       navigate('/login', { state: { from: location } });
       return;
     }
     if (isEnrolling) return;
-    setIsEnrolling(true);
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/enrollments`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ course_id: parseInt(id) })
-      });
 
-      const data = await response.json();
-      if (response.ok && data.status === 'success') {
+    setPaymentError(null);
+    setIsEnrolling(true);
+
+    try {
+      let orderData = retryOrderData;
+
+      // Step 1: Create order (or reuse retried order)
+      if (!orderData) {
+        const orderRes = await fetch(`${API_BASE_URL}/api/payments/create-order`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ course_id: parseInt(id) })
+        });
+        const orderJson = await orderRes.json();
+
+        if (!orderRes.ok || orderJson.status !== 'success') {
+          setPaymentError({
+            title: 'Order Failed',
+            message: orderJson.message || 'Could not create payment order. Please try again.',
+            canRetry: true,
+            orderData: null,
+          });
+          return;
+        }
+        orderData = orderJson.data;
+      }
+
+      // Step 2: Free course — directly enrolled by backend
+      if (orderData.free) {
         setShowConfirmation(true);
         fetchCourseData();
-      } else {
-        alert(data.message || 'Enrollment failed.');
+        return;
       }
+
+      // Step 3: Paid course — load Razorpay SDK and open checkout
+      const sdkLoaded = await loadRazorpayScript();
+      if (!sdkLoaded) {
+        setPaymentError({
+          title: 'SDK Error',
+          message: 'Could not load Razorpay checkout. Check your internet connection.',
+          canRetry: true,
+          orderData,
+        });
+        return;
+      }
+
+      const rzpOptions = {
+        key:          orderData.key_id,
+        amount:       orderData.amount_paise,
+        currency:     orderData.currency,
+        name:         'BG Realty Training Academy',
+        description:  orderData.course_title,
+        order_id:     orderData.razorpay_order_id,
+        prefill: {
+          name:  orderData.user_name  || user?.full_name || '',
+          email: orderData.user_email || user?.email    || '',
+        },
+        theme: { color: '#D4AF37' },
+
+        // ── Payment success callback ────────────────────────────────────────
+        handler: async (response) => {
+          setIsEnrolling(true);
+          try {
+            const verifyRes = await fetch(`${API_BASE_URL}/api/payments/verify`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+              body: JSON.stringify({
+                razorpay_order_id:   response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature:  response.razorpay_signature,
+              })
+            });
+            const verifyJson = await verifyRes.json();
+
+            if (verifyRes.ok && verifyJson.status === 'success') {
+              setShowConfirmation(true);
+              fetchCourseData();
+            } else {
+              setPaymentError({
+                title: 'Verification Failed',
+                message: verifyJson.message || 'Payment received but verification failed. Contact support with your payment ID: ' + response.razorpay_payment_id,
+                canRetry: false,
+                orderData: null,
+              });
+            }
+          } catch (err) {
+            setPaymentError({
+              title: 'Network Error',
+              message: 'Payment successful but could not verify. Please contact support.',
+              canRetry: false,
+              orderData: null,
+            });
+          } finally {
+            setIsEnrolling(false);
+          }
+        },
+
+        // ── Modal dismiss / cancel callback ────────────────────────────────
+        modal: {
+          ondismiss: async () => {
+            await recordFailure(
+              orderData.razorpay_order_id,
+              'USER_CANCELLED',
+              'User dismissed the payment modal'
+            );
+            setPaymentError({
+              title: 'Payment Cancelled',
+              message: 'You closed the payment window. You can retry when ready.',
+              canRetry: true,
+              orderData,
+            });
+            setIsEnrolling(false);
+          }
+        }
+      };
+
+      // Attach error handler via prototype (Razorpay SDK pattern)
+      const rzp = new window.Razorpay(rzpOptions);
+      rzp.on('payment.failed', async (failResponse) => {
+        const errCode = failResponse.error?.code        || 'PAYMENT_FAILED';
+        const errDesc = failResponse.error?.description  || 'Payment was declined.';
+        await recordFailure(orderData.razorpay_order_id, errCode, errDesc);
+        setPaymentError({
+          title:    'Payment Failed',
+          message:  errDesc,
+          canRetry: true,
+          orderData,
+        });
+        setIsEnrolling(false);
+      });
+
+      rzp.open();
+      // Note: setIsEnrolling(false) is handled in each callback branch above
+
     } catch (error) {
-      console.error('Enrollment error:', error);
-      alert('Network error. Failed to enroll.');
-    } finally {
+      console.error('Payment flow error:', error);
+      setPaymentError({
+        title:    'Unexpected Error',
+        message:  'An unexpected error occurred. Please try again.',
+        canRetry: true,
+        orderData: null,
+      });
       setIsEnrolling(false);
     }
   };
@@ -643,7 +786,13 @@ const CourseDetail = () => {
                   className="w-full h-12 uppercase tracking-wider font-extrabold gap-2 bg-gradient-premium shadow-gold-sm flex items-center justify-center"
                 >
                   <span>
-                    {isEnrolling ? 'Processing...' : !user ? 'Login to Buy Now' : 'Buy Now'}
+                    {isEnrolling
+                      ? 'Processing...'
+                      : !user
+                        ? 'Login to Enroll'
+                        : parseFloat(courseDetails.price) > 0
+                          ? `Pay ₹${parseFloat(courseDetails.price).toLocaleString('en-IN')} & Enroll`
+                          : 'Enroll for Free'}
                   </span>
                   <ArrowRight className="w-4 h-4 text-black" />
                 </Button>
@@ -720,6 +869,77 @@ const CourseDetail = () => {
           </div>
         </div>
       )}
+      {/* ── Payment Failure Modal ─────────────────────────────────────────── */}
+      <AnimatePresence>
+        {paymentError && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setPaymentError(null)}
+              className="absolute inset-0 bg-black/80 backdrop-blur-md"
+            />
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              transition={{ type: 'spring', duration: 0.5 }}
+              className="w-full max-w-md bg-[#0d0d10] border border-red-500/30 rounded-3xl p-8 relative overflow-hidden shadow-[0_25px_60px_-15px_rgba(239,68,68,0.2)] text-center space-y-6 z-10"
+            >
+              <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-48 h-24 bg-red-500/8 rounded-full blur-3xl pointer-events-none" />
+
+              {/* Icon */}
+              <div className="flex justify-center">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.15, type: 'spring', stiffness: 180, damping: 14 }}
+                  className="w-16 h-16 rounded-full bg-red-500/10 border-2 border-red-500/40 flex items-center justify-center"
+                >
+                  <ShieldAlert className="w-8 h-8 text-red-400" />
+                </motion.div>
+              </div>
+
+              {/* Text */}
+              <div className="space-y-2">
+                <h3 className="text-xl font-black text-white uppercase tracking-wider">
+                  {paymentError.title}
+                </h3>
+                <p className="text-xs text-slate-400 font-medium leading-relaxed max-w-sm mx-auto">
+                  {paymentError.message}
+                </p>
+              </div>
+
+              <Divider />
+
+              {/* Actions */}
+              <div className="flex flex-col gap-3 pt-2">
+                {paymentError.canRetry && (
+                  <Button
+                    onClick={() => {
+                      const od = paymentError.orderData;
+                      setPaymentError(null);
+                      handleBuyNow(od);
+                    }}
+                    className="w-full h-12 uppercase tracking-wider font-extrabold gap-2 bg-gradient-premium shadow-gold-sm flex items-center justify-center text-[#050505]"
+                  >
+                    <span>Retry Payment</span>
+                    <ArrowRight className="w-4 h-4 text-black" />
+                  </Button>
+                )}
+                <button
+                  onClick={() => setPaymentError(null)}
+                  className="w-full py-3.5 text-[10px] font-black uppercase tracking-[0.15em] rounded-xl transition-all duration-300 border border-white/10 text-slate-400 hover:text-white hover:bg-white/5 cursor-pointer"
+                >
+                  {paymentError.canRetry ? 'Cancel' : 'Close'}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       {/* Premium Success Confirmation Modal */}
       <AnimatePresence>
         {showConfirmation && (
