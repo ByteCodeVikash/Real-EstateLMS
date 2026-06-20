@@ -38,9 +38,9 @@ $expectedSchema = [
     'lectures' => ['id', 'module_id', 'title', 'video_url', 'duration', 'sort_order', 'status'],
     'assignments' => ['id', 'course_id', 'module_id', 'title', 'max_marks', 'status'],
     'assignment_submissions' => ['id', 'assignment_id', 'student_id', 'status'],
-    'enrollments' => ['id', 'user_id', 'course_id', 'status', 'enrolled_at', 'completed_at', 'progress', 'created_at', 'updated_at', 'completion_status'],
+    'enrollments' => ['id', 'user_id', 'course_id', 'status', 'enrolled_at', 'completed_at', 'progress', 'created_at', 'updated_at', 'completion_status', 'enrollment_date', 'certificate_issued', 'order_id', 'payment_status'],
     'webinars' => ['id', 'title', 'meeting_id', 'recording_url', 'status'],
-    'certificates' => ['id', 'user_id', 'course_id', 'certificate_code'],
+    'certificates' => ['id', 'user_id', 'course_id', 'certificate_code', 'certificate_number', 'issued_at'],
     'notifications' => ['id', 'user_id', 'title', 'message', 'is_read'],
     'announcements' => ['id', 'title', 'content', 'created_by', 'created_at'],
     'course_resources' => ['id', 'course_id', 'title', 'file_path'],
@@ -93,8 +93,12 @@ $expectedSchema = [
             $db = new PDO($dsn, DB_USER, DB_PASS, $options);
         } catch (PDOException $e) {
             // Try fallback password
-            $fallbackPass = (DB_PASS === 'BJReality_LMS_2026!') ? 'BGRealty_LMS_2026!' : 'BJReality_LMS_2026!';
-            $db = new PDO($dsn, DB_USER, $fallbackPass, $options);
+            $fallbackPass = defined('DB_PASS_FALLBACK') ? DB_PASS_FALLBACK : '';
+            if ($fallbackPass !== '' && $fallbackPass !== DB_PASS) {
+                $db = new PDO($dsn, DB_USER, $fallbackPass, $options);
+            } else {
+                throw $e;
+            }
         }
 
         // Fetch actual tables in database

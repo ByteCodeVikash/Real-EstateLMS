@@ -77,27 +77,38 @@ try {
         $connected = true;
     } catch (PDOException $e) {
         // Try fallback password
-        $fallbackPass = (DB_PASS === 'BJReality_LMS_2026!') ? 'BGRealty_LMS_2026!' : 'BJReality_LMS_2026!';
-        try {
-            $db = new PDO($dsn, DB_USER, $fallbackPass, $options);
-            $connected = true;
-            $usedPass = $fallbackPass;
-        } catch (PDOException $e2) {
-            // Both failed
+        $fallbackPass = defined('DB_PASS_FALLBACK') ? DB_PASS_FALLBACK : '';
+        if ($fallbackPass !== '' && $fallbackPass !== DB_PASS) {
+            try {
+                $db = new PDO($dsn, DB_USER, $fallbackPass, $options);
+                $connected = true;
+                $usedPass = $fallbackPass;
+            } catch (PDOException $e2) {
+                // Both failed
+                echo "<div class='card'>
+                    <h3 class='danger'>❌ Connection Failed!</h3>
+                    <p>Could not connect to the database with either primary or fallback password.</p>
+                    <p><strong>Primary Password Error:</strong> " . htmlspecialchars($e->getMessage()) . "</p>
+                    <p><strong>Fallback Password Error:</strong> " . htmlspecialchars($e2->getMessage()) . "</p>
+                    <p class='warning'>⚠️ Please double check your database credentials in <code>.env</code> or configuration and ensure the user has full permissions to the database.</p>
+                </div>";
+            }
+        } else {
+            // Primary failed and no fallback configuration
             echo "<div class='card'>
                 <h3 class='danger'>❌ Connection Failed!</h3>
-                <p>Could not connect to the database with either primary or fallback password.</p>
+                <p>Could not connect to the database with the configured primary password.</p>
                 <p><strong>Primary Password Error:</strong> " . htmlspecialchars($e->getMessage()) . "</p>
-                <p><strong>Fallback Password Error:</strong> " . htmlspecialchars($e2->getMessage()) . "</p>
-                <p class='warning'>⚠️ Please double check your database credentials in <code>backend/config/config.php</code> and ensure the user has full permissions to the database in your Hostinger Control Panel.</p>
+                <p class='warning'>⚠️ Please double check your database credentials in <code>.env</code> or configuration and ensure the user has full permissions to the database.</p>
             </div>";
         }
     }
 
     if ($connected && $db) {
+        $maskedPass = (strlen($usedPass) > 4) ? substr($usedPass, 0, 2) . str_repeat('*', strlen($usedPass) - 4) . substr($usedPass, -2) : str_repeat('*', strlen($usedPass));
         echo "<div class='card'>
             <h3 class='success'>✅ Connection Successful!</h3>
-            <p>Connected using password: <code>" . htmlspecialchars($usedPass) . "</code></p>
+            <p>Connected successfully.</p>
         </div>";
 
         // Check if user clicked run seeding

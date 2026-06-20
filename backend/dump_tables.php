@@ -16,8 +16,12 @@ try {
     try {
         $db = new PDO($dsn, DB_USER, DB_PASS, $options);
     } catch (PDOException $e) {
-        $fallbackPass = (DB_PASS === 'BJReality_LMS_2026!') ? 'BGRealty_LMS_2026!' : 'BJReality_LMS_2026!';
-        $db = new PDO($dsn, DB_USER, $fallbackPass, $options);
+        $fallbackPass = defined('DB_PASS_FALLBACK') ? DB_PASS_FALLBACK : '';
+        if ($fallbackPass !== '' && $fallbackPass !== DB_PASS) {
+            $db = new PDO($dsn, DB_USER, $fallbackPass, $options);
+        } else {
+            throw $e;
+        }
     }
 
     echo "<h1>Raw Database Dump</h1>";
