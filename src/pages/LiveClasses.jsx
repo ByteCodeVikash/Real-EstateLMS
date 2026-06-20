@@ -56,6 +56,7 @@ const LiveClasses = () => {
         isLiveType: web.is_live,
         streamLink: web.stream_link,
         recordingUrl: web.recording_url,
+        meetingId: web.meeting_id || null,
         attendeesLabel: '850+ Seniors',
         image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=2000'
       };
@@ -120,9 +121,34 @@ const LiveClasses = () => {
     return url;
   };
 
+  // Determine if a URL is an external meeting link (Zoom, Meet, Teams, etc.)
+  const isExternalMeetingLink = (url) => {
+    if (!url) return false;
+    return (
+      url.includes('zoom.us') ||
+      url.includes('meet.google.com') ||
+      url.includes('teams.microsoft.com') ||
+      url.includes('webex.com') ||
+      url.includes('gotomeeting.com')
+    );
+  };
+
+  const handleJoin = (url) => {
+    if (!url) {
+      alert("Meeting link is not available yet. Check back closer to the start time.");
+      return;
+    }
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   const handleWatch = (title, url) => {
     if (!url) {
       alert("Stream/Playback link is not available yet.");
+      return;
+    }
+    // External conference links open in a new tab; replays play in the modal
+    if (isExternalMeetingLink(url)) {
+      window.open(url, '_blank', 'noopener,noreferrer');
       return;
     }
     setActivePlaybackTitle(title);
@@ -219,6 +245,11 @@ const LiveClasses = () => {
             <p className="text-sm text-slate-400 leading-relaxed font-bold">
               Join {heroEvent.host} live as we build comprehensive capitalization rate, debt-split calculations, and syndication structures.
             </p>
+            {heroEvent.meetingId && (
+              <p className="text-xs text-slate-400 font-mono font-bold">
+                Meeting ID: <span className="text-premium-accent">{heroEvent.meetingId}</span>
+              </p>
+            )}
             
             <div className="flex flex-wrap items-center gap-8 pt-4 border-t border-slate-900">
               <div className="flex items-center gap-3">
@@ -245,13 +276,19 @@ const LiveClasses = () => {
               <Button 
                 variant="gold" 
                 size="lg" 
-                onClick={() => handleWatch(heroEvent.title, heroPhase.phase === 'ended' ? heroEvent.recordingUrl || heroEvent.streamLink : heroEvent.streamLink)}
+                onClick={() => {
+                  if (heroPhase.phase === 'ended') {
+                    handleWatch(heroEvent.title, heroEvent.recordingUrl || heroEvent.streamLink);
+                  } else {
+                    handleJoin(heroEvent.streamLink);
+                  }
+                }}
                 className="h-13 px-8 text-xs font-black uppercase tracking-widest flex items-center gap-2"
               >
                 {heroPhase.phase === 'ended' ? (
                   <>Watch Replay <Play className="w-4.5 h-4.5 fill-current" /></>
                 ) : (
-                  <>Enter Deal Room <ArrowRight className="w-4.5 h-4.5" /></>
+                  <>Join Class <ArrowRight className="w-4.5 h-4.5" /></>
                 )}
               </Button>
             </div>
@@ -336,15 +373,26 @@ const LiveClasses = () => {
                         <span className={`text-[9px] font-mono font-black px-2 py-0.5 rounded border ${pill.cls}`}>
                           {pill.text}
                         </span>
+                        {item.meetingId && (
+                          <span className="text-xs text-slate-400 font-mono font-bold flex items-center gap-1">
+                            <span className="text-slate-500">ID:</span> <span className="text-premium-accent">{item.meetingId}</span>
+                          </span>
+                        )}
                       </div>
                     </div>
                     <div className="shrink-0">
                       <Button 
                         variant={phase.phase === 'ended' ? "outline" : "primary"}
-                        onClick={() => handleWatch(item.title, phase.phase === 'ended' ? item.recordingUrl || item.streamLink : item.streamLink)}
+                        onClick={() => {
+                          if (phase.phase === 'ended') {
+                            handleWatch(item.title, item.recordingUrl || item.streamLink);
+                          } else {
+                            handleJoin(item.streamLink);
+                          }
+                        }}
                         className="text-xs font-black uppercase tracking-widest h-10 bg-[#0b0b0d] border border-premium-border text-slate-300 hover:bg-[#0f0f12] shadow-sm"
                       >
-                        {phase.phase === 'ended' ? 'Watch Replay' : 'Enter Room'}
+                        {phase.phase === 'ended' ? 'Watch Replay' : 'Join Class'}
                       </Button>
                     </div>
                   </div>

@@ -156,8 +156,9 @@ export default function AdminLiveClasses() {
             time: time,
             endTime: time ? addHoursToTime(time, 1.5) : '',
             link: w.stream_link || '',
+            meetingId: w.meeting_id || '',
             students: 120,
-            status: status,
+            status: w.computed_status || status,
             duration: "90 Mins",
             banner: w.recording_url ? PRESET_BANNERS[2].url : PRESET_BANNERS[w.id % PRESET_BANNERS.length].url,
             description: w.recording_url ? `Recorded session replay: ${w.recording_url}` : "Interactive masterclass."
@@ -186,13 +187,14 @@ export default function AdminLiveClasses() {
     date: '', 
     time: '', 
     endTime: '',
-    link: '', 
+    link: '',
+    meetingId: '',
     description: '',
     banner: PRESET_BANNERS[0].url
   });
 
-  // Simulated live ticking clock representing current system time
-  const [now, setNow] = useState(new Date("2026-05-27T20:43:11"));
+  // Real-time clock (updated every second)
+  const [now, setNow] = useState(new Date());
   
   // Simulated changing live viewer metrics
   const [liveViewers, setLiveViewers] = useState({ 2: 156 });
@@ -204,11 +206,9 @@ export default function AdminLiveClasses() {
   const [currentMonth, setCurrentMonth] = useState(4); // 4 = May
   const [selectedDate, setSelectedDate] = useState("2026-05-27");
 
-  // Keep simulated time updated
+  // Keep real clock updated every second
   useEffect(() => {
-    const timer = setInterval(() => {
-      setNow(prev => new Date(prev.getTime() + 1000));
-    }, 1000);
+    const timer = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
@@ -286,6 +286,7 @@ export default function AdminLiveClasses() {
             mentor_name: formState.instructor,
             date_time: dateTimeStr,
             stream_link: formState.link,
+            meeting_id: formState.meetingId || null,
             is_live: webinars.find(w => w.id === editId)?.status === 'Live' ? 1 : 0
           })
         });
@@ -311,7 +312,8 @@ export default function AdminLiveClasses() {
             mentor_name: formState.instructor,
             date_time: dateTimeStr,
             stream_link: formState.link,
-            is_live: 1
+            meeting_id: formState.meetingId || null,
+            is_live: 0
           })
         });
         const resData = await response.json();
@@ -334,7 +336,8 @@ export default function AdminLiveClasses() {
       date: '', 
       time: '', 
       endTime: '',
-      link: '', 
+      link: '',
+      meetingId: '',
       description: '',
       banner: PRESET_BANNERS[0].url
     });
@@ -361,6 +364,7 @@ export default function AdminLiveClasses() {
       time: webinar.time,
       endTime: webinar.endTime || '',
       link: webinar.link,
+      meetingId: webinar.meetingId || '',
       description: webinar.description || '',
       banner: webinar.banner || PRESET_BANNERS[0].url
     });
@@ -1176,16 +1180,27 @@ export default function AdminLiveClasses() {
             </div>
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Conference Link (Zoom / Meet)</label>
-            <input
-              type="url"
-              required
-              placeholder="https://zoom.us/j/..."
-              value={formState.link}
-              onChange={(e) => setFormState({ ...formState, link: e.target.value })}
-              className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-2.5 text-xs font-bold text-white text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Conference Link (Zoom / Meet)</label>
+              <input
+                type="url"
+                placeholder="https://zoom.us/j/..."
+                value={formState.link}
+                onChange={(e) => setFormState({ ...formState, link: e.target.value })}
+                className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-2.5 text-xs font-bold text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Meeting ID <span className="text-slate-600 normal-case tracking-normal">(Zoom / Meet)</span></label>
+              <input
+                type="text"
+                placeholder="e.g. 912 8341 9823"
+                value={formState.meetingId}
+                onChange={(e) => setFormState({ ...formState, meetingId: e.target.value })}
+                className="w-full bg-[#0f0f12] bg-[#111114] border border-premium-border border-[#1e1e22] rounded-xl px-4 py-2.5 text-xs font-bold text-white focus:outline-none focus:ring-2 focus:ring-premium-accent/20"
+              />
+            </div>
           </div>
 
           {/* Banner Upload / Select UI */}
